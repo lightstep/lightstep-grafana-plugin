@@ -3,7 +3,7 @@
 System.register(['lodash'], function (_export, _context) {
   "use strict";
 
-  var _, _createClass, GenericDatasource;
+  var _, _createClass, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -34,9 +34,9 @@ System.register(['lodash'], function (_export, _context) {
         };
       }();
 
-      _export('GenericDatasource', GenericDatasource = function () {
-        function GenericDatasource(instanceSettings, $q, backendSrv, templateSrv) {
-          _classCallCheck(this, GenericDatasource);
+      _export('LightStepDatasource', LightStepDatasource = function () {
+        function LightStepDatasource(instanceSettings, $q, backendSrv, templateSrv) {
+          _classCallCheck(this, LightStepDatasource);
 
           this.type = instanceSettings.type;
           this.url = instanceSettings.url;
@@ -44,27 +44,32 @@ System.register(['lodash'], function (_export, _context) {
           this.q = $q;
           this.backendSrv = backendSrv;
           this.templateSrv = templateSrv;
-          this.withCredentials = instanceSettings.withCredentials;
-          this.headers = { 'Content-Type': 'application/json' };
-          if (typeof instanceSettings.basicAuth === 'string' && instanceSettings.basicAuth.length > 0) {
-            this.headers['Authorization'] = instanceSettings.basicAuth;
-          }
+          this.organizationName = instanceSettings.organizationName;
+          this.projectName = instanceSettings.projectName;
+          this.accessToken = instanceSettings.accessToken;
+          this.headers = {
+            'Content-Type': 'application/json',
+            'Authorization': "BEARER " + instanceSettings.accessToken
+          };
         }
 
-        _createClass(GenericDatasource, [{
+        _createClass(LightStepDatasource, [{
           key: 'query',
           value: function query(options) {
-            var query = this.buildQueryParameters(options);
-            query.targets = query.targets.filter(function (t) {
+            var targets = options.targets.filter(function (t) {
               return !t.hide;
+            }).filter(options.targets, function (target) {
+              return target.target !== 'select metric';
             });
 
-            if (query.targets.length <= 0) {
+            if (targets.length <= 0) {
               return this.q.when({ data: [] });
             }
+            var savedSearchID = target[0];
 
+            var query = this.buildQueryParameters(options);
             return this.doRequest({
-              url: this.url + '/query',
+              url: this.url + "/public/v0.1/" + this.organizationName + "/projects/" + this.projectName + "/searches/" + savedSearchID + "/timeseries",
               data: query,
               method: 'POST'
             });
@@ -79,63 +84,24 @@ System.register(['lodash'], function (_export, _context) {
               if (response.status === 200) {
                 return { status: "success", message: "Data source is working", title: "Success" };
               }
+            }).catch(function (error) {
+              return { status: "error", message: error, title: "Error " };
             });
           }
         }, {
           key: 'annotationQuery',
           value: function annotationQuery(options) {
-            var query = this.templateSrv.replace(options.annotation.query, {}, 'glob');
-            var annotationQuery = {
-              range: options.range,
-              annotation: {
-                name: options.annotation.name,
-                datasource: options.annotation.datasource,
-                enable: options.annotation.enable,
-                iconColor: options.annotation.iconColor,
-                query: query
-              },
-              rangeRaw: options.rangeRaw
-            };
-
-            return this.doRequest({
-              url: this.url + '/annotations',
-              method: 'POST',
-              data: annotationQuery
-            }).then(function (result) {
-              return result.data;
-            });
+            return this.q.when({});
           }
         }, {
           key: 'metricFindQuery',
           value: function metricFindQuery(query) {
-            var interpolated = {
-              target: this.templateSrv.replace(query, null, 'regex')
-            };
-
-            return this.doRequest({
-              url: this.url + '/search',
-              data: interpolated,
-              method: 'POST'
-            }).then(this.mapToTextValue);
-          }
-        }, {
-          key: 'mapToTextValue',
-          value: function mapToTextValue(result) {
-            return _.map(result.data, function (d, i) {
-              if (d && d.text && d.value) {
-                return { text: d.text, value: d.value };
-              } else if (_.isObject(d)) {
-                return { text: d, value: i };
-              }
-              return { text: d, value: d };
-            });
+            return this.q.when({});
           }
         }, {
           key: 'doRequest',
           value: function doRequest(options) {
-            options.withCredentials = this.withCredentials;
             options.headers = this.headers;
-
             return this.backendSrv.datasourceRequest(options);
           }
         }, {
@@ -143,10 +109,8 @@ System.register(['lodash'], function (_export, _context) {
           value: function buildQueryParameters(options) {
             var _this = this;
 
-            //remove placeholder targets
-            options.targets = _.filter(options.targets, function (target) {
-              return target.target !== 'select metric';
-            });
+            // remove placeholder targets
+            options.targets = _;
 
             var targets = _.map(options.targets, function (target) {
               return {
@@ -163,10 +127,10 @@ System.register(['lodash'], function (_export, _context) {
           }
         }]);
 
-        return GenericDatasource;
+        return LightStepDatasource;
       }());
 
-      _export('GenericDatasource', GenericDatasource);
+      _export('LightStepDatasource', LightStepDatasource);
     }
   };
 });

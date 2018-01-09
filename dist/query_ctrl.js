@@ -3,7 +3,7 @@
 System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
   "use strict";
 
-  var QueryCtrl, _createClass, GenericDatasourceQueryCtrl;
+  var QueryCtrl, _createClass, LightStepDatasourceQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -58,13 +58,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
         };
       }();
 
-      _export('GenericDatasourceQueryCtrl', GenericDatasourceQueryCtrl = function (_QueryCtrl) {
-        _inherits(GenericDatasourceQueryCtrl, _QueryCtrl);
+      _export('LightStepDatasourceQueryCtrl', LightStepDatasourceQueryCtrl = function (_QueryCtrl) {
+        _inherits(LightStepDatasourceQueryCtrl, _QueryCtrl);
 
-        function GenericDatasourceQueryCtrl($scope, $injector) {
-          _classCallCheck(this, GenericDatasourceQueryCtrl);
+        function LightStepDatasourceQueryCtrl($scope, $injector) {
+          _classCallCheck(this, LightStepDatasourceQueryCtrl);
 
-          var _this = _possibleConstructorReturn(this, (GenericDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(GenericDatasourceQueryCtrl)).call(this, $scope, $injector));
+          var _this = _possibleConstructorReturn(this, (LightStepDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(LightStepDatasourceQueryCtrl)).call(this, $scope, $injector));
 
           _this.scope = $scope;
           _this.target.target = _this.target.target || 'select metric';
@@ -72,7 +72,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           return _this;
         }
 
-        _createClass(GenericDatasourceQueryCtrl, [{
+        _createClass(LightStepDatasourceQueryCtrl, [{
           key: 'getOptions',
           value: function getOptions(query) {
             return this.datasource.metricFindQuery(query || '');
@@ -89,12 +89,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           }
         }]);
 
-        return GenericDatasourceQueryCtrl;
+        return LightStepDatasourceQueryCtrl;
       }(QueryCtrl));
 
-      _export('GenericDatasourceQueryCtrl', GenericDatasourceQueryCtrl);
+      _export('LightStepDatasourceQueryCtrl', LightStepDatasourceQueryCtrl);
 
-      GenericDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
+      LightStepDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
     }
   };
 });

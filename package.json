@@ -1,7 +1,7 @@
 {
-  "name": "grafana-simple-json",
+  "name": "lightstep-datasource",
   "private": true,
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -10,12 +10,12 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/grafana/simple-json-datasource.git"
+    "url": "git+https://github.com/lightstep/lightstep-grafana-datasource.git"
   },
   "author": "",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/grafana/simple-json-datasource/issues"
+    "url": "https://github.com/lightstep/lightstep-grafana-datasource/issues"
   },
   "engines": {
     "node": "6.10.0"
@@ -46,5 +46,5 @@
     "lodash": "^4.17.4",
     "mocha": "^3.2.0"
   },
-  "homepage": "https://github.com/grafana/simple-json-datasource#readme"
+  "homepage": "https://github.com/lightstep/lightstep-grafana-datasource#readme"
 }

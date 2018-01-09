@@ -3,7 +3,7 @@
 System.register(['./datasource', './query_ctrl'], function (_export, _context) {
   "use strict";
 
-  var GenericDatasource, GenericDatasourceQueryCtrl, GenericConfigCtrl, GenericQueryOptionsCtrl, GenericAnnotationsQueryCtrl;
+  var LightStepDatasource, LightStepDatasourceQueryCtrl, LightStepConfigCtrl, LightStepQueryOptionsCtrl, LightStepAnnotationsQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -13,38 +13,38 @@ System.register(['./datasource', './query_ctrl'], function (_export, _context) {
 
   return {
     setters: [function (_datasource) {
-      GenericDatasource = _datasource.GenericDatasource;
+      LightStepDatasource = _datasource.LightStepDatasource;
     }, function (_query_ctrl) {
-      GenericDatasourceQueryCtrl = _query_ctrl.GenericDatasourceQueryCtrl;
+      LightStepDatasourceQueryCtrl = _query_ctrl.LightStepDatasourceQueryCtrl;
     }],
     execute: function () {
-      _export('ConfigCtrl', GenericConfigCtrl = function GenericConfigCtrl() {
-        _classCallCheck(this, GenericConfigCtrl);
+      _export('ConfigCtrl', LightStepConfigCtrl = function LightStepConfigCtrl() {
+        _classCallCheck(this, LightStepConfigCtrl);
       });
 
-      GenericConfigCtrl.templateUrl = 'partials/config.html';
+      LightStepConfigCtrl.templateUrl = 'partials/config.html';
 
-      _export('QueryOptionsCtrl', GenericQueryOptionsCtrl = function GenericQueryOptionsCtrl() {
-        _classCallCheck(this, GenericQueryOptionsCtrl);
+      _export('QueryOptionsCtrl', LightStepQueryOptionsCtrl = function LightStepQueryOptionsCtrl() {
+        _classCallCheck(this, LightStepQueryOptionsCtrl);
       });
 
-      GenericQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
+      LightStepQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
 
-      _export('AnnotationsQueryCtrl', GenericAnnotationsQueryCtrl = function GenericAnnotationsQueryCtrl() {
-        _classCallCheck(this, GenericAnnotationsQueryCtrl);
+      _export('AnnotationsQueryCtrl', LightStepAnnotationsQueryCtrl = function LightStepAnnotationsQueryCtrl() {
+        _classCallCheck(this, LightStepAnnotationsQueryCtrl);
       });
 
-      GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
+      LightStepAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html';
 
-      _export('Datasource', GenericDatasource);
+      _export('Datasource', LightStepDatasource);
 
-      _export('QueryCtrl', GenericDatasourceQueryCtrl);
+      _export('QueryCtrl', LightStepDatasourceQueryCtrl);
 
-      _export('ConfigCtrl', GenericConfigCtrl);
+      _export('ConfigCtrl', LightStepConfigCtrl);
 
-      _export('QueryOptionsCtrl', GenericQueryOptionsCtrl);
+      _export('QueryOptionsCtrl', LightStepQueryOptionsCtrl);
 
-      _export('AnnotationsQueryCtrl', GenericAnnotationsQueryCtrl);
+      _export('AnnotationsQueryCtrl', LightStepAnnotationsQueryCtrl);
     }
   };
 });

@@ -1,19 +1,19 @@
-import {GenericDatasource} from './datasource';
-import {GenericDatasourceQueryCtrl} from './query_ctrl';
+import {LightStepDatasource} from './datasource';
+import {LightStepDatasourceQueryCtrl} from './query_ctrl';
 
-class GenericConfigCtrl {}
-GenericConfigCtrl.templateUrl = 'partials/config.html';
+class LightStepConfigCtrl {}
+LightStepConfigCtrl.templateUrl = 'partials/config.html';
 
-class GenericQueryOptionsCtrl {}
-GenericQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
+class LightStepQueryOptionsCtrl {}
+LightStepQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
 
-class GenericAnnotationsQueryCtrl {}
-GenericAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
+class LightStepAnnotationsQueryCtrl {}
+LightStepAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
 
 export {
-  GenericDatasource as Datasource,
-  GenericDatasourceQueryCtrl as QueryCtrl,
-  GenericConfigCtrl as ConfigCtrl,
-  GenericQueryOptionsCtrl as QueryOptionsCtrl,
-  GenericAnnotationsQueryCtrl as AnnotationsQueryCtrl
+  LightStepDatasource as Datasource,
+  LightStepDatasourceQueryCtrl as QueryCtrl,
+  LightStepConfigCtrl as ConfigCtrl,
+  LightStepQueryOptionsCtrl as QueryOptionsCtrl,
+  LightStepAnnotationsQueryCtrl as AnnotationsQueryCtrl
 };

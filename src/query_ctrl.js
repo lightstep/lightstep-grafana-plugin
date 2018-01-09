@@ -1,7 +1,7 @@
 import {QueryCtrl} from 'app/plugins/sdk';
 import './css/query-editor.css!'
 
-export class GenericDatasourceQueryCtrl extends QueryCtrl {
+export class LightStepDatasourceQueryCtrl extends QueryCtrl {
 
   constructor($scope, $injector)  {
     super($scope, $injector);
@@ -24,5 +24,5 @@ export class GenericDatasourceQueryCtrl extends QueryCtrl {
   }
 }
 
-GenericDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
+LightStepDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
 
