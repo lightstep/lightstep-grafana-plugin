@@ -1,7 +1,8 @@
-import _ from "lodash";
+import _ from 'lodash';
+import moment from 'moment';
 import appEvents from 'app/core/app_events';
 
-var defaultURL = "https://api.lightstep.com"
+var defaultURL = "https://api.lightstep.com";
 
 appEvents.on('graph-click', options => {
   console.log(`TODO(LS-2233) - somehow open the lightstep trace summary page of ${options["item"]}`)
@@ -28,28 +29,62 @@ export class LightStepDatasource {
   }
 
   query(options) {
-    var targets = options.targets
-      .filter(t => !t.hide)
-      .filter(options.targets, target => {
-        return target.target !== 'select metric';
-      });
+    let targets = options.targets.filter(t => !t.hide);
 
     if (targets.length <= 0) {
       return this.q.when({data: []});
     }
-    var savedSearchID = target[0]
 
-    var query = this.buildQueryParameters(options);
-    return this.doRequest({
-      url: this.url + "/public/v0.1/" + this.organizationName + "/projects/" + this.projectName + "/searches/" + savedSearchID + "/timeseries",
-      data: query,
-      method: 'POST'
+    let responses = _.map(targets, target => {
+      let savedSearchID = target.target;
+
+      let query = this.buildQueryParameters(options);
+      let response = this.doRequest({
+        url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
+        method: 'GET',
+        params: query,
+      });
+
+      return response;
+    });
+
+    return this.q.all(responses).then(results => {
+      let data = _.flatMap(results, result => {
+        let data = result["data"]["data"];
+        let attributes = data["attributes"];
+        let name = data["id"].replace("/timeseries", "");
+
+        let exemplars = {
+          target: `${name} exemplars`,
+          datapoints: _.map(attributes["exemplars"], exemplar => {
+            // TODO(LS-2279) - should we be interpolating here?
+            return [exemplar["duration_micros"] / 1000, moment(exemplar["oldest_micros"] / 1000)]
+          }),
+        };
+
+        let timeWindows = _.map(attributes["time-windows"], timeWindow => {
+          // TODO(LS-2279) - should we be interpolating here?
+          return moment(timeWindow["oldest-time"])
+        });
+
+        return _.concat(
+          _.map(attributes["latencies"], latencies => {
+            return {
+              target: `${name} p${latencies["percentile"]}`,
+              datapoints: _.zip(latencies["latency-ms"], timeWindows),
+            }
+          }),
+          [exemplars],
+        );
+      });
+
+      return { data: data };
     });
   }
 
   testDatasource() {
     return this.doRequest({
-      url: this.url + '/',
+      url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/`,
       method: 'GET',
     }).then(response => {
       if (response.status === 200) {
@@ -66,6 +101,7 @@ export class LightStepDatasource {
   }
 
   metricFindQuery(query) {
+    // TODO(LS-2230) - implement auto-complete here.
     return this.q.when({})
   }
 
@@ -75,20 +111,17 @@ export class LightStepDatasource {
   }
 
   buildQueryParameters(options) {
-    // remove placeholder targets
-    options.targets = _;
+    let oldest = options.range.from;
+    let youngest = options.range.to;
+    let resolutionMs = Math.max(60000, oldest.diff(youngest) / 1440);
 
-    var targets = _.map(options.targets, target => {
-      return {
-        target: this.templateSrv.replace(target.target, options.scopedVars, 'regex'),
-        refId: target.refId,
-        hide: target.hide,
-        type: target.type || 'timeserie'
-      };
-    });
-
-    options.targets = targets;
-
-    return options;
+    return {
+      "oldest-time": oldest.format(),
+      "youngest-time": youngest.format(),
+      "resolution-ms": Math.floor(resolutionMs),
+      // TODO(LS-2278) - both of these configurable.
+      "include-exemplars": "1",
+      "percentile": [ "50", "99", "99.9", "99.99" ],
+    }
   }
 }

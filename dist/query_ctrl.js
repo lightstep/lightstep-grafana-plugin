@@ -67,8 +67,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           var _this = _possibleConstructorReturn(this, (LightStepDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(LightStepDatasourceQueryCtrl)).call(this, $scope, $injector));
 
           _this.scope = $scope;
-          _this.target.target = _this.target.target || 'select metric';
-          _this.target.type = _this.target.type || 'timeserie';
+          _this.target.type = 'timeserie';
           return _this;
         }
 
