@@ -3,7 +3,7 @@
 System.register(["lodash"], function (_export, _context) {
   "use strict";
 
-  var _, _createClass, LightStepDatasource;
+  var _, _createClass, defaultURL, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {

@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-defaultURL = "https://api.lightstep.com"
+var defaultURL = "https://api.lightstep.com"
 
 export class LightStepDatasource {
   constructor(instanceSettings, $q, backendSrv, templateSrv) {
