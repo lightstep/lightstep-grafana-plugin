@@ -1,19 +1,24 @@
 import _ from "lodash";
 
+defaultURL = "https://api.lightstep.com"
+
 export class LightStepDatasource {
   constructor(instanceSettings, $q, backendSrv, templateSrv) {
     this.type = instanceSettings.type;
-    this.url = instanceSettings.url;
+    this.url = instanceSettings.url || defaultURL;
     this.name = instanceSettings.name;
     this.q = $q;
     this.backendSrv = backendSrv;
     this.templateSrv = templateSrv;
-    this.organizationName = instanceSettings.organizationName;
-    this.projectName = instanceSettings.projectName;
-    this.accessToken = instanceSettings.accessToken;
-    this.headers = {
+    this.organizationName = instanceSettings.jsonData.organizationName;
+    this.projectName = instanceSettings.jsonData.projectName;
+    this.apiKey = instanceSettings.jsonData.apiKey;
+  }
+
+  headers() {
+    return {
       'Content-Type': 'application/json',
-      'Authorization': "BEARER " + instanceSettings.accessToken,
+      'Authorization': "BEARER " + this.apiKey,
     };
   }
 
@@ -60,7 +65,7 @@ export class LightStepDatasource {
   }
 
   doRequest(options) {
-    options.headers = this.headers;
+    options.headers = this.headers();
     return this.backendSrv.datasourceRequest(options);
   }
 
