@@ -1,6 +1,6 @@
-'use strict';
+"use strict";
 
-System.register(['lodash'], function (_export, _context) {
+System.register(["lodash"], function (_export, _context) {
   "use strict";
 
   var _, _createClass, LightStepDatasource;
@@ -34,27 +34,33 @@ System.register(['lodash'], function (_export, _context) {
         };
       }();
 
-      _export('LightStepDatasource', LightStepDatasource = function () {
+      defaultURL = "https://api.lightstep.com";
+
+      _export("LightStepDatasource", LightStepDatasource = function () {
         function LightStepDatasource(instanceSettings, $q, backendSrv, templateSrv) {
           _classCallCheck(this, LightStepDatasource);
 
           this.type = instanceSettings.type;
-          this.url = instanceSettings.url;
+          this.url = instanceSettings.url || defaultURL;
           this.name = instanceSettings.name;
           this.q = $q;
           this.backendSrv = backendSrv;
           this.templateSrv = templateSrv;
-          this.organizationName = instanceSettings.organizationName;
-          this.projectName = instanceSettings.projectName;
-          this.accessToken = instanceSettings.accessToken;
-          this.headers = {
-            'Content-Type': 'application/json',
-            'Authorization': "BEARER " + instanceSettings.accessToken
-          };
+          this.organizationName = instanceSettings.jsonData.organizationName;
+          this.projectName = instanceSettings.jsonData.projectName;
+          this.apiKey = instanceSettings.jsonData.apiKey;
         }
 
         _createClass(LightStepDatasource, [{
-          key: 'query',
+          key: "headers",
+          value: function headers() {
+            return {
+              'Content-Type': 'application/json',
+              'Authorization': "BEARER " + this.apiKey
+            };
+          }
+        }, {
+          key: "query",
           value: function query(options) {
             var targets = options.targets.filter(function (t) {
               return !t.hide;
@@ -75,7 +81,7 @@ System.register(['lodash'], function (_export, _context) {
             });
           }
         }, {
-          key: 'testDatasource',
+          key: "testDatasource",
           value: function testDatasource() {
             return this.doRequest({
               url: this.url + '/',
@@ -89,23 +95,23 @@ System.register(['lodash'], function (_export, _context) {
             });
           }
         }, {
-          key: 'annotationQuery',
+          key: "annotationQuery",
           value: function annotationQuery(options) {
             return this.q.when({});
           }
         }, {
-          key: 'metricFindQuery',
+          key: "metricFindQuery",
           value: function metricFindQuery(query) {
             return this.q.when({});
           }
         }, {
-          key: 'doRequest',
+          key: "doRequest",
           value: function doRequest(options) {
-            options.headers = this.headers;
+            options.headers = this.headers();
             return this.backendSrv.datasourceRequest(options);
           }
         }, {
-          key: 'buildQueryParameters',
+          key: "buildQueryParameters",
           value: function buildQueryParameters(options) {
             var _this = this;
 
@@ -130,7 +136,7 @@ System.register(['lodash'], function (_export, _context) {
         return LightStepDatasource;
       }());
 
-      _export('LightStepDatasource', LightStepDatasource);
+      _export("LightStepDatasource", LightStepDatasource);
     }
   };
 });

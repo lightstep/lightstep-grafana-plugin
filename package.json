@@ -18,7 +18,7 @@
     "url": "https://github.com/lightstep/lightstep-grafana-plugin/issues"
   },
   "engines": {
-    "node": "6.10.0"
+    "node": "^9.4.0"
   },
   "engineStrict": true,
   "devDependencies": {
