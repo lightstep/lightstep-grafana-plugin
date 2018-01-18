@@ -1,9 +1,9 @@
 "use strict";
 
-System.register(["lodash"], function (_export, _context) {
+System.register(["lodash", "app/core/app_events"], function (_export, _context) {
   "use strict";
 
-  var _, _createClass, defaultURL, LightStepDatasource;
+  var _, appEvents, _createClass, defaultURL, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -14,6 +14,8 @@ System.register(["lodash"], function (_export, _context) {
   return {
     setters: [function (_lodash) {
       _ = _lodash.default;
+    }, function (_appCoreApp_events) {
+      appEvents = _appCoreApp_events.default;
     }],
     execute: function () {
       _createClass = function () {
@@ -35,6 +37,11 @@ System.register(["lodash"], function (_export, _context) {
       }();
 
       defaultURL = "https://api.lightstep.com";
+
+
+      appEvents.on('graph-click', function (options) {
+        console.log("TODO() - somehow open the lightstep trace summary page of " + options["item"]);
+      });
 
       _export("LightStepDatasource", LightStepDatasource = function () {
         function LightStepDatasource(instanceSettings, $q, backendSrv, templateSrv) {
