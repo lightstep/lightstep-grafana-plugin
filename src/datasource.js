@@ -1,6 +1,11 @@
 import _ from "lodash";
+import appEvents from 'app/core/app_events';
 
 var defaultURL = "https://api.lightstep.com"
+
+appEvents.on('graph-click', options => {
+  console.log(`TODO(LS-2233) - somehow open the lightstep trace summary page of ${options["item"]}`)
+});
 
 export class LightStepDatasource {
   constructor(instanceSettings, $q, backendSrv, templateSrv) {
