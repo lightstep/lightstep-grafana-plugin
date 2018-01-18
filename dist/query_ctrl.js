@@ -3,7 +3,7 @@
 System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
   "use strict";
 
-  var QueryCtrl, _createClass, LightStepDatasourceQueryCtrl;
+  var QueryCtrl, _createClass, defaultPercentiles, LightStepDatasourceQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -58,6 +58,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
         };
       }();
 
+      defaultPercentiles = ["50", "99", "99.9", "99.99"];
+
       _export('LightStepDatasourceQueryCtrl', LightStepDatasourceQueryCtrl = function (_QueryCtrl) {
         _inherits(LightStepDatasourceQueryCtrl, _QueryCtrl);
 
@@ -65,6 +67,14 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           _classCallCheck(this, LightStepDatasourceQueryCtrl);
 
           var _this = _possibleConstructorReturn(this, (LightStepDatasourceQueryCtrl.__proto__ || Object.getPrototypeOf(LightStepDatasourceQueryCtrl)).call(this, $scope, $injector));
+
+          if (_this.target.percentiles == null) {
+            _this.target.percentiles = defaultPercentiles;
+          }
+
+          if (_this.target.showExemplars == null) {
+            _this.target.showExemplars = true;
+          }
 
           _this.scope = $scope;
           _this.target.type = 'timeserie';
@@ -85,6 +95,13 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           key: 'onChangeInternal',
           value: function onChangeInternal() {
             this.panelCtrl.refresh(); // Asks the panel to refresh data.
+          }
+        }, {
+          key: 'linkToLightStep',
+          value: function linkToLightStep() {
+            var savedSearchID = this.target.target;
+            // TODO - how do we make sure we are using the right base url here? Should it configurable?
+            return 'https://app-staging.lightstep.com/' + this.datasource.projectName + '/operation/' + savedSearchID;
           }
         }]);
 

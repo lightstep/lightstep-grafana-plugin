@@ -15,7 +15,27 @@
       </div>
     </div>
 
-    <!-- TODO(LS-2278) add exemplar and percentile configuration here. -->
+    <div class="gf-form">
+      <label class="gf-form-label">Percentiles</label>
+      <input type="text"
+             class="gf-form-input"
+             ng-model="ctrl.target.percentiles"
+             ng-blur="ctrl.onChangeInternal()"
+             placeholder="e.g. 50,99,99.9,99.99"></input>
+      <info-popover mode="right-absolute">
+        comma separated list of percentiles to fetch
+      </info-popover>
+    </div>
+
+    <div class="gf-form">
+      <gf-form-switch class="gf-form" label="Exemplars" checked="ctrl.target.showExemplars" on-change="ctrl.refresh()">
+      </gf-form-switch>
+      <label class="gf-form-label">
+        <a href="{{ctrl.linkToLightStep()}}" target="_blank" bs-tooltip="'Link to Graph in LightStep'">
+          <i class="fa fa-share-square-o"></i>
+        </a>
+      </label>
+    </div>
 
     <div class="gf-form gf-form--grow">
       <div class="gf-form-label gf-form-label--grow"></div>
