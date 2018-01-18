@@ -1,9 +1,9 @@
-"use strict";
+'use strict';
 
-System.register(["lodash", "app/core/app_events"], function (_export, _context) {
+System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, _context) {
   "use strict";
 
-  var _, appEvents, _createClass, defaultURL, LightStepDatasource;
+  var _, moment, appEvents, _createClass, defaultURL, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -14,6 +14,8 @@ System.register(["lodash", "app/core/app_events"], function (_export, _context) 
   return {
     setters: [function (_lodash) {
       _ = _lodash.default;
+    }, function (_moment) {
+      moment = _moment.default;
     }, function (_appCoreApp_events) {
       appEvents = _appCoreApp_events.default;
     }],
@@ -40,10 +42,10 @@ System.register(["lodash", "app/core/app_events"], function (_export, _context) 
 
 
       appEvents.on('graph-click', function (options) {
-        console.log("TODO() - somehow open the lightstep trace summary page of " + options["item"]);
+        console.log('TODO(LS-2233) - somehow open the lightstep trace summary page of ' + options["item"]);
       });
 
-      _export("LightStepDatasource", LightStepDatasource = function () {
+      _export('LightStepDatasource', LightStepDatasource = function () {
         function LightStepDatasource(instanceSettings, $q, backendSrv, templateSrv) {
           _classCallCheck(this, LightStepDatasource);
 
@@ -59,7 +61,7 @@ System.register(["lodash", "app/core/app_events"], function (_export, _context) 
         }
 
         _createClass(LightStepDatasource, [{
-          key: "headers",
+          key: 'headers',
           value: function headers() {
             return {
               'Content-Type': 'application/json',
@@ -67,31 +69,66 @@ System.register(["lodash", "app/core/app_events"], function (_export, _context) 
             };
           }
         }, {
-          key: "query",
+          key: 'query',
           value: function query(options) {
+            var _this = this;
+
             var targets = options.targets.filter(function (t) {
               return !t.hide;
-            }).filter(options.targets, function (target) {
-              return target.target !== 'select metric';
             });
 
             if (targets.length <= 0) {
               return this.q.when({ data: [] });
             }
-            var savedSearchID = target[0];
 
-            var query = this.buildQueryParameters(options);
-            return this.doRequest({
-              url: this.url + "/public/v0.1/" + this.organizationName + "/projects/" + this.projectName + "/searches/" + savedSearchID + "/timeseries",
-              data: query,
-              method: 'POST'
+            var responses = _.map(targets, function (target) {
+              var savedSearchID = target.target;
+
+              var query = _this.buildQueryParameters(options);
+              var response = _this.doRequest({
+                url: _this.url + '/public/v0.1/' + _this.organizationName + '/projects/' + _this.projectName + '/searches/' + savedSearchID + '/timeseries',
+                method: 'GET',
+                params: query
+              });
+
+              return response;
+            });
+
+            return this.q.all(responses).then(function (results) {
+              var data = _.flatMap(results, function (result) {
+                var data = result["data"]["data"];
+                var attributes = data["attributes"];
+                var name = data["id"].replace("/timeseries", "");
+
+                var exemplars = {
+                  target: name + ' exemplars',
+                  datapoints: _.map(attributes["exemplars"], function (exemplar) {
+                    // TODO(LS-2279) - should we be interpolating here?
+                    return [exemplar["duration_micros"] / 1000, moment(exemplar["oldest_micros"] / 1000)];
+                  })
+                };
+
+                var timeWindows = _.map(attributes["time-windows"], function (timeWindow) {
+                  // TODO(LS-2279) - should we be interpolating here?
+                  return moment(timeWindow["oldest-time"]);
+                });
+
+                return _.concat(_.map(attributes["latencies"], function (latencies) {
+                  return {
+                    target: name + ' p' + latencies["percentile"],
+                    datapoints: _.zip(latencies["latency-ms"], timeWindows)
+                  };
+                }), [exemplars]);
+              });
+
+              return { data: data };
             });
           }
         }, {
-          key: "testDatasource",
+          key: 'testDatasource',
           value: function testDatasource() {
             return this.doRequest({
-              url: this.url + '/',
+              url: this.url + '/public/v0.1/' + this.organizationName + '/projects/' + this.projectName + '/',
               method: 'GET'
             }).then(function (response) {
               if (response.status === 200) {
@@ -102,48 +139,44 @@ System.register(["lodash", "app/core/app_events"], function (_export, _context) 
             });
           }
         }, {
-          key: "annotationQuery",
+          key: 'annotationQuery',
           value: function annotationQuery(options) {
             return this.q.when({});
           }
         }, {
-          key: "metricFindQuery",
+          key: 'metricFindQuery',
           value: function metricFindQuery(query) {
+            // TODO(LS-2230) - implement auto-complete here.
             return this.q.when({});
           }
         }, {
-          key: "doRequest",
+          key: 'doRequest',
           value: function doRequest(options) {
             options.headers = this.headers();
             return this.backendSrv.datasourceRequest(options);
           }
         }, {
-          key: "buildQueryParameters",
+          key: 'buildQueryParameters',
           value: function buildQueryParameters(options) {
-            var _this = this;
+            var oldest = options.range.from;
+            var youngest = options.range.to;
+            var resolutionMs = Math.max(60000, oldest.diff(youngest) / 1440);
 
-            // remove placeholder targets
-            options.targets = _;
-
-            var targets = _.map(options.targets, function (target) {
-              return {
-                target: _this.templateSrv.replace(target.target, options.scopedVars, 'regex'),
-                refId: target.refId,
-                hide: target.hide,
-                type: target.type || 'timeserie'
-              };
-            });
-
-            options.targets = targets;
-
-            return options;
+            return {
+              "oldest-time": oldest.format(),
+              "youngest-time": youngest.format(),
+              "resolution-ms": Math.floor(resolutionMs),
+              // TODO(LS-2278) - both of these configurable.
+              "include-exemplars": "1",
+              "percentile": ["50", "99", "99.9", "99.99"]
+            };
           }
         }]);
 
         return LightStepDatasource;
       }());
 
-      _export("LightStepDatasource", LightStepDatasource);
+      _export('LightStepDatasource', LightStepDatasource);
     }
   };
 });

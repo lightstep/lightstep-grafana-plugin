@@ -2,13 +2,11 @@ import {QueryCtrl} from 'app/plugins/sdk';
 import './css/query-editor.css!'
 
 export class LightStepDatasourceQueryCtrl extends QueryCtrl {
-
   constructor($scope, $injector)  {
     super($scope, $injector);
 
     this.scope = $scope;
-    this.target.target = this.target.target || 'select metric';
-    this.target.type = this.target.type || 'timeserie';
+    this.target.type = 'timeserie';
   }
 
   getOptions(query) {
