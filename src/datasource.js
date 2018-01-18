@@ -2,7 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
 
-var defaultURL = "https://api.lightstep.com";
+const defaultURL = "https://api.lightstep.com";
 
 appEvents.on('graph-click', options => {
   console.log(`TODO(LS-2233) - somehow open the lightstep trace summary page of ${options["item"]}`)
@@ -29,17 +29,17 @@ export class LightStepDatasource {
   }
 
   query(options) {
-    let targets = options.targets.filter(t => !t.hide);
+    const targets = options.targets.filter(t => !t.hide);
 
     if (targets.length <= 0) {
       return this.q.when({data: []});
     }
 
-    let responses = _.map(targets, target => {
-      let savedSearchID = target.target;
+    const responses = targets.map(target => {
+      const savedSearchID = target.target;
 
-      let query = this.buildQueryParameters(options);
-      let response = this.doRequest({
+      const query = this.buildQueryParameters(options);
+      const response = this.doRequest({
         url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
         method: 'GET',
         params: query,
@@ -49,14 +49,14 @@ export class LightStepDatasource {
     });
 
     return this.q.all(responses).then(results => {
-      let data = _.flatMap(results, result => {
-        let data = result["data"]["data"];
-        let attributes = data["attributes"];
-        let name = data["id"].replace("/timeseries", "");
+      const data = _.flatMap(results, result => {
+        const data = result["data"]["data"];
+        const attributes = data["attributes"];
+        const name = data["id"].replace("/timeseries", "");
 
-        let exemplars = {
+        const exemplars = {
           target: `${name} exemplars`,
-          datapoints: _.map(attributes["exemplars"], exemplar => {
+          datapoints: attributes["exemplars"].map(exemplar => {
             return [
               exemplar["duration_micros"] / 1000,
               moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
@@ -64,14 +64,14 @@ export class LightStepDatasource {
           }),
         };
 
-        let timeWindows = _.map(attributes["time-windows"], timeWindow => {
-          let oldest = moment(timeWindow["oldest-time"]);
-          let youngest = moment(timeWindow["youngest-time"]);
+        const timeWindows = attributes["time-windows"].map(timeWindow => {
+          const oldest = moment(timeWindow["oldest-time"]);
+          const youngest = moment(timeWindow["youngest-time"]);
           return moment((oldest + youngest) / 2);
         });
 
         return _.concat(
-          _.map(attributes["latencies"], latencies => {
+          attributes["latencies"].map(latencies => {
             return {
               target: `${name} p${latencies["percentile"]}`,
               datapoints: _.zip(latencies["latency-ms"], timeWindows),
@@ -104,7 +104,7 @@ export class LightStepDatasource {
 
   metricFindQuery(query) {
     // TODO(LS-2230) - implement auto-complete here.
-    return this.q.when({})
+    return this.q.when({});
   }
 
   doRequest(options) {
@@ -113,9 +113,9 @@ export class LightStepDatasource {
   }
 
   buildQueryParameters(options) {
-    let oldest = options.range.from;
-    let youngest = options.range.to;
-    let resolutionMs = Math.max(60000, oldest.diff(youngest) / 1440);
+    const oldest = options.range.from;
+    const youngest = options.range.to;
+    const resolutionMs = Math.max(60000, oldest.diff(youngest) / 1440);
 
     return {
       "oldest-time": oldest.format(),
