@@ -57,14 +57,17 @@ export class LightStepDatasource {
         let exemplars = {
           target: `${name} exemplars`,
           datapoints: _.map(attributes["exemplars"], exemplar => {
-            // TODO(LS-2279) - should we be interpolating here?
-            return [exemplar["duration_micros"] / 1000, moment(exemplar["oldest_micros"] / 1000)]
+            return [
+              exemplar["duration_micros"] / 1000,
+              moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
+            ];
           }),
         };
 
         let timeWindows = _.map(attributes["time-windows"], timeWindow => {
-          // TODO(LS-2279) - should we be interpolating here?
-          return moment(timeWindow["oldest-time"])
+          let oldest = moment(timeWindow["oldest-time"]);
+          let youngest = moment(timeWindow["youngest-time"]);
+          return moment((oldest + youngest) / 2);
         });
 
         return _.concat(
@@ -72,7 +75,7 @@ export class LightStepDatasource {
             return {
               target: `${name} p${latencies["percentile"]}`,
               datapoints: _.zip(latencies["latency-ms"], timeWindows),
-            }
+            };
           }),
           [exemplars],
         );
@@ -92,12 +95,11 @@ export class LightStepDatasource {
       }
     }).catch(error => {
       return { status: "error", message: error, title: "Error " };
-      }
-    )
+    });
   }
 
   annotationQuery(options) {
-    return this.q.when({})
+    return this.q.when({});
   }
 
   metricFindQuery(query) {

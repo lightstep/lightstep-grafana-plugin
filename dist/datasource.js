@@ -103,14 +103,14 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
                 var exemplars = {
                   target: name + ' exemplars',
                   datapoints: _.map(attributes["exemplars"], function (exemplar) {
-                    // TODO(LS-2279) - should we be interpolating here?
-                    return [exemplar["duration_micros"] / 1000, moment(exemplar["oldest_micros"] / 1000)];
+                    return [exemplar["duration_micros"] / 1000, moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000)];
                   })
                 };
 
                 var timeWindows = _.map(attributes["time-windows"], function (timeWindow) {
-                  // TODO(LS-2279) - should we be interpolating here?
-                  return moment(timeWindow["oldest-time"]);
+                  var oldest = moment(timeWindow["oldest-time"]);
+                  var youngest = moment(timeWindow["youngest-time"]);
+                  return moment((oldest + youngest) / 2);
                 });
 
                 return _.concat(_.map(attributes["latencies"], function (latencies) {
