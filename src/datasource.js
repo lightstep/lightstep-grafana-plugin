@@ -149,8 +149,20 @@ export class LightStepDatasource {
     if (!exemplars) {
       return [];
     }
+    const exemplarMap = _.groupBy(exemplars, exemplar => exemplar["has_error"]);
+
+    return _.concat(
+      this.parseExemplar(`${name} exemplars`, exemplarMap[false]),
+      this.parseExemplar(`${name} error exemplars`, exemplarMap[true]),
+    )
+  }
+
+  parseExemplar(name, exemplars) {
+    if (!exemplars) {
+      return []
+    }
     return [{
-      target: `${name} exemplars`,
+      target: name,
       datapoints: exemplars.map(exemplar => {
         return [
           exemplar["duration_micros"] / 1000,

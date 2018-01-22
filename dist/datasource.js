@@ -196,8 +196,20 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             if (!exemplars) {
               return [];
             }
+            var exemplarMap = _.groupBy(exemplars, function (exemplar) {
+              return exemplar["has_error"];
+            });
+
+            return _.concat(this.parseExemplar(name + ' exemplars', exemplarMap[false]), this.parseExemplar(name + ' error exemplars', exemplarMap[true]));
+          }
+        }, {
+          key: 'parseExemplar',
+          value: function parseExemplar(name, exemplars) {
+            if (!exemplars) {
+              return [];
+            }
             return [{
-              target: name + ' exemplars',
+              target: name,
               datapoints: exemplars.map(function (exemplar) {
                 return [exemplar["duration_micros"] / 1000, moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000)];
               })
