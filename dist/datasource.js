@@ -81,7 +81,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               return this.q.when({ data: [] });
             }
 
-            var responses = _.map(targets, function (target) {
+            var responses = targets.map(function (target) {
               var savedSearchID = target.target;
 
               var query = _this.buildQueryParameters(options);
@@ -102,18 +102,18 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
 
                 var exemplars = {
                   target: name + ' exemplars',
-                  datapoints: _.map(attributes["exemplars"], function (exemplar) {
+                  datapoints: attributes["exemplars"].map(function (exemplar) {
                     return [exemplar["duration_micros"] / 1000, moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000)];
                   })
                 };
 
-                var timeWindows = _.map(attributes["time-windows"], function (timeWindow) {
+                var timeWindows = attributes["time-windows"].map(function (timeWindow) {
                   var oldest = moment(timeWindow["oldest-time"]);
                   var youngest = moment(timeWindow["youngest-time"]);
                   return moment((oldest + youngest) / 2);
                 });
 
-                return _.concat(_.map(attributes["latencies"], function (latencies) {
+                return _.concat(attributes["latencies"].map(function (latencies) {
                   return {
                     target: name + ' p' + latencies["percentile"],
                     datapoints: _.zip(latencies["latency-ms"], timeWindows)
