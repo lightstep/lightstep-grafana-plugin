@@ -38,7 +38,7 @@ export class LightStepDatasource {
     const responses = targets.map(target => {
       const savedSearchID = target.target;
 
-      const query = this.buildQueryParameters(options);
+      const query = this.buildQueryParameters(options, target);
       const response = this.doRequest({
         url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
         method: 'GET',
@@ -54,30 +54,9 @@ export class LightStepDatasource {
         const attributes = data["attributes"];
         const name = data["id"].replace("/timeseries", "");
 
-        const exemplars = {
-          target: `${name} exemplars`,
-          datapoints: attributes["exemplars"].map(exemplar => {
-            return [
-              exemplar["duration_micros"] / 1000,
-              moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
-            ];
-          }),
-        };
-
-        const timeWindows = attributes["time-windows"].map(timeWindow => {
-          const oldest = moment(timeWindow["oldest-time"]);
-          const youngest = moment(timeWindow["youngest-time"]);
-          return moment((oldest + youngest) / 2);
-        });
-
         return _.concat(
-          attributes["latencies"].map(latencies => {
-            return {
-              target: `${name} p${latencies["percentile"]}`,
-              datapoints: _.zip(latencies["latency-ms"], timeWindows),
-            };
-          }),
-          [exemplars],
+          this.parseLatencies(name, attributes),
+          this.parseExemplars(name, attributes),
         );
       });
 
@@ -112,7 +91,7 @@ export class LightStepDatasource {
     return this.backendSrv.datasourceRequest(options);
   }
 
-  buildQueryParameters(options) {
+  buildQueryParameters(options, target) {
     const oldest = options.range.from;
     const youngest = options.range.to;
     const resolutionMs = Math.max(60000, oldest.diff(youngest) / 1440);
@@ -121,9 +100,53 @@ export class LightStepDatasource {
       "oldest-time": oldest.format(),
       "youngest-time": youngest.format(),
       "resolution-ms": Math.floor(resolutionMs),
-      // TODO(LS-2278) - both of these configurable.
-      "include-exemplars": "1",
-      "percentile": [ "50", "99", "99.9", "99.99" ],
+      "include-exemplars": target.showExemplars ? "1" : "0",
+      "percentile": this.extractPercentiles(target.percentiles),
+    };
+  }
+
+  parseLatencies(name, attributes) {
+    if (!attributes["time-windows"] || !attributes["latencies"]) {
+      return [];
     }
+
+    const timeWindows = attributes["time-windows"].map(timeWindow => {
+      const oldest = moment(timeWindow["oldest-time"]);
+      const youngest = moment(timeWindow["youngest-time"]);
+      return moment((oldest + youngest) / 2);
+    });
+
+    return attributes["latencies"].map(latencies => {
+      return {
+        target: `${name} p${latencies["percentile"]}`,
+        datapoints: _.zip(latencies["latency-ms"], timeWindows),
+      };
+    })
+  }
+
+  parseExemplars(name, attributes) {
+    const exemplars = attributes["exemplars"]
+    if (!exemplars) {
+      return [];
+    }
+    return [{
+      target: `${name} exemplars`,
+      datapoints: exemplars.map(exemplar => {
+        return [
+          exemplar["duration_micros"] / 1000,
+          moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
+        ];
+      }),
+    }];
+  }
+
+  extractPercentiles(percentiles) {
+    if (!percentiles) {
+      return [];
+    }
+    return percentiles
+      .split(",")
+      .map(percentile => percentile.replace(/(^\s+|\s+$)/g,''))
+      .filter(percentile => percentile);
   }
 }

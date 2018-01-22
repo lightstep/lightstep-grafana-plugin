@@ -84,7 +84,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             var responses = targets.map(function (target) {
               var savedSearchID = target.target;
 
-              var query = _this.buildQueryParameters(options);
+              var query = _this.buildQueryParameters(options, target);
               var response = _this.doRequest({
                 url: _this.url + '/public/v0.1/' + _this.organizationName + '/projects/' + _this.projectName + '/searches/' + savedSearchID + '/timeseries',
                 method: 'GET',
@@ -100,25 +100,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
                 var attributes = data["attributes"];
                 var name = data["id"].replace("/timeseries", "");
 
-                var exemplars = {
-                  target: name + ' exemplars',
-                  datapoints: attributes["exemplars"].map(function (exemplar) {
-                    return [exemplar["duration_micros"] / 1000, moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000)];
-                  })
-                };
-
-                var timeWindows = attributes["time-windows"].map(function (timeWindow) {
-                  var oldest = moment(timeWindow["oldest-time"]);
-                  var youngest = moment(timeWindow["youngest-time"]);
-                  return moment((oldest + youngest) / 2);
-                });
-
-                return _.concat(attributes["latencies"].map(function (latencies) {
-                  return {
-                    target: name + ' p' + latencies["percentile"],
-                    datapoints: _.zip(latencies["latency-ms"], timeWindows)
-                  };
-                }), [exemplars]);
+                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes));
               });
 
               return { data: data };
@@ -157,7 +139,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
           }
         }, {
           key: 'buildQueryParameters',
-          value: function buildQueryParameters(options) {
+          value: function buildQueryParameters(options, target) {
             var oldest = options.range.from;
             var youngest = options.range.to;
             var resolutionMs = Math.max(60000, oldest.diff(youngest) / 1440);
@@ -166,10 +148,55 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               "oldest-time": oldest.format(),
               "youngest-time": youngest.format(),
               "resolution-ms": Math.floor(resolutionMs),
-              // TODO(LS-2278) - both of these configurable.
-              "include-exemplars": "1",
-              "percentile": ["50", "99", "99.9", "99.99"]
+              "include-exemplars": target.showExemplars ? "1" : "0",
+              "percentile": this.extractPercentiles(target.percentiles)
             };
+          }
+        }, {
+          key: 'parseLatencies',
+          value: function parseLatencies(name, attributes) {
+            if (!attributes["time-windows"] || !attributes["latencies"]) {
+              return [];
+            }
+
+            var timeWindows = attributes["time-windows"].map(function (timeWindow) {
+              var oldest = moment(timeWindow["oldest-time"]);
+              var youngest = moment(timeWindow["youngest-time"]);
+              return moment((oldest + youngest) / 2);
+            });
+
+            return attributes["latencies"].map(function (latencies) {
+              return {
+                target: name + ' p' + latencies["percentile"],
+                datapoints: _.zip(latencies["latency-ms"], timeWindows)
+              };
+            });
+          }
+        }, {
+          key: 'parseExemplars',
+          value: function parseExemplars(name, attributes) {
+            var exemplars = attributes["exemplars"];
+            if (!exemplars) {
+              return [];
+            }
+            return [{
+              target: name + ' exemplars',
+              datapoints: exemplars.map(function (exemplar) {
+                return [exemplar["duration_micros"] / 1000, moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000)];
+              })
+            }];
+          }
+        }, {
+          key: 'extractPercentiles',
+          value: function extractPercentiles(percentiles) {
+            if (!percentiles) {
+              return [];
+            }
+            return percentiles.split(",").map(function (percentile) {
+              return percentile.replace(/(^\s+|\s+$)/g, '');
+            }).filter(function (percentile) {
+              return percentile;
+            });
           }
         }]);
 
