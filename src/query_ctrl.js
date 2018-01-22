@@ -17,10 +17,11 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
 
     this.scope = $scope;
     this.target.type = 'timeserie';
+    this.savedSearches = this.datasource.metricFindQuery();
   }
 
   getOptions(query) {
-    return this.datasource.metricFindQuery(query || '');
+    return this.savedSearches;
   }
 
   toggleEditorMode() {

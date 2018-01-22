@@ -127,9 +127,26 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
           }
         }, {
           key: 'metricFindQuery',
-          value: function metricFindQuery(query) {
-            // TODO(LS-2230) - implement auto-complete here.
-            return this.q.when({});
+          value: function metricFindQuery() {
+            return this.doRequest({
+              url: this.url + '/public/v0.1/' + this.organizationName + '/projects/' + this.projectName + '/searches',
+              method: 'GET'
+            }).then(function (response) {
+              var searches = response.data.data;
+              return _.flatMap(searches, function (search) {
+                var attributes = search["attributes"];
+                var name = attributes["name"];
+                var query = attributes["query"];
+                var savedSearchId = search["id"];
+
+                // Don't duplicate if the name and query are the same
+                if (name.trim() === query.trim()) {
+                  return [{ text: name, value: savedSearchId }];
+                }
+
+                return [{ text: query, value: savedSearchId }, { text: name, value: savedSearchId }];
+              });
+            });
           }
         }, {
           key: 'doRequest',
