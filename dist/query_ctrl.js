@@ -78,13 +78,14 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
           _this.scope = $scope;
           _this.target.type = 'timeserie';
+          _this.savedSearches = _this.datasource.metricFindQuery();
           return _this;
         }
 
         _createClass(LightStepDatasourceQueryCtrl, [{
           key: 'getOptions',
           value: function getOptions(query) {
-            return this.datasource.metricFindQuery(query || '');
+            return this.savedSearches;
           }
         }, {
           key: 'toggleEditorMode',

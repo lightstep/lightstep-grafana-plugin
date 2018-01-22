@@ -81,9 +81,29 @@ export class LightStepDatasource {
     return this.q.when({});
   }
 
-  metricFindQuery(query) {
-    // TODO(LS-2230) - implement auto-complete here.
-    return this.q.when({});
+  metricFindQuery() {
+    return this.doRequest({
+      url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches`,
+      method: 'GET',
+    }).then(response => {
+      const searches = response.data.data;
+      return _.flatMap(searches, search => {
+        const attributes = search["attributes"];
+        const name = attributes["name"];
+        const query = attributes["query"];
+        const savedSearchId = search["id"];
+
+        // Don't duplicate if the name and query are the same
+        if (name.trim() === query.trim()) {
+          return [ { text: name, value: savedSearchId } ];
+        }
+
+        return [
+          { text: query, value: savedSearchId },
+          { text: name, value: savedSearchId },
+        ];
+      });
+    });
   }
 
   doRequest(options) {
