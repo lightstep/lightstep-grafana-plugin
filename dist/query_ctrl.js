@@ -102,7 +102,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           value: function linkToLightStep() {
             var savedSearchID = this.target.target;
             // TODO - how do we make sure we are using the right base url here? Should it configurable?
-            return 'https://app-staging.lightstep.com/' + this.datasource.projectName + '/operation/' + savedSearchID;
+            return this.datasource.dashboardURL + '/' + this.datasource.projectName + '/operation/' + savedSearchID;
           }
         }]);
 
