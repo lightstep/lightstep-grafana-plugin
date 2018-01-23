@@ -3,7 +3,7 @@
 System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, _context) {
   "use strict";
 
-  var _, moment, appEvents, _createClass, defaultURL, LightStepDatasource;
+  var _, moment, appEvents, _createClass, defaultApiURL, defaultDashobardURL, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -38,7 +38,8 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
         };
       }();
 
-      defaultURL = "https://api.lightstep.com";
+      defaultApiURL = "https://api.lightstep.com";
+      defaultDashobardURL = "https://app.lightstep.com";
 
 
       appEvents.on('graph-click', function (options) {
@@ -50,7 +51,8 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
           _classCallCheck(this, LightStepDatasource);
 
           this.type = instanceSettings.type;
-          this.url = instanceSettings.url || defaultURL;
+          this.url = instanceSettings.url || defaultApiURL;
+          this.dashboardURL = instanceSettings.jsonData.dashboardURL || defaultDashobardURL;
           this.name = instanceSettings.name;
           this.q = $q;
           this.backendSrv = backendSrv;

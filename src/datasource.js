@@ -2,7 +2,8 @@ import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
 
-const defaultURL = "https://api.lightstep.com";
+const defaultApiURL = "https://api.lightstep.com";
+const defaultDashobardURL = "https://app.lightstep.com";
 
 appEvents.on('graph-click', options => {
   console.log(`TODO(LS-2233) - somehow open the lightstep trace summary page of ${options["item"]}`)
@@ -11,7 +12,8 @@ appEvents.on('graph-click', options => {
 export class LightStepDatasource {
   constructor(instanceSettings, $q, backendSrv, templateSrv) {
     this.type = instanceSettings.type;
-    this.url = instanceSettings.url || defaultURL;
+    this.url = instanceSettings.url || defaultApiURL;
+    this.dashboardURL = instanceSettings.jsonData.dashboardURL || defaultDashobardURL;
     this.name = instanceSettings.name;
     this.q = $q;
     this.backendSrv = backendSrv;
