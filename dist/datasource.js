@@ -42,8 +42,13 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
       defaultDashobardURL = "https://app.lightstep.com";
 
 
+      // TODO - this is a work around given the existing graph API
+      // Having a better mechanism for click capture would be ideal.
       appEvents.on('graph-click', function (options) {
-        console.log('TODO(LS-2233) - somehow open the lightstep trace summary page of ' + options["item"]);
+        var link = _.get(options, ['ctrl', 'dataList', _.get(options, ['item', 'seriesIndex']), 'datapoints', _.get(options, ['item', 'dataIndex']), 'link']);
+        if (link) {
+          window.open(link, '_blank');
+        }
       });
 
       _export('LightStepDatasource', LightStepDatasource = function () {
@@ -207,15 +212,30 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
         }, {
           key: 'parseExemplar',
           value: function parseExemplar(name, exemplars) {
+            var _this2 = this;
+
             if (!exemplars) {
               return [];
             }
             return [{
               target: name,
               datapoints: exemplars.map(function (exemplar) {
-                return [exemplar["duration_micros"] / 1000, moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000)];
+                return {
+                  0: exemplar["duration_micros"] / 1000,
+                  1: moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000),
+                  "link": _this2.traceLink(exemplar)
+                };
               })
             }];
+          }
+        }, {
+          key: 'traceLink',
+          value: function traceLink(exemplar) {
+            var spanGuid = exemplar["span_guid"];
+            if (!spanGuid) {
+              return;
+            }
+            return this.dashboardURL + '/' + this.projectName + '/trace?span_guid=' + spanGuid;
           }
         }, {
           key: 'extractPercentiles',

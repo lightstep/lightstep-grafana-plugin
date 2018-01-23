@@ -5,8 +5,20 @@ import appEvents from 'app/core/app_events';
 const defaultApiURL = "https://api.lightstep.com";
 const defaultDashobardURL = "https://app.lightstep.com";
 
+// TODO - this is a work around given the existing graph API
+// Having a better mechanism for click capture would be ideal.
 appEvents.on('graph-click', options => {
-  console.log(`TODO(LS-2233) - somehow open the lightstep trace summary page of ${options["item"]}`)
+  const link = _.get(options, [
+    'ctrl',
+    'dataList',
+    _.get(options, ['item', 'seriesIndex']),
+    'datapoints',
+    _.get(options, ['item', 'dataIndex']),
+    'link',
+  ]);
+  if (link) {
+    window.open(link, '_blank');
+  }
 });
 
 export class LightStepDatasource {
@@ -166,12 +178,21 @@ export class LightStepDatasource {
     return [{
       target: name,
       datapoints: exemplars.map(exemplar => {
-        return [
-          exemplar["duration_micros"] / 1000,
-          moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
-        ];
+        return {
+          0: exemplar["duration_micros"] / 1000,
+          1: moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
+          "link": this.traceLink(exemplar),
+        };
       }),
     }];
+  }
+
+  traceLink(exemplar) {
+    const spanGuid = exemplar["span_guid"];
+    if (!spanGuid) {
+      return
+    }
+    return `${this.dashboardURL}/${this.projectName}/trace?span_guid=${spanGuid}`
   }
 
   extractPercentiles(percentiles) {
