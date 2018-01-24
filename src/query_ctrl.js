@@ -34,7 +34,6 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
 
   linkToLightStep() {
     const savedSearchID = this.target.target;
-    // TODO - how do we make sure we are using the right base url here? Should it configurable?
     return `${this.datasource.dashboardURL}/${this.datasource.projectName}/operation/${savedSearchID}`;
   }
 }
