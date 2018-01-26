@@ -73,7 +73,7 @@ export class LightStepDatasource {
 
         return _.concat(
           this.parseLatencies(name, attributes),
-          this.parseExemplars(name, attributes),
+          this.parseExemplars(name, attributes, maxDataPoints),
         );
       });
 
@@ -165,22 +165,26 @@ export class LightStepDatasource {
     })
   }
 
-  parseExemplars(name, attributes) {
-    const exemplars = attributes["exemplars"]
+  parseExemplars(name, attributes, maxDataPoints) {
+    const exemplars = attributes["exemplars"];
     if (!exemplars) {
       return [];
     }
     const exemplarMap = _.groupBy(exemplars, exemplar => exemplar["has_error"]);
 
     return _.concat(
-      this.parseExemplar(`${name} exemplars`, exemplarMap[false]),
-      this.parseExemplar(`${name} error exemplars`, exemplarMap[true]),
+      this.parseExemplar(`${name} exemplars`, exemplarMap[false], maxDataPoints),
+      this.parseExemplar(`${name} error exemplars`, exemplarMap[true], maxDataPoints),
     )
   }
 
-  parseExemplar(name, exemplars) {
+  parseExemplar(name, exemplars, maxDataPoints) {
     if (!exemplars) {
       return []
+    }
+    if (maxDataPoints && exemplars.length > maxDataPoints) {
+      const skip = Math.ceil(exemplars.length / maxDataPoints);
+      exemplars = exemplars.filter((ignored, index) => index % skip === 0);
     }
     return [{
       target: name,
