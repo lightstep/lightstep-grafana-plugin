@@ -79,10 +79,7 @@ export class LightStepDatasource {
   }
 
   testDatasource() {
-    return this.doRequest({
-      url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/`,
-      method: 'GET',
-    }).then(response => {
+    return metricFindQuery().then(response => {
       if (response.status === 200) {
         return { status: "success", message: "Data source is working", title: "Success" };
       }

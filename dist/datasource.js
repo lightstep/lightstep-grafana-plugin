@@ -116,10 +116,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
         }, {
           key: 'testDatasource',
           value: function testDatasource() {
-            return this.doRequest({
-              url: this.url + '/public/v0.1/' + this.organizationName + '/projects/' + this.projectName + '/',
-              method: 'GET'
-            }).then(function (response) {
+            return metricFindQuery().then(function (response) {
               if (response.status === 200) {
                 return { status: "success", message: "Data source is working", title: "Success" };
               }
