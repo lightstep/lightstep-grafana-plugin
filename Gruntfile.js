@@ -11,9 +11,9 @@ module.exports = function(grunt) {
 
     copy: {
       src_to_dist: {
-        cwd: 'src',
+        cwd: 'src/',
         expand: true,
-        src: ['**/*', '!**/*.js', '!**/*.scss'],
+        src: ['**/*', '!**/lightstep-graph', '!**/*.js', '!**/*.scss'],
         dest: 'dist'
       },
       pluginDef: {
@@ -43,7 +43,7 @@ module.exports = function(grunt) {
         files: [{
           cwd: 'src',
           expand: true,
-          src: ['**/*.js'],
+          src: ['**/lightstep-datasource/**/*.js'],
           dest: 'dist',
           ext:'.js'
         }]
@@ -61,7 +61,7 @@ module.exports = function(grunt) {
         files: [{
           expand: true,
           cwd: 'spec',
-          src: ['**/*.js'],
+          src: ['**/lightstep-datasource/**/*.js'],
           dest: 'dist/test/spec',
           ext:'.js'
         }]
