@@ -196,7 +196,8 @@ export class LightStepDatasource {
     if (!percentiles) {
       return [];
     }
-    return percentiles
+    return (percentiles)
+      .toString()
       .split(",")
       .map(percentile => percentile.replace(/(^\s+|\s+$)/g,''))
       .filter(percentile => percentile);

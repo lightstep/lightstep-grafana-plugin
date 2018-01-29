@@ -240,7 +240,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             if (!percentiles) {
               return [];
             }
-            return percentiles.split(",").map(function (percentile) {
+            return percentiles.toString().split(",").map(function (percentile) {
               return percentile.replace(/(^\s+|\s+$)/g, '');
             }).filter(function (percentile) {
               return percentile;
