@@ -3,7 +3,9 @@ import moment from 'moment';
 import appEvents from 'app/core/app_events';
 
 const defaultApiURL = "https://api.lightstep.com";
-const defaultDashobardURL = "https://app.lightstep.com";
+const defaultDashboardURL = "https://app.lightstep.com";
+const maxDataPointsServer = 1440;
+const minResolutionServer = 60000;
 
 // TODO - this is a work around given the existing graph API
 // Having a better mechanism for click capture would be ideal.
@@ -25,7 +27,7 @@ export class LightStepDatasource {
   constructor(instanceSettings, $q, backendSrv, templateSrv) {
     this.type = instanceSettings.type;
     this.url = instanceSettings.url || defaultApiURL;
-    this.dashboardURL = instanceSettings.jsonData.dashboardURL || defaultDashobardURL;
+    this.dashboardURL = instanceSettings.jsonData.dashboardURL || defaultDashboardURL;
     this.name = instanceSettings.name;
     this.q = $q;
     this.backendSrv = backendSrv;
@@ -44,6 +46,7 @@ export class LightStepDatasource {
 
   query(options) {
     const targets = options.targets.filter(t => !t.hide);
+    const maxDataPoints = options.maxDataPoints;
 
     if (targets.length <= 0) {
       return this.q.when({data: []});
@@ -52,7 +55,7 @@ export class LightStepDatasource {
     const responses = targets.map(target => {
       const savedSearchID = target.target;
 
-      const query = this.buildQueryParameters(options, target);
+      const query = this.buildQueryParameters(options, target, maxDataPoints);
       const response = this.doRequest({
         url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
         method: 'GET',
@@ -122,10 +125,17 @@ export class LightStepDatasource {
     return this.backendSrv.datasourceRequest(options);
   }
 
-  buildQueryParameters(options, target) {
+  buildQueryParameters(options, target, maxDataPoints) {
     const oldest = options.range.from;
     const youngest = options.range.to;
-    const resolutionMs = Math.max(60000, oldest.diff(youngest) / 1440);
+
+    const resolutionMs = Math.max(
+      youngest.diff(oldest) / Math.min(
+        maxDataPoints,
+        maxDataPointsServer
+      ),
+      minResolutionServer
+    );
 
     return {
       "oldest-time": oldest.format(),
