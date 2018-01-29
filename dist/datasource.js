@@ -3,7 +3,7 @@
 System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, _context) {
   "use strict";
 
-  var _, moment, appEvents, _createClass, defaultApiURL, defaultDashobardURL, LightStepDatasource;
+  var _, moment, appEvents, _createClass, defaultApiURL, defaultDashboardURL, maxDataPointsServer, minResolutionServer, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -39,7 +39,9 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
       }();
 
       defaultApiURL = "https://api.lightstep.com";
-      defaultDashobardURL = "https://app.lightstep.com";
+      defaultDashboardURL = "https://app.lightstep.com";
+      maxDataPointsServer = 1440;
+      minResolutionServer = 60000;
 
 
       // TODO - this is a work around given the existing graph API
@@ -57,7 +59,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
 
           this.type = instanceSettings.type;
           this.url = instanceSettings.url || defaultApiURL;
-          this.dashboardURL = instanceSettings.jsonData.dashboardURL || defaultDashobardURL;
+          this.dashboardURL = instanceSettings.jsonData.dashboardURL || defaultDashboardURL;
           this.name = instanceSettings.name;
           this.q = $q;
           this.backendSrv = backendSrv;
@@ -83,6 +85,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             var targets = options.targets.filter(function (t) {
               return !t.hide;
             });
+            var maxDataPoints = options.maxDataPoints;
 
             if (targets.length <= 0) {
               return this.q.when({ data: [] });
@@ -91,7 +94,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             var responses = targets.map(function (target) {
               var savedSearchID = target.target;
 
-              var query = _this.buildQueryParameters(options, target);
+              var query = _this.buildQueryParameters(options, target, maxDataPoints);
               var response = _this.doRequest({
                 url: _this.url + '/public/v0.1/' + _this.organizationName + '/projects/' + _this.projectName + '/searches/' + savedSearchID + '/timeseries',
                 method: 'GET',
@@ -160,10 +163,11 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
           }
         }, {
           key: 'buildQueryParameters',
-          value: function buildQueryParameters(options, target) {
+          value: function buildQueryParameters(options, target, maxDataPoints) {
             var oldest = options.range.from;
             var youngest = options.range.to;
-            var resolutionMs = Math.max(60000, oldest.diff(youngest) / 1440);
+
+            var resolutionMs = Math.max(youngest.diff(oldest) / Math.min(maxDataPoints, maxDataPointsServer), minResolutionServer);
 
             return {
               "oldest-time": oldest.format(),
