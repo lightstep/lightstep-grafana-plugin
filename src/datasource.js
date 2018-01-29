@@ -55,6 +55,10 @@ export class LightStepDatasource {
     const responses = targets.map(target => {
       const savedSearchID = target.target;
 
+      if (!savedSearchID) {
+        return this.q.when(undefined);
+      }
+      
       const query = this.buildQueryParameters(options, target, maxDataPoints);
       const response = this.doRequest({
         url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
@@ -67,6 +71,10 @@ export class LightStepDatasource {
 
     return this.q.all(responses).then(results => {
       const data = _.flatMap(results, result => {
+        if (!result) {
+          return [];
+        }
+
         const data = result["data"]["data"];
         const attributes = data["attributes"];
         const name = data["id"].replace("/timeseries", "");

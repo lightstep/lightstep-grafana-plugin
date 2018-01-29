@@ -94,6 +94,10 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             var responses = targets.map(function (target) {
               var savedSearchID = target.target;
 
+              if (!savedSearchID) {
+                return _this.q.when(undefined);
+              }
+
               var query = _this.buildQueryParameters(options, target, maxDataPoints);
               var response = _this.doRequest({
                 url: _this.url + '/public/v0.1/' + _this.organizationName + '/projects/' + _this.projectName + '/searches/' + savedSearchID + '/timeseries',
@@ -106,6 +110,10 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
 
             return this.q.all(responses).then(function (results) {
               var data = _.flatMap(results, function (result) {
+                if (!result) {
+                  return [];
+                }
+
                 var data = result["data"]["data"];
                 var attributes = data["attributes"];
                 var name = data["id"].replace("/timeseries", "");
@@ -219,7 +227,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               return [];
             }
             if (maxDataPoints && exemplars.length > maxDataPoints) {
-              var skip = Math.floor(exemplars.length / maxDataPoints) + 1;
+              var skip = Math.ceil(exemplars.length / maxDataPoints);
               exemplars = exemplars.filter(function (ignored, index) {
                 return index % skip === 0;
               });
