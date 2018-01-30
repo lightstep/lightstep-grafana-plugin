@@ -84,8 +84,11 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
         _createClass(LightStepDatasourceQueryCtrl, [{
           key: 'getOptions',
-          value: function getOptions(query) {
-            return this.savedSearches;
+          value: function getOptions(ignoredQuery) {
+            // Defensive copy of the results because somewhere is gets mutated after return.
+            return this.savedSearches.then(function (results) {
+              return results.slice();
+            });
           }
         }, {
           key: 'toggleEditorMode',

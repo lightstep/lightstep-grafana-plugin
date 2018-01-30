@@ -20,8 +20,9 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
     this.savedSearches = this.datasource.metricFindQuery();
   }
 
-  getOptions(query) {
-    return this.savedSearches;
+  getOptions(ignoredQuery) {
+    // Defensive copy of the results because somewhere is gets mutated after return.
+    return this.savedSearches.then(results => results.slice());
   }
 
   toggleEditorMode() {
