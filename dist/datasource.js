@@ -110,7 +110,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
                 var attributes = data["attributes"];
                 var name = data["id"].replace("/timeseries", "");
 
-                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes));
+                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints));
               });
 
               return { data: data };
@@ -199,7 +199,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
           }
         }, {
           key: 'parseExemplars',
-          value: function parseExemplars(name, attributes) {
+          value: function parseExemplars(name, attributes, maxDataPoints) {
             var exemplars = attributes["exemplars"];
             if (!exemplars) {
               return [];
@@ -208,15 +208,21 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               return exemplar["has_error"];
             });
 
-            return _.concat(this.parseExemplar(name + ' exemplars', exemplarMap[false]), this.parseExemplar(name + ' error exemplars', exemplarMap[true]));
+            return _.concat(this.parseExemplar(name + ' exemplars', exemplarMap[false], maxDataPoints), this.parseExemplar(name + ' error exemplars', exemplarMap[true], maxDataPoints));
           }
         }, {
           key: 'parseExemplar',
-          value: function parseExemplar(name, exemplars) {
+          value: function parseExemplar(name, exemplars, maxDataPoints) {
             var _this2 = this;
 
             if (!exemplars) {
               return [];
+            }
+            if (maxDataPoints && exemplars.length > maxDataPoints) {
+              var skip = Math.floor(exemplars.length / maxDataPoints) + 1;
+              exemplars = exemplars.filter(function (ignored, index) {
+                return index % skip === 0;
+              });
             }
             return [{
               target: name,
