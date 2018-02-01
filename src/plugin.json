@@ -1,0 +1,40 @@
+{
+  "name": "LightStep",
+  "id": "grafana-lightstep-app",
+  "type": "app",
+
+  "partials": {
+    "config": "public/app/plugins/datasource/lightstep/partials/config.html"
+  },
+
+  "metrics": true,
+  "annotations": true,
+
+  "info": {
+    "description": "lightstep datasource",
+    "author": {
+      "name": "LightStep",
+      "url": "https://lightstep.com"
+    },
+    "logos": {
+      "small": "lightstep-datasource/img/lightstep_logo.svg",
+      "large": "lightstep-datasource/img/lightstep_logo.svg"
+    },
+    "links": [
+      {"name": "GitHub", "url": "https://github.com/lightstep/lightstep-grafana-plugin"},
+      {"name": "MIT License", "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE"}
+    ],
+    "version": "1.3.5",
+    "updated": "2018-01-18"
+  },
+
+  "includes": [
+    {"type": "panel", "name": "LightStep Datasource"},
+    {"type": "datasource", "name": "LightStep Graph"}
+  ],
+
+  "dependencies": {
+    "grafanaVersion": "4.6.x",
+    "plugins": [ ]
+  }
+}
