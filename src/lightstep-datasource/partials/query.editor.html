@@ -1,0 +1,44 @@
+<query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" has-text-edit-mode="true">
+  <div class="gf-form-inline">
+    <div class="gf-form" ng-if="ctrl.target.rawQuery">
+      <textarea class="gf-form-input" rows="5" ng-model="ctrl.target.target" spellcheck="false" ng-blur="ctrl.onChangeInternal()" />
+    </div>
+
+    <div ng-if="!ctrl.target.rawQuery">
+      <div class="gf-form">
+        <gf-form-dropdown model="ctrl.target.target"
+          allow-custom="true"
+          lookup-text="true"
+          get-options="ctrl.getOptions($query)"
+          on-change="ctrl.onChangeInternal()">
+      </gf-form-dropdown>
+      </div>
+    </div>
+
+    <div class="gf-form">
+      <label class="gf-form-label">Percentiles</label>
+      <input type="text"
+             class="gf-form-input"
+             ng-model="ctrl.target.percentiles"
+             ng-blur="ctrl.onChangeInternal()"
+             placeholder="e.g. 50,99,99.9,99.99"></input>
+      <info-popover mode="right-absolute">
+        comma separated list of percentiles to fetch
+      </info-popover>
+    </div>
+
+    <div class="gf-form">
+      <gf-form-switch class="gf-form" label="Exemplars" checked="ctrl.target.showExemplars" on-change="ctrl.refresh()">
+      </gf-form-switch>
+      <label class="gf-form-label">
+        <a href="{{ctrl.linkToLightStep()}}" target="_blank" bs-tooltip="'Link to Graph in LightStep'">
+          <i class="fa fa-share-square-o"></i>
+        </a>
+      </label>
+    </div>
+
+    <div class="gf-form gf-form--grow">
+      <div class="gf-form-label gf-form-label--grow"></div>
+    </div>
+  </div>
+</query-editor-row>
