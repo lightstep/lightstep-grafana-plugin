@@ -1,17 +1,31 @@
 {
-    "type": "panel",
-    "name": "LightStep Graph",
-    "id": "lightstep-graph",
-    "annotations": true,
-    "info": {
-        "author": {
-            "name": "Grafana Project",
-            "url": "https://grafana.com"
-        },
-        "logos": {
-            "small": "img/icn-graph-panel.svg",
-            "large": "img/icn-graph-panel.svg"
-        }
-    }
+  "type": "panel",
+  "name": "LightStep Graph",
+  "id": "grafana-lightstep-graph",
+
+  "annotations": true,
+
+  "info": {
+    "description": "LightStep Graph that implements exemplars",
+    "author": {
+      "name": "LightStep",
+      "url": "https://lightstep.com"
+    },
+    "logos": {
+      "small": "img/icn-graph-panel.svg",
+      "large": "img/icn-graph-panel.svg"
+    },
+    "links": [
+      {"name": "GitHub", "url": "https://github.com/lightstep/lightstep-grafana-plugin"},
+      {"name": "Apache License", "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"}
+    ],
+    "version": "1.0.0",
+    "updated": "2018-01-18"
+  },
+
+  "dependencies": {
+    "grafanaVersion": "4.6.x",
+    "plugins": [ ]
+  }
 }
 
