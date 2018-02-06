@@ -12,8 +12,8 @@
       "url": "https://lightstep.com"
     },
     "logos": {
-      "small": "img/icn-graph-panel.svg",
-      "large": "img/icn-graph-panel.svg"
+      "small": "img/lightstep_logo.svg",
+      "large": "img/lightstep_logo.svg"
     },
     "links": [
       {"name": "GitHub", "url": "https://github.com/lightstep/lightstep-grafana-plugin"},

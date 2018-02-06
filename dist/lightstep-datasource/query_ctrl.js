@@ -113,7 +113,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
       _export('LightStepDatasourceQueryCtrl', LightStepDatasourceQueryCtrl);
 
-      LightStepDatasourceQueryCtrl.templateUrl = 'partials/query.editor.html';
+      LightStepDatasourceQueryCtrl.templateUrl = 'lightstep-datasource/partials/query.editor.html';
     }
   };
 });

@@ -2,13 +2,13 @@ import {LightStepDatasource} from './datasource';
 import {LightStepDatasourceQueryCtrl} from './query_ctrl';
 
 class LightStepConfigCtrl {}
-LightStepConfigCtrl.templateUrl = 'partials/config.html';
+LightStepConfigCtrl.templateUrl = 'lightstep-datasource/partials/config.html';
 
 class LightStepQueryOptionsCtrl {}
-LightStepQueryOptionsCtrl.templateUrl = 'partials/query.options.html';
+LightStepQueryOptionsCtrl.templateUrl = 'lightstep-datasource/partials/query.options.html';
 
 class LightStepAnnotationsQueryCtrl {}
-LightStepAnnotationsQueryCtrl.templateUrl = 'partials/annotations.editor.html'
+LightStepAnnotationsQueryCtrl.templateUrl = 'lightstep-datasource/partials/annotations.editor.html'
 
 export {
   LightStepDatasource as Datasource,

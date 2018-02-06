@@ -43,7 +43,7 @@ module.exports = function(grunt) {
         files: [{
           cwd: 'src',
           expand: true,
-          src: ['**/lightstep-datasource/**/*.js'],
+          src: ['**/*.js',  '!**/lightstep-graph/**/*.js'],
           dest: 'dist',
           ext:'.js'
         }]

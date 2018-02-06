@@ -4,7 +4,7 @@
   "type": "datasource",
 
   "partials": {
-    "config": "public/app/plugins/datasource/lightstep/partials/config.html"
+    "config": "partials/config.html"
   },
 
   "metrics": true,

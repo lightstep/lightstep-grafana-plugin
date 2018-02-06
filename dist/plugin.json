@@ -1,0 +1,38 @@
+{
+  "type": "app",
+  "name": "LightStep App",
+  "id": "grafana-lightstep-app",
+
+  "pages": [
+    { "name": "Default", "component": "LightStepAppCtrl", "role": "Viewer"}
+  ],
+
+  "info": {
+    "description": "LightStep app for Grafana",
+    "author": {
+      "name": "Lightstep",
+      "url": "https://lightstep.com"
+    },
+    "keywords": ["lightstep app"],
+    "logos": {
+      "small": "lightstep-datasource/img/lightstep_logo.svg",
+      "large": "lightstep-datasource/img/lightstep_logo.svg"
+    },
+    "links": [
+      {"name": "GitHub", "url": "https://github.com/lightstep/lightstep-grafana-plugin"},
+      {"name": "Apache License", "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"}
+    ],
+    "version": "1.0.2",
+    "updated": "2018-02-01"
+  },
+
+  "includes": [
+    {"type": "panel", "name": "LightStep Graph"},
+    {"type": "datasource", "name": "LightStep Datasource"}
+  ],
+
+  "dependencies": {
+    "grafanaVersion": "4.6.x",
+    "plugins": []
+  }
+}
