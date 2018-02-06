@@ -77,7 +77,7 @@ export function axesEditorComponent() {
   return {
     restrict: 'E',
     scope: true,
-    templateUrl: 'public/plugins/lightstep-graph/axes_editor.html',
+    templateUrl: 'public/plugins/grafana-lightstep-graph/axes_editor.html',
     controller: AxesEditorCtrl,
   };
 }
