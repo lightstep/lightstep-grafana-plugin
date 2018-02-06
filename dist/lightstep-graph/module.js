@@ -4683,7 +4683,12 @@ function (_MetricsPanelCtrl) {
       // series color overrides
       aliasColors: {},
       // other style overrides
-      seriesOverrides: [],
+      seriesOverrides: [{
+        alias: '/exemplars/',
+        lines: false,
+        points: true,
+        pointradius: 1
+      }],
       thresholds: []
     };
 
@@ -12473,7 +12478,7 @@ function axesEditorComponent() {
   return {
     restrict: 'E',
     scope: true,
-    templateUrl: 'public/plugins/lightstep-graph/axes_editor.html',
+    templateUrl: 'public/plugins/grafana-lightstep-graph/axes_editor.html',
     controller: AxesEditorCtrl
   };
 }
