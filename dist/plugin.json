@@ -1,0 +1,38 @@
+{
+  "type": "app",
+  "name": "LightStep App",
+  "id": "grafana-lightstep-app",
+
+  "pages": [
+    { "name": "Default", "component": "LightStepAppCtrl", "role": "Viewer"}
+  ],
+
+  "info": {
+    "description": "Example app for Grafana",
+    "author": {
+      "name": "Raintank",
+      "url": "http://raintank.io"
+    },
+    "keywords": ["example app"],
+    "logos": {
+      "small": "./lightstep-datasource/img/lightstep_logo.svg",
+      "large": "./lightstep-datasource/img/lightstep_logo.svg"
+    },
+    "links": [
+      {"name": "Project site", "url": "https://github.com/grafana/example-app"},
+      {"name": "License & Terms", "url": "https://github.com/grafana/example-app/blob/master/LICENSE"}
+    ],
+    "version": "1.0.2",
+    "updated": "2015-06-06"
+  },
+
+  "includes": [
+    {"type": "panel", "name": "LightStep Graph"},
+    {"type": "datasource", "name": "LightStep"}
+  ],
+
+  "dependencies": {
+    "grafanaVersion": "4.6.x",
+    "plugins": []
+  }
+}
