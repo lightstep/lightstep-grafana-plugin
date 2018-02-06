@@ -112,7 +112,12 @@ class GraphCtrl extends MetricsPanelCtrl {
       // series color overrides
       aliasColors: {},
       // other style overrides
-      seriesOverrides: [],
+      seriesOverrides: [{
+        alias: '/exemplars/',
+        lines: false,
+        points: true,
+        pointradius: 1,
+      }],
       thresholds: [],
     };
 
