@@ -3,6 +3,13 @@
   "id": "grafana-lightstep-datasource",
   "type": "datasource",
 
+  "partials": {
+    "config": "partials/config.html"
+  },
+
+  "metrics": true,
+  "annotations": true,
+
   "info": {
     "description": "lightstep datasource",
     "author": {

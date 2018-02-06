@@ -18,7 +18,7 @@ System.register([], function (_export, _context) {
         _classCallCheck(this, LightstepConfigCtrl);
       });
 
-      LightstepConfigCtrl.template = '<h1> LightStep App</h1> Please use the datasource view to configure the app';
+      LightstepConfigCtrl.template = '<h1>LightStep App</h1> Please use the datasource view to configure the app';
 
       _export('ConfigCtrl', LightstepConfigCtrl);
     }

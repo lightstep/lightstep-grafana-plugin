@@ -5,10 +5,10 @@ class LightStepConfigCtrl {}
 LightStepConfigCtrl.templateUrl = 'lightstep-datasource/partials/config.html';
 
 class LightStepQueryOptionsCtrl {}
-LightStepQueryOptionsCtrl.templateUrl = '/public/plugisn/grafana-lightstep-datasource/partials/query.options.html';
+LightStepQueryOptionsCtrl.templateUrl = 'lightstep-datasource/partials/query.options.html';
 
 class LightStepAnnotationsQueryCtrl {}
-LightStepAnnotationsQueryCtrl.templateUrl = '/public/plugisn/grafana-lightstep-datasource/partials/annotations.editor.html'
+LightStepAnnotationsQueryCtrl.templateUrl = 'lightstep-datasource/partials/annotations.editor.html'
 
 export {
   LightStepDatasource as Datasource,
