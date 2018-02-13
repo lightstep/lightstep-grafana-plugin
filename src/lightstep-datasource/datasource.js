@@ -58,7 +58,7 @@ export class LightStepDatasource {
       if (!savedSearchID) {
         return this.q.when(undefined);
       }
-      
+
       const query = this.buildQueryParameters(options, target, maxDataPoints);
       const response = this.doRequest({
         url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
@@ -90,7 +90,10 @@ export class LightStepDatasource {
   }
 
   testDatasource() {
-    return metricFindQuery().then(response => {
+    return this.doRequest({
+      url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}`,
+      method: 'GET',
+    }).then(response => {
       if (response.status === 200) {
         return { status: "success", message: "Data source is working", title: "Success" };
       }
