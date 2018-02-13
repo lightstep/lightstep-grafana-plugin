@@ -3,7 +3,7 @@
 System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, _context) {
   "use strict";
 
-  var _, moment, appEvents, _createClass, defaultApiURL, defaultDashboardURL, maxDataPointsServer, minResolutionServer, LightStepDatasource;
+  var _, moment, appEvents, _createClass, maxDataPointsServer, minResolutionServer, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -38,8 +38,6 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
         };
       }();
 
-      defaultApiURL = "https://api.lightstep.com";
-      defaultDashboardURL = "https://app.lightstep.com";
       maxDataPointsServer = 1440;
       minResolutionServer = 60000;
 
@@ -58,8 +56,8 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
           _classCallCheck(this, LightStepDatasource);
 
           this.type = instanceSettings.type;
-          this.url = instanceSettings.url || defaultApiURL;
-          this.dashboardURL = instanceSettings.jsonData.dashboardURL || defaultDashboardURL;
+          this.url = instanceSettings.url;
+          this.dashboardURL = instanceSettings.jsonData.dashboardURL;
           this.name = instanceSettings.name;
           this.q = $q;
           this.backendSrv = backendSrv;
