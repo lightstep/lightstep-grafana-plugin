@@ -184,8 +184,8 @@ export class LightStepDatasource {
     const exemplarMap = _.groupBy(exemplars, exemplar => exemplar["has_error"]);
 
     return _.concat(
-      this.parseExemplar(`${name} exemplars`, exemplarMap[false], maxDataPoints),
-      this.parseExemplar(`${name} error exemplars`, exemplarMap[true], maxDataPoints),
+      this.parseExemplar(`${name} traces`, exemplarMap[false], maxDataPoints),
+      this.parseExemplar(`${name} error traces`, exemplarMap[true], maxDataPoints),
     )
   }
 
