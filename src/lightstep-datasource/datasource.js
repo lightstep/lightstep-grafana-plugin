@@ -2,8 +2,6 @@ import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
 
-const defaultApiURL = "https://api.lightstep.com";
-const defaultDashboardURL = "https://app.lightstep.com";
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
 
@@ -26,8 +24,8 @@ appEvents.on('graph-click', options => {
 export class LightStepDatasource {
   constructor(instanceSettings, $q, backendSrv, templateSrv) {
     this.type = instanceSettings.type;
-    this.url = instanceSettings.url || defaultApiURL;
-    this.dashboardURL = instanceSettings.jsonData.dashboardURL || defaultDashboardURL;
+    this.url = instanceSettings.url;
+    this.dashboardURL = instanceSettings.jsonData.dashboardURL;
     this.name = instanceSettings.name;
     this.q = $q;
     this.backendSrv = backendSrv;
