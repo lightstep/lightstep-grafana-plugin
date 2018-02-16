@@ -16,12 +16,26 @@
     </div>
 
     <div class="gf-form">
+      <label class="gf-form-label">Display Name</label>
+      <input type="text"
+             class="gf-form-input"
+             ng-model="ctrl.target.displayName"
+             ng-blur="ctrl.onChangeInternal()"
+             placeholder="">
+      </input>
+      <info-popover mode="right-absolute">
+        name displayed in the legend
+      </info-popover>
+    </div>
+
+    <div class="gf-form">
       <label class="gf-form-label">Percentiles</label>
       <input type="text"
              class="gf-form-input"
              ng-model="ctrl.target.percentiles"
              ng-blur="ctrl.onChangeInternal()"
-             placeholder="e.g. 50,99,99.9,99.99"></input>
+             placeholder="e.g. 50,99,99.9,99.99">
+      </input>
       <info-popover mode="right-absolute">
         comma separated list of percentiles to fetch
       </info-popover>

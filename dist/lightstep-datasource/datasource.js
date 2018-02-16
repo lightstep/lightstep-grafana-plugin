@@ -103,6 +103,16 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
                 params: query
               });
 
+              response.then(function (result) {
+                if (result && result["data"]["data"]) {
+                  if (target.displayName) {
+                    result["data"]["data"]["name"] = target.displayName;
+                  } else {
+                    result["data"]["data"]["name"] = target.target;
+                  }
+                }
+              });
+
               return response;
             });
 
@@ -114,7 +124,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
 
                 var data = result["data"]["data"];
                 var attributes = data["attributes"];
-                var name = data["id"].replace("/timeseries", "");
+                var name = data["name"];
 
                 return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints));
               });
@@ -264,6 +274,13 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             }).filter(function (percentile) {
               return percentile;
             });
+          }
+        }, {
+          key: 'extractName',
+          value: function extractName(targets, data) {
+            var id = data["id"].replace("/timeseries", "");
+
+            return id;
           }
         }]);
 

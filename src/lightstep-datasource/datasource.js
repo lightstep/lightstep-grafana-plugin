@@ -64,6 +64,16 @@ export class LightStepDatasource {
         params: query,
       });
 
+      response.then(result => {
+        if (result && result["data"]["data"]) {
+          if (target.displayName) {
+            result["data"]["data"]["name"] = target.displayName;
+          } else {
+            result["data"]["data"]["name"] = target.target;
+          }
+        }
+      });
+
       return response;
     });
 
@@ -75,7 +85,7 @@ export class LightStepDatasource {
 
         const data = result["data"]["data"];
         const attributes = data["attributes"];
-        const name = data["id"].replace("/timeseries", "");
+        const name = data["name"];
 
         return _.concat(
           this.parseLatencies(name, attributes),
