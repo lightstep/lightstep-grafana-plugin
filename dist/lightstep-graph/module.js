@@ -4684,7 +4684,7 @@ function (_MetricsPanelCtrl) {
       aliasColors: {},
       // other style overrides
       seriesOverrides: [{
-        alias: '/exemplars/',
+        alias: '/traces/',
         lines: false,
         points: true,
         pointradius: 1
