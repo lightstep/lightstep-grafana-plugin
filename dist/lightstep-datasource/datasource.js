@@ -275,13 +275,6 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               return percentile;
             });
           }
-        }, {
-          key: 'extractName',
-          value: function extractName(targets, data) {
-            var id = data["id"].replace("/timeseries", "");
-
-            return id;
-          }
         }]);
 
         return LightStepDatasource;
