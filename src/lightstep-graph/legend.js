@@ -8,7 +8,7 @@ function (angular, _, $) {
 
   var module = angular.module('grafana.directives');
 
-  module.directive('graphLegend', function(popoverSrv, $timeout) {
+  module.directive('lightstepGraphLegend', function(popoverSrv, $timeout) {
 
     return {
       link: function(scope, elem) {

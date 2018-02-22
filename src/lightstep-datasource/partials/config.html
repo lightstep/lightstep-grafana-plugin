@@ -74,7 +74,7 @@
              ng-model='ctrl.current.jsonData.dashboardURL' placeholder="https://app.lightstep.com"
              bs-typeahead="getSuggestUrls"  min-length="0"
              ng-pattern="/^(ftp|http|https):\/\/(\w+:{0,1}\w*@)?(\S+)(:[0-9]+)?(\/|\/([\w#!:.?+=&%@!\-\/]))?$/"
-             ng-init='ctrl.current.jsonData.dashboardURL = ctrl.current.jsonData.dashboardURL || "https://api.lightstep.com"'
+             ng-init='ctrl.current.jsonData.dashboardURL = ctrl.current.jsonData.dashboardURL || "https://app.lightstep.com"'
              required
       ></input>
     </div>
