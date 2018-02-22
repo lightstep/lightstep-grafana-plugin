@@ -11564,7 +11564,7 @@ function getBucketBound(value, bucketSize) {
   'use strict';
 
   var module = angular.module('grafana.directives');
-  module.directive('graphLegend', function (popoverSrv, $timeout) {
+  module.directive('lightstepGraphLegend', function (popoverSrv, $timeout) {
     return {
       link: function link(scope, elem) {
         var $container = $('<section class="graph-legend"></section>');
@@ -12052,7 +12052,7 @@ Object.defineProperty(exports, "__esModule", {
   value: true
 });
 exports.default = void 0;
-var template = "\n<div class=\"graph-wrapper\" ng-class=\"{'graph-legend-rightside': ctrl.panel.legend.rightSide}\">\n  <div class=\"graph-canvas-wrapper\">\n\n    <div class=\"datapoints-warning\" ng-if=\"ctrl.dataWarning\">\n      <span class=\"small\" bs-tooltip=\"ctrl.dataWarning.tip\">{{ctrl.dataWarning.title}}</span>\n    </div>\n\n    <div grafana-graph class=\"histogram-chart\" ng-dblclick=\"ctrl.zoomOut()\">\n    </div>\n\n  </div>\n\n  <div class=\"graph-legend-wrapper\" graph-legend></div>\n  </div>\n\n<div class=\"clearfix\"></div>\n";
+var template = "\n<div class=\"graph-wrapper\" ng-class=\"{'graph-legend-rightside': ctrl.panel.legend.rightSide}\">\n  <div class=\"graph-canvas-wrapper\">\n\n    <div class=\"datapoints-warning\" ng-if=\"ctrl.dataWarning\">\n      <span class=\"small\" bs-tooltip=\"ctrl.dataWarning.tip\">{{ctrl.dataWarning.title}}</span>\n    </div>\n\n    <div grafana-graph class=\"histogram-chart\" ng-dblclick=\"ctrl.zoomOut()\">\n    </div>\n\n  </div>\n\n  <div class=\"graph-legend-wrapper\" lightstep-graph-legend></div>\n  </div>\n\n<div class=\"clearfix\"></div>\n";
 var _default = template;
 exports.default = _default;
 

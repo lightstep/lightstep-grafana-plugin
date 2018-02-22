@@ -11,7 +11,7 @@ var template = `
 
   </div>
 
-  <div class="graph-legend-wrapper" graph-legend></div>
+  <div class="graph-legend-wrapper" lightstep-graph-legend></div>
   </div>
 
 <div class="clearfix"></div>
