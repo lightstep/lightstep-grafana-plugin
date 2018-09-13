@@ -1,7 +1,7 @@
 {
   "type": "app",
   "name": "LightStep App",
-  "id": "grafana-lightstep-app",
+  "id": "lightstep-app",
 
   "pages": [
     { "name": "Default", "component": "LightStepAppCtrl", "role": "Viewer"}
