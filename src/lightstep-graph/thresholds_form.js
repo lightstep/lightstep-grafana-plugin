@@ -120,7 +120,7 @@ var template = `
 </div>
 `;
 
-coreModule.directive('graphThresholdForm', function() {
+coreModule.directive('lightstepGraphThresholdForm', function() {
   return {
     restrict: 'E',
     template: template,
