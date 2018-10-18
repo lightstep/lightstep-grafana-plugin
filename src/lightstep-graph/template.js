@@ -6,7 +6,7 @@ var template = `
       <span class="small" bs-tooltip="ctrl.dataWarning.tip">{{ctrl.dataWarning.title}}</span>
     </div>
 
-    <div grafana-graph class="histogram-chart" ng-dblclick="ctrl.zoomOut()">
+    <div lightstep-graph class="histogram-chart" ng-dblclick="ctrl.zoomOut()">
     </div>
 
   </div>
