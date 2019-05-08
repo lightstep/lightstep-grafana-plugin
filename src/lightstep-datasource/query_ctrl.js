@@ -15,6 +15,14 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
       this.target.showExemplars = true;
     }
 
+    if (this.target.showOpsCount == null) {
+      this.target.showOpsCount = true;
+    }
+
+    if (this.target.showErrorCount == null) {
+      this.target.showErrorCount = true;
+    }
+
     this.scope = $scope;
     this.target.type = 'timeserie';
     this.savedSearches = this.datasource.metricFindQuery();
