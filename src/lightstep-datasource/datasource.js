@@ -90,6 +90,8 @@ export class LightStepDatasource {
         return _.concat(
           this.parseLatencies(name, attributes),
           this.parseExemplars(name, attributes, maxDataPoints),
+          this.parseCount(`${name} Ops counts`, "ops-counts", attributes),
+          this.parseCount(`${name} Error counts`, "error-counts", attributes),
         );
       });
 
@@ -161,6 +163,8 @@ export class LightStepDatasource {
       "youngest-time": youngest.format(),
       "resolution-ms": Math.floor(resolutionMs),
       "include-exemplars": target.showExemplars ? "1" : "0",
+      "include-ops-counts": target.showOpsCounts ? "1" : "0",
+      "include-error-counts": target.showErrorCounts ? "1" : "0",
       "percentile": this.extractPercentiles(target.percentiles),
     };
   }
@@ -223,6 +227,23 @@ export class LightStepDatasource {
       return
     }
     return `${this.dashboardURL}/${this.projectName}/trace?span_guid=${spanGuid}`
+  }
+
+  parseCount(name, key, attributes) {
+    if (!attributes["time-windows"] || !attributes[key]) {
+      return [];
+    }
+
+    const timeWindows = attributes["time-windows"].map(timeWindow => {
+      const oldest = moment(timeWindow["oldest-time"]);
+      const youngest = moment(timeWindow["youngest-time"]);
+      return moment((oldest + youngest) / 2);
+    });
+
+    return [{
+      target: name,
+      datapoints: _.zip(attributes[key], timeWindows),
+    }]
   }
 
   extractPercentiles(percentiles) {

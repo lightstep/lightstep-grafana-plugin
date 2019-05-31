@@ -44,6 +44,10 @@
     <div class="gf-form">
       <gf-form-switch class="gf-form" label="Include Traces" checked="ctrl.target.showExemplars" on-change="ctrl.refresh()">
       </gf-form-switch>
+      <gf-form-switch class="gf-form" label="Ops Counts" checked="ctrl.target.showOpsCounts" on-change="ctrl.refresh()">
+      </gf-form-switch>
+      <gf-form-switch class="gf-form" label="Error Counts" checked="ctrl.target.showErrorCounts" on-change="ctrl.refresh()">
+      </gf-form-switch>
       <label class="gf-form-label">
         <a href="{{ctrl.linkToLightStep()}}" target="_blank" bs-tooltip="'Link to Graph in LightStep'">
           <i class="fa fa-share-square-o"></i>
