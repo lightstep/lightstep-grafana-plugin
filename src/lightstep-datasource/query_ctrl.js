@@ -15,12 +15,12 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
       this.target.showExemplars = true;
     }
 
-    if (this.target.showOpsCount == null) {
-      this.target.showOpsCount = true;
+    if (this.target.showOpsCounts == null) {
+      this.target.showOpsCounts = true;
     }
 
-    if (this.target.showErrorCount == null) {
-      this.target.showErrorCount = true;
+    if (this.target.showErrorCounts == null) {
+      this.target.showErrorCounts = true;
     }
 
     this.scope = $scope;

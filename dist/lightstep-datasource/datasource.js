@@ -193,8 +193,8 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               "youngest-time": youngest.format(),
               "resolution-ms": Math.floor(resolutionMs),
               "include-exemplars": target.showExemplars ? "1" : "0",
-              "include-ops-counts": target.showOpsCount ? "1" : "0",
-              "include-error-counts": target.showErrorCount ? "1" : "0",
+              "include-ops-counts": target.showOpsCounts ? "1" : "0",
+              "include-error-counts": target.showErrorCounts ? "1" : "0",
               "percentile": this.extractPercentiles(target.percentiles)
             };
           }

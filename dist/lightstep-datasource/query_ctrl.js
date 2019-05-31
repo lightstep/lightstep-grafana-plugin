@@ -76,12 +76,12 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
             _this.target.showExemplars = true;
           }
 
-          if (_this.target.showOpsCount == null) {
-            _this.target.showOpsCount = true;
+          if (_this.target.showOpsCounts == null) {
+            _this.target.showOpsCounts = true;
           }
 
-          if (_this.target.showErrorCount == null) {
-            _this.target.showErrorCount = true;
+          if (_this.target.showErrorCounts == null) {
+            _this.target.showErrorCounts = true;
           }
 
           _this.scope = $scope;
