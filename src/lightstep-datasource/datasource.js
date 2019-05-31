@@ -90,8 +90,8 @@ export class LightStepDatasource {
         return _.concat(
           this.parseLatencies(name, attributes),
           this.parseExemplars(name, attributes, maxDataPoints),
-          this.parseRate(`${name} Ops Count`, "ops-counts", attributes),
-          this.parseRate(`${name} Errors`, "error-counts", attributes),
+          this.parseCount(`${name} Ops counts`, "ops-counts", attributes),
+          this.parseCount(`${name} Error counts`, "error-counts", attributes),
         );
       });
 
@@ -229,7 +229,7 @@ export class LightStepDatasource {
     return `${this.dashboardURL}/${this.projectName}/trace?span_guid=${spanGuid}`
   }
 
-  parseRate(name, key, attributes) {
+  parseCount(name, key, attributes) {
     if (!attributes["time-windows"] || !attributes[key]) {
       return [];
     }

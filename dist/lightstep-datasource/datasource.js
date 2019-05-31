@@ -126,7 +126,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
                 var attributes = data["attributes"];
                 var name = data["name"];
 
-                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints), _this.parseRate(name + ' Ops Count', "ops-counts", attributes), _this.parseRate(name + ' Errors', "error-counts", attributes));
+                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints), _this.parseCount(name + ' Ops counts', "ops-counts", attributes), _this.parseCount(name + ' Error counts', "error-counts", attributes));
               });
 
               return { data: data };
@@ -266,8 +266,8 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             return this.dashboardURL + '/' + this.projectName + '/trace?span_guid=' + spanGuid;
           }
         }, {
-          key: 'parseRate',
-          value: function parseRate(name, key, attributes) {
+          key: 'parseCount',
+          value: function parseCount(name, key, attributes) {
             if (!attributes["time-windows"] || !attributes[key]) {
               return [];
             }
