@@ -1,11 +1,15 @@
 <query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" has-text-edit-mode="true">
   <div class="gf-form-inline">
-    <div class="gf-form" ng-if="ctrl.target.rawQuery">
-      <textarea class="gf-form-input" rows="5" ng-model="ctrl.target.target" spellcheck="false" ng-blur="ctrl.onChangeInternal()" />
+    <div class="gf-form gf-form--grow" ng-if="ctrl.target.rawQuery">
+      <textarea class="gf-form-input"
+        rows="1"
+        ng-model="ctrl.target.target"
+        spellcheck="false"
+        ng-blur="ctrl.onChangeInternal()" />
     </div>
 
     <div ng-if="!ctrl.target.rawQuery">
-      <div class="gf-form">
+      <div class="gf-form gf-form--grow">
         <gf-form-dropdown model="ctrl.target.target"
           allow-custom="true"
           lookup-text="true"
@@ -14,7 +18,9 @@
       </gf-form-dropdown>
       </div>
     </div>
+  </div>
 
+  <div class="gf-form-inline">
     <div class="gf-form">
       <label class="gf-form-label">Display Name</label>
       <input type="text"

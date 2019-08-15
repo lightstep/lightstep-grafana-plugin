@@ -90,7 +90,8 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             }
 
             var responses = targets.map(function (target) {
-              var savedSearchID = target.target;
+              var savedSearchID = _this.templateSrv.replace(target.target);
+              var savedSearchName = _this.templateSrv.replaceWithText(target.target);
 
               if (!savedSearchID) {
                 return _this.q.when(undefined);
@@ -106,9 +107,9 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               response.then(function (result) {
                 if (result && result["data"]["data"]) {
                   if (target.displayName) {
-                    result["data"]["data"]["name"] = target.displayName;
+                    result["data"]["data"]["name"] = _this.templateSrv.replaceWithText(target.displayName);
                   } else {
-                    result["data"]["data"]["name"] = target.target;
+                    result["data"]["data"]["name"] = savedSearchName;
                   }
                 }
               });
