@@ -51,7 +51,8 @@ export class LightStepDatasource {
     }
 
     const responses = targets.map(target => {
-      const savedSearchID = target.target;
+      const savedSearchID = this.templateSrv.replace(target.target);
+      const savedSearchName = this.templateSrv.replaceWithText(target.target);
 
       if (!savedSearchID) {
         return this.q.when(undefined);
@@ -67,9 +68,9 @@ export class LightStepDatasource {
       response.then(result => {
         if (result && result["data"]["data"]) {
           if (target.displayName) {
-            result["data"]["data"]["name"] = target.displayName;
+            result["data"]["data"]["name"] = this.templateSrv.replaceWithText(target.displayName);
           } else {
-            result["data"]["data"]["name"] = target.target;
+            result["data"]["data"]["name"] = savedSearchName;
           }
         }
       });
