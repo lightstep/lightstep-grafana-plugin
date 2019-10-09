@@ -87,6 +87,7 @@ export class LightStepDatasource {
         if (!result) {
           return [];
         }
+
         const data = result["data"]["data"];
         const attributes = data["attributes"];
         const name = data["name"];
@@ -248,7 +249,7 @@ export class LightStepDatasource {
       const youngest = moment(timeWindow["youngest-time"]);
       return moment((oldest + youngest) / 2);
     });
-  
+
     return [{
       target: name,
       datapoints: _.zip(attributes[key], timeWindows),
