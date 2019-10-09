@@ -82,8 +82,8 @@ export class LightStepDatasource {
       });
     });
 
-    return this.q.all(responses).then(response => {
-      const data = _.flatMap(response, result => {
+    return this.q.all(responses).then(results => {
+      const data = _.flatMap(results, result => {
         if (!result) {
           return [];
         }
