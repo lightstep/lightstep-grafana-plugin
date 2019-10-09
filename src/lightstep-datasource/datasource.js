@@ -265,11 +265,11 @@ export class LightStepDatasource {
     errors[0].datapoints.forEach((p) => {
       // store error count in 0
       // store original moment object in 1
-      timeMap[p[1].toISOString()] = [p[0], p[1]];
+      timeMap[p[1].format()] = [p[0], p[1]];
     });
 
     ops[0].datapoints.forEach((p) => {
-      let timestamp = p[1].toISOString();
+      let timestamp = p[1].format();
       // retrieve corresponding error count value from timeMap
       let curr = timeMap[timestamp]; // curr[0] = error count, curr[1] is original moment object
       // only do math if the points exist & are non-zero
@@ -281,7 +281,7 @@ export class LightStepDatasource {
       if (errCount == 0 || opsCount == 0) {
         timeMap[timestamp] = [0, curr[1]];
       } else {
-        let res = ((errCount / opsCount)*100).toFixed(2);
+        let res = (errCount / opsCount)*100;
         timeMap[timestamp] = [res, curr[1]];
       }
     });
