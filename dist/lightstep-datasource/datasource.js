@@ -98,6 +98,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               }
 
               var query = _this.buildQueryParameters(options, target, maxDataPoints);
+              var showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
               var response = _this.doRequest({
                 url: _this.url + '/public/v0.1/' + _this.organizationName + '/projects/' + _this.projectName + '/searches/' + savedSearchID + '/timeseries',
                 method: 'GET',
@@ -114,20 +115,27 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
                 }
               });
 
-              return response;
+              return response.then(function (res) {
+                res.showErrorCountsAsRate = showErrorCountsAsRate;
+                return res;
+              });
             });
 
-            return this.q.all(responses).then(function (results) {
-              var data = _.flatMap(results, function (result) {
+            return this.q.all(responses).then(function (response) {
+              var data = _.flatMap(response, function (result) {
                 if (!result) {
                   return [];
                 }
-
                 var data = result["data"]["data"];
                 var attributes = data["attributes"];
                 var name = data["name"];
+                var ops = _this.parseCount(name + ' Ops counts', "ops-counts", attributes);
+                var errs = _this.parseCount(name + ' Error counts', "error-counts", attributes);
+                if (result.showErrorCountsAsRate) {
+                  errs = _this.parseRateFromCounts(name + ' Error rate', errs, ops);
+                }
 
-                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints), _this.parseCount(name + ' Ops counts', "ops-counts", attributes), _this.parseCount(name + ' Error counts', "error-counts", attributes));
+                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints), ops, errs);
               });
 
               return { data: data };
@@ -282,6 +290,50 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             return [{
               target: name,
               datapoints: _.zip(attributes[key], timeWindows)
+            }];
+          }
+        }, {
+          key: 'parseRateFromCounts',
+          value: function parseRateFromCounts(name, errors, ops) {
+            if (!errors[0] || !ops[0] || !errors[0].datapoints || !ops[0].datapoints || errors[0].datapoints.length != ops[0].datapoints.length) {
+              return [];
+            }
+
+            var timeMap = {};
+            // make a map of moment ISO timestamps
+            errors[0].datapoints.forEach(function (p) {
+              // store error count in 0
+              // store original moment object in 1
+              timeMap[p[1].format()] = [p[0], p[1]];
+            });
+
+            ops[0].datapoints.forEach(function (p) {
+              var timestamp = p[1].format();
+              // retrieve corresponding error count value from timeMap
+              var curr = timeMap[timestamp]; // curr[0] = error count, curr[1] is original moment object
+              // only do math if the points exist & are non-zero
+              var errCount = curr[0];
+              if (!errCount) {
+                return;
+              }
+              var opsCount = p[0];
+              if (errCount == 0 || opsCount == 0) {
+                timeMap[timestamp] = [0, curr[1]];
+              } else {
+                var res = errCount / opsCount * 100;
+                timeMap[timestamp] = [res, curr[1]];
+              }
+            });
+
+            var datapoints = Object.keys(timeMap).map(function (k) {
+              // restore moment object
+              var v = timeMap[k];
+              return [v[0], v[1]];
+            });
+
+            return [{
+              target: name,
+              datapoints: datapoints
             }];
           }
         }, {

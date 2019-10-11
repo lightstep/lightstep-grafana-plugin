@@ -84,6 +84,10 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
             _this.target.showErrorCounts = true;
           }
 
+          if (_this.target.showErrorCountsAsRate == null) {
+            _this.target.showErrorCountsAsRate = false;
+          }
+
           _this.scope = $scope;
           _this.target.type = 'timeserie';
           _this.savedSearches = _this.datasource.metricFindQuery();

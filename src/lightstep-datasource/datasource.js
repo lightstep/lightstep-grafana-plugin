@@ -59,6 +59,7 @@ export class LightStepDatasource {
       }
 
       const query = this.buildQueryParameters(options, target, maxDataPoints);
+      const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
       const response = this.doRequest({
         url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
         method: 'GET',
@@ -75,7 +76,10 @@ export class LightStepDatasource {
         }
       });
 
-      return response;
+      return response.then((res) => {
+        res.showErrorCountsAsRate = showErrorCountsAsRate;
+        return res;
+      });
     });
 
     return this.q.all(responses).then(results => {
@@ -87,12 +91,17 @@ export class LightStepDatasource {
         const data = result["data"]["data"];
         const attributes = data["attributes"];
         const name = data["name"];
+        const ops = this.parseCount(`${name} Ops counts`, "ops-counts", attributes);
+        let errs = this.parseCount(`${name} Error counts`, "error-counts", attributes);
+        if (result.showErrorCountsAsRate) {
+          errs = this.parseRateFromCounts(`${name} Error rate`, errs, ops);
+        }
 
         return _.concat(
           this.parseLatencies(name, attributes),
           this.parseExemplars(name, attributes, maxDataPoints),
-          this.parseCount(`${name} Ops counts`, "ops-counts", attributes),
-          this.parseCount(`${name} Error counts`, "error-counts", attributes),
+          ops,
+          errs,
         );
       });
 
@@ -245,6 +254,49 @@ export class LightStepDatasource {
       target: name,
       datapoints: _.zip(attributes[key], timeWindows),
     }]
+  }
+
+  parseRateFromCounts(name, errors, ops) {
+    if (!errors[0] || !ops[0] || !errors[0].datapoints || !ops[0].datapoints || (errors[0].datapoints.length != ops[0].datapoints.length)) {
+      return [];
+    }
+  
+    let timeMap = {};
+    // make a map of moment ISO timestamps
+    errors[0].datapoints.forEach((p) => {
+      // store error count in 0
+      // store original moment object in 1
+      timeMap[p[1].format()] = [p[0], p[1]];
+    });
+
+    ops[0].datapoints.forEach((p) => {
+      let timestamp = p[1].format();
+      // retrieve corresponding error count value from timeMap
+      let curr = timeMap[timestamp]; // curr[0] = error count, curr[1] is original moment object
+      // only do math if the points exist & are non-zero
+      let errCount = curr[0];
+      if (!errCount) {
+        return;
+      }
+      let opsCount = p[0];
+      if (errCount == 0 || opsCount == 0) {
+        timeMap[timestamp] = [0, curr[1]];
+      } else {
+        let res = (errCount / opsCount)*100;
+        timeMap[timestamp] = [res, curr[1]];
+      }
+    });
+
+    let datapoints = Object.keys(timeMap).map((k) => {
+      // restore moment object
+      let v = timeMap[k];
+      return [v[0], v[1]];
+    });
+
+    return [{
+      target: name,
+      datapoints,
+    }];
   }
 
   extractPercentiles(percentiles) {
