@@ -4,6 +4,7 @@ import appEvents from 'app/core/app_events';
 
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
+const version = 'v0.2';
 
 // TODO - this is a work around given the existing graph API
 // Having a better mechanism for click capture would be ideal.
@@ -51,17 +52,17 @@ export class LightStepDatasource {
     }
 
     const responses = targets.map(target => {
-      const savedSearchID = this.templateSrv.replace(target.target);
-      const savedSearchName = this.templateSrv.replaceWithText(target.target);
+      const streamId = this.templateSrv.replace(target.target);
+      const streamName = this.templateSrv.replaceWithText(target.target);
 
-      if (!savedSearchID) {
+      if (!streamId) {
         return this.q.when(undefined);
       }
 
       const query = this.buildQueryParameters(options, target, maxDataPoints);
       const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
       const response = this.doRequest({
-        url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
+        url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
         method: 'GET',
         params: query,
       });
@@ -71,7 +72,7 @@ export class LightStepDatasource {
           if (target.displayName) {
             result["data"]["data"]["name"] = this.templateSrv.replaceWithText(target.displayName);
           } else {
-            result["data"]["data"]["name"] = savedSearchName;
+            result["data"]["data"]["name"] = streamName;
           }
         }
       });
@@ -111,7 +112,7 @@ export class LightStepDatasource {
 
   testDatasource() {
     return this.doRequest({
-      url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}`,
+      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}`,
       method: 'GET',
     }).then(response => {
       if (response.status === 200) {
@@ -126,29 +127,114 @@ export class LightStepDatasource {
     return this.q.when({});
   }
 
-  metricFindQuery() {
+  metricFindQuery(query) {
+    const interpolated = this.templateSrv.replace(query);
+
+    let queryMapper = this.defaultMapper();
+    if (interpolated) {
+      queryMapper = this.parseQuery(interpolated);
+    }
+
     return this.doRequest({
-      url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches`,
+      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams`,
       method: 'GET',
     }).then(response => {
-      const searches = response.data.data;
-      return _.flatMap(searches, search => {
-        const attributes = search["attributes"];
+      const streams = response.data.data;  
+      return _.flatMap(streams, stream => {
+        const attributes = stream["attributes"];
         const name = attributes["name"];
         const query = attributes["query"];
-        const savedSearchId = search["id"];
+        const streamId = stream["id"];
 
-        // Don't duplicate if the name and query are the same
-        if (name.trim() === query.trim()) {
-          return [ { text: name, value: savedSearchId } ];
-        }
-
-        return [
-          { text: query, value: savedSearchId },
-          { text: name, value: savedSearchId },
-        ];
+        return queryMapper(name, query, streamId);
       });
     });
+  }
+
+  defaultMapper() {
+    return (name, query, id) => {
+      // Don't duplicate if the name and query are the same
+      if (name.trim() === query.trim()) {
+        return [ { text: name, value: id } ];
+      }
+
+      return [
+        { text: query, value: id },
+        { text: name, value: id },
+      ];
+    }
+  }
+
+  parseQuery(query) {
+    const matches = query.match(/^(stream_ids|attributes)\(.*/);
+    if (matches && matches.length == 2) {
+      switch (matches[1]) {
+        case "stream_ids":
+          return this.parseStreamIdsQuery(query);
+        case "attributes":
+          return this.parseAttributesQuery(query);
+      }
+    }
+    throw new Error(`Unknown query provided: ${query}`);
+  }
+
+  parseStreamIdsQuery(query) {
+    const matches = query.match(/stream_ids\(([^\!=~]+)(\!?=~?)"(.*)"\)$/)
+    if (matches && matches.length == 4) {
+      const attribute_name = matches[1],
+            operator = matches [2],
+            filter_value = matches[3];
+      return (name, query, id) => {
+        switch (attribute_name) {
+          case "name":
+            return this.applyOperator(name, operator, filter_value, id)
+          case "query":
+            return this.applyOperator(query, operator, filter_value, id)
+          default:
+            throw new Error(`Unknown attribute provided in the stream_ids() query: ${attribute_name}`);
+        }
+      }
+    }
+    throw new Error(`Unknown query provided: ${query}`);
+  }
+
+  applyOperator(attribute, operator, filter_value, id) {
+    let match;
+    let not = false;
+    if (operator.charAt(0) == "!") {
+      operator = operator.substring(1);
+      not = true;
+    }
+    switch (operator) {
+      case "=":
+        match = attribute == filter_value
+        break;
+      case "=~":
+        const regex = new RegExp(filter_value)
+        match = regex.test(attribute)
+        break;
+      default:
+        throw new Error(`Unknown operator provided: ${operator}`);
+    }
+    match ^= not;
+    return match ? [{ text: `${id} [${attribute}]`, value: id }] : []
+  }
+
+  parseAttributesQuery(query) {
+    const matches = query.match(/^attributes\(([^)]+)\)$/);
+    if (matches && matches.length == 2) {
+      return (name, query, id) => {
+        switch (matches[1]) {
+          case "name":
+            return [{ text: name }]
+          case "query":
+            return [{ text: query }]
+          default:
+            throw new Error(`Unknown attribute provided in the attributes() query: ${matches[1]}`);
+        }
+      };
+    }
+    throw new Error(`Unknown query provided: ${query}`);
   }
 
   doRequest(options) {

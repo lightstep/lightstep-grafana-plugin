@@ -42,6 +42,7 @@
     "grunt-mocha-test": "^0.13.2",
     "grunt-systemjs-builder": "^1.0.0",
     "load-grunt-tasks": "^3.5.2",
+    "moment": "2.24.0",
     "prunk": "^1.3.0",
     "q": "^1.5.0",
     "webpack": "^3.12.0"
