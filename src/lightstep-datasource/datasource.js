@@ -128,7 +128,7 @@ export class LightStepDatasource {
   }
 
   metricFindQuery(query) {
-    const interpolated = this.templateSrv.replace(query);
+    const interpolated = this.templateSrv.replace(query, null, 'regex');
 
     let queryMapper = this.defaultMapper();
     if (interpolated) {
