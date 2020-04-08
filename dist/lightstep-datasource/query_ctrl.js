@@ -96,7 +96,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
 
         _createClass(LightStepDatasourceQueryCtrl, [{
           key: 'getOptions',
-          value: function getOptions(ignoredQuery) {
+          value: function getOptions(query) {
             // Defensive copy of the results because somewhere is gets mutated after return.
             return this.savedSearches.then(function (results) {
               return results.slice();
