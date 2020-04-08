@@ -53,39 +53,46 @@ export class LightStepDatasource {
       return this.q.when({data: []});
     }
 
-    const responses = targets.map(target => {
-      const streamId = this.templateSrv.replace(target.target);
-      const streamName = this.templateSrv.replaceWithText(target.target);
+    const targetResponses = targets.flatMap(target => {
+      const interpolatedIds = this.templateSrv.replace(target.target, null, 'pipe');
+      const interpolatedNames = this.templateSrv.replaceWithText(target.target);
 
-      if (!streamId) {
+      if (!interpolatedIds) {
         return this.q.when(undefined);
       }
 
-      const query = this.buildQueryParameters(options, target, maxDataPoints);
-      const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
-      const response = this.doRequest({
-        url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
-        method: 'GET',
-        params: query,
-      });
+      const streamIds = interpolatedIds.split('|');
+      const streamNames = interpolatedNames.split(' + ');
+      return _.zip(streamIds, streamNames).map(pair => {
+        const streamId = pair[0];
+        const streamName = pair[1];
+        const query = this.buildQueryParameters(options, target, maxDataPoints);
+        const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
+        const response = this.doRequest({
+          url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
+          method: 'GET',
+          params: query,
+        });
 
-      response.then(result => {
-        if (result && result["data"]["data"]) {
-          if (target.displayName) {
-            result["data"]["data"]["name"] = this.templateSrv.replaceWithText(target.displayName);
-          } else {
-            result["data"]["data"]["name"] = streamName;
+        response.then(result => {
+          if (result && result["data"]["data"]) {
+            if (target.displayName) {
+              result["data"]["data"]["name"] = this.templateSrv.replaceWithText(target.displayName);
+            } else {
+              result["data"]["data"]["name"] = streamName;
+            }
           }
-        }
-      });
+        });
 
-      return response.then((res) => {
-        res.showErrorCountsAsRate = showErrorCountsAsRate;
-        return res;
+        return response.then((res) => {
+          res.showErrorCountsAsRate = showErrorCountsAsRate;
+          return res;
+        });
       });
+      
     });
 
-    return this.q.all(responses).then(results => {
+    return this.q.all(targetResponses).then(results => {
       const data = _.flatMap(results, result => {
         if (!result) {
           return [];
@@ -219,7 +226,7 @@ export class LightStepDatasource {
         throw new Error(`Unknown operator provided: ${operator}`);
     }
     match ^= not;
-    return match ? [{ text: `${id} [${attribute}]`, value: id }] : []
+    return match ? [{ text: `${attribute}`, value: id }] : []
   }
 
   parseAttributesQuery(query) {
