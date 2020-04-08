@@ -7,6 +7,11 @@ prunk.mock('./css/query-editor.css!', 'no css, dude.');
 prunk.mock('app/core/app_events', {
     on: function() {}
 });
+prunk.mock('app/core/utils/kbn', {
+    interval_to_ms: function(interval) {
+        return interval;
+    }
+});
 
 // Setup Chai
 chai.should();

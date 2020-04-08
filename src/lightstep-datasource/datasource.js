@@ -1,6 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
+import kbn from 'app/core/utils/kbn';
 
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
@@ -23,7 +24,7 @@ appEvents.on('graph-click', options => {
 });
 
 export class LightStepDatasource {
-  constructor(instanceSettings, $q, backendSrv, templateSrv) {
+  constructor(instanceSettings, $q, backendSrv, templateSrv, timeSrv) {
     this.type = instanceSettings.type;
     this.url = instanceSettings.url;
     this.dashboardURL = instanceSettings.jsonData.dashboardURL;
@@ -31,6 +32,7 @@ export class LightStepDatasource {
     this.q = $q;
     this.backendSrv = backendSrv;
     this.templateSrv = templateSrv;
+    this.timeSrv = timeSrv;
     this.organizationName = instanceSettings.jsonData.organizationName;
     this.projectName = instanceSettings.jsonData.projectName;
     this.apiKey = instanceSettings.jsonData.apiKey;
@@ -246,14 +248,23 @@ export class LightStepDatasource {
     const oldest = options.range.from;
     const youngest = options.range.to;
 
-    const resolutionMs = Math.max(
-      youngest.diff(oldest) / Math.min(
-        maxDataPoints,
-        maxDataPointsServer
-      ),
-      minResolutionServer
-    );
-
+    let resolutionMs = null;
+    if (target.resolution) {
+      const scopedVars = this.getScopedVars(options);
+      const interpolated = this.templateSrv.replace(target.resolution, scopedVars)
+      resolutionMs = kbn.interval_to_ms(interpolated); 
+    }
+    
+    if (!resolutionMs || resolutionMs < minResolutionServer) {
+      resolutionMs = Math.max(
+        youngest.diff(oldest) / Math.min(
+          maxDataPoints,
+          maxDataPointsServer
+        ),
+        minResolutionServer
+      );
+    }
+    
     return {
       "oldest-time": oldest.format(),
       "youngest-time": youngest.format(),
@@ -262,6 +273,17 @@ export class LightStepDatasource {
       "include-ops-counts": target.showOpsCounts ? "1" : "0",
       "include-error-counts": target.showErrorCounts ? "1" : "0",
       "percentile": this.extractPercentiles(target.percentiles),
+    };
+  }
+
+  getScopedVars(options) {
+    const range = this.timeSrv.timeRange();
+    const msRange = range.to.diff(range.from);
+    const sRange = Math.round(msRange / 1000);
+    const regularRange = kbn.secondsToHms(msRange / 1000);
+    return {
+      __interval: { text: options.interval, value: options.interval },
+      __range: { text: regularRange, value: regularRange },
     };
   }
 

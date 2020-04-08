@@ -9,10 +9,6 @@
 
   "metrics": true,
   "annotations": true,
-  
-  "queryOptions": {
-    "maxDataPoints": true
-  },
 
   "info": {
     "description": "lightstep datasource",
