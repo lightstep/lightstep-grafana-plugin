@@ -48,7 +48,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
       // TODO - this is a work around given the existing graph API
       // Having a better mechanism for click capture would be ideal.
       appEvents.on('graph-click', function (options) {
-        var link = _.get(options, ['ctrl', 'dataList', _.get(options, ['item', 'seriesIndex']), 'datapoints', _.get(options, ['item', 'dataIndex']), 'link']);
+        var link = _.get(options, ['ctrl', 'dataList', _.get(options, ['item', 'seriesIndex']), 'datapoints', _.get(options, ['item', 'dataIndex']), 2]);
         if (link) {
           window.open(link, '_blank');
         }
@@ -384,7 +384,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
                 return {
                   0: exemplar["duration_micros"] / 1000,
                   1: moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000),
-                  "link": _this3.traceLink(exemplar)
+                  2: _this3.traceLink(exemplar)
                 };
               })
             }];

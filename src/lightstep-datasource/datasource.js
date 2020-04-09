@@ -16,7 +16,7 @@ appEvents.on('graph-click', options => {
     _.get(options, ['item', 'seriesIndex']),
     'datapoints',
     _.get(options, ['item', 'dataIndex']),
-    'link',
+    2,
   ]);
   if (link) {
     window.open(link, '_blank');
@@ -340,7 +340,7 @@ export class LightStepDatasource {
         return {
           0: exemplar["duration_micros"] / 1000,
           1: moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
-          "link": this.traceLink(exemplar),
+          2: this.traceLink(exemplar),
         };
       }),
     }];
