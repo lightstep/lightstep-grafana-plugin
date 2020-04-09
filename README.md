@@ -16,8 +16,8 @@ The LightStep data source provides the following queries that you can specify in
 
 | Name         | Description |
 | ------------ |-------------| 
-| attributes(name)<br/>attributes(query)    | Returns the Name of all Streams. This is can be used with the `Regex` field in Grafana to build a dropdown |
-| stream_ids(query=~"regex")<br/>stream_ids(query!=~"regex")<br/>stream_ids(query="value")<br/>stream_ids(query!="value")    | Returns the Stream ID of all matching Streams. The datasource uses the Stream ID to request the timeseries data in the various panel/visualization. |
+| `attributes(name)` <br/>`attributes(query)`    | Returns the Name of all Streams. This is can be used with the `Regex` field in Grafana to build a dropdown |
+| `stream_ids(query=~"regex")` <br/>`stream_ids(query!=~"regex")` <br/>`stream_ids(query="value")` <br/>`stream_ids(query!="value")`    | Returns the Stream ID of all matching Streams. The datasource uses the Stream ID to request the timeseries data in the various panel/visualization. |
 
 ### Using interval and range variables
 It's possible to use some [global built-in variables](https://grafana.com/docs/grafana/latest/reference/templating/#global-built-in-variables) in the `Resolution` field.
