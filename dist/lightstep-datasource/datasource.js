@@ -55,7 +55,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
       });
 
       _export('LightStepDatasource', LightStepDatasource = function () {
-        function LightStepDatasource(instanceSettings, $q, backendSrv, templateSrv, timeSrv) {
+        function LightStepDatasource(instanceSettings, $q, backendSrv, templateSrv) {
           _classCallCheck(this, LightStepDatasource);
 
           this.type = instanceSettings.type;
@@ -65,7 +65,6 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
           this.q = $q;
           this.backendSrv = backendSrv;
           this.templateSrv = templateSrv;
-          this.timeSrv = timeSrv;
           this.organizationName = instanceSettings.jsonData.organizationName;
           this.projectName = instanceSettings.jsonData.projectName;
           this.apiKey = instanceSettings.jsonData.apiKey;
@@ -189,23 +188,23 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
               return _.flatMap(streams, function (stream) {
                 var attributes = stream["attributes"];
                 var name = attributes["name"];
-                var query = attributes["query"];
+                var stream_query = attributes["query"];
                 var streamId = stream["id"];
 
-                return queryMapper(name, query, streamId);
+                return queryMapper(name, stream_query, streamId);
               });
             });
           }
         }, {
           key: 'defaultMapper',
           value: function defaultMapper() {
-            return function (name, query, id) {
-              // Don't duplicate if the name and query are the same
-              if (name.trim() === query.trim()) {
+            return function (name, stream_query, id) {
+              // Don't duplicate if the name and stream_query are the same
+              if (name.trim() === stream_query.trim()) {
                 return [{ text: name, value: id }];
               }
 
-              return [{ text: query, value: id }, { text: name, value: id }];
+              return [{ text: stream_query, value: id }, { text: name, value: id }];
             };
           }
         }, {
@@ -232,12 +231,12 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
               var attribute_name = matches[1],
                   operator = matches[2],
                   filter_value = matches[3];
-              return function (name, query, id) {
+              return function (name, stream_query, id) {
                 switch (attribute_name) {
                   case "name":
                     return _this2.applyOperator(name, operator, filter_value, id);
-                  case "query":
-                    return _this2.applyOperator(query, operator, filter_value, id);
+                  case "stream_query":
+                    return _this2.applyOperator(stream_query, operator, filter_value, id);
                   default:
                     throw new Error('Unknown attribute provided in the stream_ids() query: ' + attribute_name);
                 }
@@ -273,12 +272,12 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
           value: function parseAttributesQuery(query) {
             var matches = query.match(/^attributes\(([^)]+)\)$/);
             if (matches && matches.length == 2) {
-              return function (name, query, id) {
+              return function (name, stream_query, id) {
                 switch (matches[1]) {
                   case "name":
                     return [{ text: name }];
-                  case "query":
-                    return [{ text: query }];
+                  case "stream_query":
+                    return [{ text: stream_query }];
                   default:
                     throw new Error('Unknown attribute provided in the attributes() query: ' + matches[1]);
                 }
@@ -322,9 +321,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
         }, {
           key: 'getScopedVars',
           value: function getScopedVars(options) {
-            var range = this.timeSrv.timeRange();
-            var msRange = range.to.diff(range.from);
-            var sRange = Math.round(msRange / 1000);
+            var msRange = options.range.to.diff(options.range.from);
             var regularRange = kbn.secondsToHms(msRange / 1000);
             return {
               __interval: { text: options.interval, value: options.interval },

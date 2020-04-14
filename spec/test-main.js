@@ -9,7 +9,19 @@ prunk.mock('app/core/app_events', {
 });
 prunk.mock('app/core/utils/kbn', {
     interval_to_ms: function(interval) {
+        if (interval === '1h') {
+            return 60 * 60 * 1000;
+        }
+        if (interval === '15m') {
+            return 15 * 60 * 1000;
+        }
+        if (interval === '15s') {
+            return 15 * 1000;
+        }
         return interval;
+    },
+    secondsToHms: function(sec) {
+        return "${sec}s"
     }
 });
 

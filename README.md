@@ -12,12 +12,13 @@ Follow the configuration screen instructions to configure the plugin.
 See the [Templating](https://grafana.com/docs/grafana/latest/reference/templating/) documentation for an introduction to the templating feature and the different types of template variables.
 
 ### Query variable
-The LightStep data source provides the following queries that you can specify in the `Query` field in the Variable edit view.
+The LightStep datasource provides the following queries that you can specify in the `Query` field in the Variable edit view of Grafana.
 
 | Name         | Description |
 | ------------ |-------------| 
-| `attributes(name)` <br/>`attributes(query)`    | Returns the Name of all Streams. This is can be used with the `Regex` field in Grafana to build a dropdown |
-| `stream_ids(query=~"regex")` <br/>`stream_ids(query!=~"regex")` <br/>`stream_ids(query="value")` <br/>`stream_ids(query!="value")`    | Returns the Stream ID of all matching Streams. The datasource uses the Stream ID to request the timeseries data in the various panel/visualization. |
+| `attributes(name)` <br/>`attributes(stream_query)`    | Returns the Name or the Stream Query of all Streams. This is can be used with the `Regex` field in Grafana to build a dropdown |
+| `stream_ids(stream_query=~"regex")` <br/>`stream_ids(stream_query!=~"regex")` <br/>`stream_ids(stream_query="value")` <br/>`stream_ids(stream_query!="value")`    | Returns the Stream ID of all matching Streams. The datasource uses the Stream ID to request the timeseries data in the various panel/visualization. |
+| `stream_ids(name=~"regex")` <br/>`stream_ids(name!=~"regex")` <br/>`stream_ids(name="value")` <br/>`stream_ids(name!="value")`    | Returns the Stream ID of all matching Streams. The datasource uses the Stream ID to request the timeseries data in the various panel/visualization. |
 
 ### Using interval and range variables
 It's possible to use some [global built-in variables](https://grafana.com/docs/grafana/latest/reference/templating/#global-built-in-variables) in the `Resolution` field.

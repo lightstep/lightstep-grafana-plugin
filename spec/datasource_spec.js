@@ -1,4 +1,5 @@
 import {LightStepDatasource} from "../lightstep-datasource/datasource";
+import moment from 'moment';
 
 let ctx = {};
 let streams;
@@ -7,7 +8,15 @@ beforeEach(function() {
   configureStreams();
   ctx.backendSrv = getBackendSrv();
   ctx.templateSrv = {
-    replace: function(query) { return query }
+    replace: function(query) { 
+      if (query == '$__range') {
+        return '1h'
+      }
+      if (query == '$__interval') {
+        return '15m'
+      }
+      return query 
+    }
   };
   let settings = {
     jsonData: {}
@@ -42,8 +51,8 @@ describe('metricFindQuery', function() {
     });
   });
 
-  it('should return all queries when using attributes(query)', function(done) {
-    ctx.ds.metricFindQuery("attributes(query)").then(function(result) {
+  it('should return all queries when using attributes(stream_query)', function(done) {
+    ctx.ds.metricFindQuery("attributes(stream_query)").then(function(result) {
       expect(result).to.have.length(4);
       expect(result[0].text).to.equal('service IN ("service0") AND operation IN ("operation0")');
       expect(result[1].text).to.equal('service IN ("service1") AND operation IN ("operation1")');
@@ -97,8 +106,8 @@ describe('metricFindQuery', function() {
     });
   });
 
-  it('should return single ID when using stream_ids(query="service IN ("service0") AND operation IN ("operation2")")', function(done) {
-    ctx.ds.metricFindQuery('stream_ids(query="service IN ("service0") AND operation IN ("operation2")")').then(function(result) {
+  it('should return single ID when using stream_ids(stream_query="service IN ("service0") AND operation IN ("operation2")")', function(done) {
+    ctx.ds.metricFindQuery('stream_ids(stream_query="service IN ("service0") AND operation IN ("operation2")")').then(function(result) {
       expect(result).to.have.length(1);
       expect(result[0].text).to.equal('service IN ("service0") AND operation IN ("operation2")');
       expect(result[0].value).to.equal('2000');
@@ -106,8 +115,8 @@ describe('metricFindQuery', function() {
     });
   });
 
-  it('should return multiples IDs when using stream_ids(query!="service IN ("service0") AND operation IN ("operation2")")', function(done) {
-    ctx.ds.metricFindQuery('stream_ids(query!="service IN ("service0") AND operation IN ("operation2")")').then(function(result) {
+  it('should return multiples IDs when using stream_ids(stream_query!="service IN ("service0") AND operation IN ("operation2")")', function(done) {
+    ctx.ds.metricFindQuery('stream_ids(stream_query!="service IN ("service0") AND operation IN ("operation2")")').then(function(result) {
       expect(result).to.have.length(3);
       expect(result[0].text).to.equal('service IN ("service0") AND operation IN ("operation0")');
       expect(result[0].value).to.equal('0');
@@ -119,8 +128,8 @@ describe('metricFindQuery', function() {
     });
   });
 
-  it('should return single ID when using stream_ids(query=~".*operation2.*")', function(done) {
-    ctx.ds.metricFindQuery('stream_ids(query=~".*operation2.*")').then(function(result) {
+  it('should return single ID when using stream_ids(stream_query=~".*operation2.*")', function(done) {
+    ctx.ds.metricFindQuery('stream_ids(stream_query=~".*operation2.*")').then(function(result) {
       expect(result).to.have.length(1);
       expect(result[0].text).to.equal('service IN ("service0") AND operation IN ("operation2")');
       expect(result[0].value).to.equal('2000');
@@ -128,8 +137,8 @@ describe('metricFindQuery', function() {
     });
   });
 
-  it('should return multiples IDs when using stream_ids(query!=~".*operation2.*")', function(done) {
-    ctx.ds.metricFindQuery('stream_ids(query!=~".*operation2.*")').then(function(result) {
+  it('should return multiples IDs when using stream_ids(stream_query!=~".*operation2.*")', function(done) {
+    ctx.ds.metricFindQuery('stream_ids(stream_query!=~".*operation2.*")').then(function(result) {
       expect(result).to.have.length(3);
       expect(result[0].text).to.equal('service IN ("service0") AND operation IN ("operation0")');
       expect(result[0].value).to.equal('0');
@@ -139,6 +148,42 @@ describe('metricFindQuery', function() {
       expect(result[2].value).to.equal('3000');
       done();
     });
+  });
+});
+
+describe('buildQueryParameters', function() {
+  it('should return default resolution when empty', function(done) {
+    let result = ctx.ds.buildQueryParameters({ range: getRange() }, {}, 1000);
+    expect(result["resolution-ms"]).to.equal(60000);
+    done();
+  });
+
+  it('should return requested resolution when provided', function(done) {
+    let result = ctx.ds.buildQueryParameters({ range: getRange() }, { resolution: '15m' }, 1000);
+
+    expect(result["resolution-ms"]).to.equal(900000);
+    done();
+  });
+
+  it('should return the minimum resolution when provided with something smaller', function(done) {
+    let result = ctx.ds.buildQueryParameters({ range: getRange() }, { resolution: '15s' }, 1000);
+
+    expect(result["resolution-ms"]).to.equal(60000);
+    done();
+  });
+
+  it('should return the proper resolution when provided with $__interval', function(done) {
+    let result = ctx.ds.buildQueryParameters({ range: getRange() }, { resolution: '$__interval' }, 1000);
+
+    expect(result["resolution-ms"]).to.equal(900000);
+    done();
+  });
+
+  it('should return the proper resolution when provided with $__range', function(done) {
+    let result = ctx.ds.buildQueryParameters({ range: getRange() }, { resolution: '$__range' }, 1000);
+
+    expect(result["resolution-ms"]).to.equal(3600000);
+    done();
   });
 });
 
@@ -167,4 +212,13 @@ function getBackendSrv() {
       })
     }
   };
+}
+
+function getRange() {
+  return {
+    // April 1, 2020 10:00:00 AM UTC
+    from: moment(1585735200000),
+    // April 1, 2020 11:00:00 AM UTC
+    to: moment(1585738800000)
+  }
 }
