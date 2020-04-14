@@ -65,12 +65,12 @@ export class LightStepDatasource {
       return _.zip(streamIds, streamNames).map(pair => {
         const streamId = pair[0];
         const streamName = pair[1];
-        const query = this.buildQueryParameters(options, target, maxDataPoints);
+        const queryParams = this.buildQueryParameters(options, target, maxDataPoints);
         const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
         const response = this.doRequest({
           url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
           method: 'GET',
-          params: query,
+          params: queryParams,
         });
 
         response.then(result => {
@@ -135,8 +135,8 @@ export class LightStepDatasource {
     return this.q.when({});
   }
 
-  metricFindQuery(query) {
-    const interpolated = this.templateSrv.replace(query, null, 'regex');
+  metricFindQuery(grafanaQuery) {
+    const interpolated = this.templateSrv.replace(grafanaQuery, null, 'regex');
 
     let queryMapper = this.defaultMapper();
     if (interpolated) {
@@ -173,21 +173,18 @@ export class LightStepDatasource {
     }
   }
 
-  parseQuery(query) {
-    const matches = query.match(/^(stream_ids|attributes)\(.*/);
-    if (matches && matches.length == 2) {
-      switch (matches[1]) {
-        case "stream_ids":
-          return this.parseStreamIdsQuery(query);
-        case "attributes":
-          return this.parseAttributesQuery(query);
-      }
+  parseQuery(grafanaQuery) {
+    if (grafanaQuery.startsWith('stream_ids(')) {
+      return this.parseStreamIdsQuery(grafanaQuery);
+    } else if (grafanaQuery.startsWith('attributes(')) {
+      return this.parseAttributesQuery(grafanaQuery);
+    } else {
+      throw new Error(`Unknown query provided: ${grafanaQuery}`);
     }
-    throw new Error(`Unknown query provided: ${query}`);
   }
 
-  parseStreamIdsQuery(query) {
-    const matches = query.match(/stream_ids\(([^\!=~]+)(\!?=~?)"(.*)"\)$/)
+  parseStreamIdsQuery(grafanaQuery) {
+    const matches = grafanaQuery.match(/stream_ids\(([^\!=~]+)(\!?=~?)"(.*)"\)$/)
     if (matches && matches.length == 4) {
       const attribute_name = matches[1],
             operator = matches [2],
@@ -203,7 +200,7 @@ export class LightStepDatasource {
         }
       }
     }
-    throw new Error(`Unknown query provided: ${query}`);
+    throw new Error(`Unknown query provided: ${grafanaQuery}`);
   }
 
   applyOperator(attribute, operator, filter_value, id) {
@@ -228,8 +225,8 @@ export class LightStepDatasource {
     return match ? [{ text: `${attribute}`, value: id }] : []
   }
 
-  parseAttributesQuery(query) {
-    const matches = query.match(/^attributes\(([^)]+)\)$/);
+  parseAttributesQuery(grafanaQuery) {
+    const matches = grafanaQuery.match(/^attributes\(([^)]+)\)$/);
     if (matches && matches.length == 2) {
       return (name, stream_query, id) => {
         switch (matches[1]) {
@@ -242,7 +239,7 @@ export class LightStepDatasource {
         }
       };
     }
-    throw new Error(`Unknown query provided: ${query}`);
+    throw new Error(`Unknown query provided: ${grafanaQuery}`);
   }
 
   doRequest(options) {

@@ -12,7 +12,7 @@ Follow the configuration screen instructions to configure the plugin.
 See the [Templating](https://grafana.com/docs/grafana/latest/reference/templating/) documentation for an introduction to the templating feature and the different types of template variables.
 
 ### Query variable
-The LightStep datasource provides the following queries that you can specify in the `Query` field in the Variable edit view.
+The LightStep datasource provides the following queries that you can specify in the `Query` field in the Variable edit view of Grafana.
 
 | Name         | Description |
 | ------------ |-------------| 

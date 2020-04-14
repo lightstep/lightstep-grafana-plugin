@@ -105,12 +105,12 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
               return _.zip(streamIds, streamNames).map(function (pair) {
                 var streamId = pair[0];
                 var streamName = pair[1];
-                var query = _this.buildQueryParameters(options, target, maxDataPoints);
+                var queryParams = _this.buildQueryParameters(options, target, maxDataPoints);
                 var showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
                 var response = _this.doRequest({
                   url: _this.url + '/public/' + version + '/' + _this.organizationName + '/projects/' + _this.projectName + '/streams/' + streamId + '/timeseries',
                   method: 'GET',
-                  params: query
+                  params: queryParams
                 });
 
                 response.then(function (result) {
@@ -172,8 +172,8 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
           }
         }, {
           key: 'metricFindQuery',
-          value: function metricFindQuery(query) {
-            var interpolated = this.templateSrv.replace(query, null, 'regex');
+          value: function metricFindQuery(grafanaQuery) {
+            var interpolated = this.templateSrv.replace(grafanaQuery, null, 'regex');
 
             var queryMapper = this.defaultMapper();
             if (interpolated) {
@@ -209,24 +209,21 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
           }
         }, {
           key: 'parseQuery',
-          value: function parseQuery(query) {
-            var matches = query.match(/^(stream_ids|attributes)\(.*/);
-            if (matches && matches.length == 2) {
-              switch (matches[1]) {
-                case "stream_ids":
-                  return this.parseStreamIdsQuery(query);
-                case "attributes":
-                  return this.parseAttributesQuery(query);
-              }
+          value: function parseQuery(grafanaQuery) {
+            if (grafanaQuery.startsWith('stream_ids(')) {
+              return this.parseStreamIdsQuery(grafanaQuery);
+            } else if (grafanaQuery.startsWith('attributes(')) {
+              return this.parseAttributesQuery(grafanaQuery);
+            } else {
+              throw new Error('Unknown query provided: ' + grafanaQuery);
             }
-            throw new Error('Unknown query provided: ' + query);
           }
         }, {
           key: 'parseStreamIdsQuery',
-          value: function parseStreamIdsQuery(query) {
+          value: function parseStreamIdsQuery(grafanaQuery) {
             var _this2 = this;
 
-            var matches = query.match(/stream_ids\(([^\!=~]+)(\!?=~?)"(.*)"\)$/);
+            var matches = grafanaQuery.match(/stream_ids\(([^\!=~]+)(\!?=~?)"(.*)"\)$/);
             if (matches && matches.length == 4) {
               var attribute_name = matches[1],
                   operator = matches[2],
@@ -242,7 +239,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
                 }
               };
             }
-            throw new Error('Unknown query provided: ' + query);
+            throw new Error('Unknown query provided: ' + grafanaQuery);
           }
         }, {
           key: 'applyOperator',
@@ -269,8 +266,8 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
           }
         }, {
           key: 'parseAttributesQuery',
-          value: function parseAttributesQuery(query) {
-            var matches = query.match(/^attributes\(([^)]+)\)$/);
+          value: function parseAttributesQuery(grafanaQuery) {
+            var matches = grafanaQuery.match(/^attributes\(([^)]+)\)$/);
             if (matches && matches.length == 2) {
               return function (name, stream_query, id) {
                 switch (matches[1]) {
@@ -283,7 +280,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
                 }
               };
             }
-            throw new Error('Unknown query provided: ' + query);
+            throw new Error('Unknown query provided: ' + grafanaQuery);
           }
         }, {
           key: 'doRequest',
