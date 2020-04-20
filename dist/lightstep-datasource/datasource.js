@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, _context) {
+System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'], function (_export, _context) {
   "use strict";
 
-  var _, moment, appEvents, _createClass, maxDataPointsServer, minResolutionServer, LightStepDatasource;
+  var _, moment, appEvents, kbn, _createClass, maxDataPointsServer, minResolutionServer, version, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -18,6 +18,8 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
       moment = _moment.default;
     }, function (_appCoreApp_events) {
       appEvents = _appCoreApp_events.default;
+    }, function (_appCoreUtilsKbn) {
+      kbn = _appCoreUtilsKbn.default;
     }],
     execute: function () {
       _createClass = function () {
@@ -40,12 +42,13 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
 
       maxDataPointsServer = 1440;
       minResolutionServer = 60000;
+      version = 'v0.2';
 
 
       // TODO - this is a work around given the existing graph API
       // Having a better mechanism for click capture would be ideal.
       appEvents.on('graph-click', function (options) {
-        var link = _.get(options, ['ctrl', 'dataList', _.get(options, ['item', 'seriesIndex']), 'datapoints', _.get(options, ['item', 'dataIndex']), 'link']);
+        var link = _.get(options, ['ctrl', 'dataList', _.get(options, ['item', 'seriesIndex']), 'datapoints', _.get(options, ['item', 'dataIndex']), 2]);
         if (link) {
           window.open(link, '_blank');
         }
@@ -89,43 +92,50 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               return this.q.when({ data: [] });
             }
 
-            var responses = targets.map(function (target) {
-              var savedSearchID = _this.templateSrv.replace(target.target);
-              var savedSearchName = _this.templateSrv.replaceWithText(target.target);
+            var targetResponses = targets.flatMap(function (target) {
+              var interpolatedIds = _this.templateSrv.replace(target.target, null, 'pipe');
+              var interpolatedNames = _this.templateSrv.replaceWithText(target.target);
 
-              if (!savedSearchID) {
+              if (!interpolatedIds) {
                 return _this.q.when(undefined);
               }
 
-              var query = _this.buildQueryParameters(options, target, maxDataPoints);
-              var showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
-              var response = _this.doRequest({
-                url: _this.url + '/public/v0.1/' + _this.organizationName + '/projects/' + _this.projectName + '/searches/' + savedSearchID + '/timeseries',
-                method: 'GET',
-                params: query
-              });
+              var streamIds = interpolatedIds.split('|');
+              var streamNames = interpolatedNames.split(' + ');
+              return _.zip(streamIds, streamNames).map(function (pair) {
+                var streamId = pair[0];
+                var streamName = pair[1];
+                var queryParams = _this.buildQueryParameters(options, target, maxDataPoints);
+                var showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
+                var response = _this.doRequest({
+                  url: _this.url + '/public/' + version + '/' + _this.organizationName + '/projects/' + _this.projectName + '/streams/' + streamId + '/timeseries',
+                  method: 'GET',
+                  params: queryParams
+                });
 
-              response.then(function (result) {
-                if (result && result["data"]["data"]) {
-                  if (target.displayName) {
-                    result["data"]["data"]["name"] = _this.templateSrv.replaceWithText(target.displayName);
-                  } else {
-                    result["data"]["data"]["name"] = savedSearchName;
+                response.then(function (result) {
+                  if (result && result["data"]["data"]) {
+                    if (target.displayName) {
+                      result["data"]["data"]["name"] = _this.templateSrv.replaceWithText(target.displayName);
+                    } else {
+                      result["data"]["data"]["name"] = streamName;
+                    }
                   }
-                }
-              });
+                });
 
-              return response.then(function (res) {
-                res.showErrorCountsAsRate = showErrorCountsAsRate;
-                return res;
+                return response.then(function (res) {
+                  res.showErrorCountsAsRate = showErrorCountsAsRate;
+                  return res;
+                });
               });
             });
 
-            return this.q.all(responses).then(function (response) {
-              var data = _.flatMap(response, function (result) {
+            return this.q.all(targetResponses).then(function (results) {
+              var data = _.flatMap(results, function (result) {
                 if (!result) {
                   return [];
                 }
+
                 var data = result["data"]["data"];
                 var attributes = data["attributes"];
                 var name = data["name"];
@@ -145,7 +155,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
           key: 'testDatasource',
           value: function testDatasource() {
             return this.doRequest({
-              url: this.url + '/public/v0.1/' + this.organizationName + '/projects/' + this.projectName,
+              url: this.url + '/public/' + version + '/' + this.organizationName + '/projects/' + this.projectName,
               method: 'GET'
             }).then(function (response) {
               if (response.status === 200) {
@@ -162,26 +172,115 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
           }
         }, {
           key: 'metricFindQuery',
-          value: function metricFindQuery() {
+          value: function metricFindQuery(grafanaQuery) {
+            var interpolated = this.templateSrv.replace(grafanaQuery, null, 'regex');
+
+            var queryMapper = this.defaultMapper();
+            if (interpolated) {
+              queryMapper = this.parseQuery(interpolated);
+            }
+
             return this.doRequest({
-              url: this.url + '/public/v0.1/' + this.organizationName + '/projects/' + this.projectName + '/searches',
+              url: this.url + '/public/' + version + '/' + this.organizationName + '/projects/' + this.projectName + '/streams',
               method: 'GET'
             }).then(function (response) {
-              var searches = response.data.data;
-              return _.flatMap(searches, function (search) {
-                var attributes = search["attributes"];
+              var streams = response.data.data;
+              return _.flatMap(streams, function (stream) {
+                var attributes = stream["attributes"];
                 var name = attributes["name"];
-                var query = attributes["query"];
-                var savedSearchId = search["id"];
+                var stream_query = attributes["query"];
+                var streamId = stream["id"];
 
-                // Don't duplicate if the name and query are the same
-                if (name.trim() === query.trim()) {
-                  return [{ text: name, value: savedSearchId }];
-                }
-
-                return [{ text: query, value: savedSearchId }, { text: name, value: savedSearchId }];
+                return queryMapper(name, stream_query, streamId);
               });
             });
+          }
+        }, {
+          key: 'defaultMapper',
+          value: function defaultMapper() {
+            return function (name, stream_query, id) {
+              // Don't duplicate if the name and stream_query are the same
+              if (name.trim() === stream_query.trim()) {
+                return [{ text: name, value: id }];
+              }
+
+              return [{ text: stream_query, value: id }, { text: name, value: id }];
+            };
+          }
+        }, {
+          key: 'parseQuery',
+          value: function parseQuery(grafanaQuery) {
+            if (grafanaQuery.startsWith('stream_ids(')) {
+              return this.parseStreamIdsQuery(grafanaQuery);
+            } else if (grafanaQuery.startsWith('attributes(')) {
+              return this.parseAttributesQuery(grafanaQuery);
+            } else {
+              throw new Error('Unknown query provided: ' + grafanaQuery);
+            }
+          }
+        }, {
+          key: 'parseStreamIdsQuery',
+          value: function parseStreamIdsQuery(grafanaQuery) {
+            var _this2 = this;
+
+            var matches = grafanaQuery.match(/stream_ids\(([^\!=~]+)(\!?=~?)"(.*)"\)$/);
+            if (matches && matches.length == 4) {
+              var attribute_name = matches[1],
+                  operator = matches[2],
+                  filter_value = matches[3];
+              return function (name, stream_query, id) {
+                switch (attribute_name) {
+                  case "name":
+                    return _this2.applyOperator(name, operator, filter_value, id);
+                  case "stream_query":
+                    return _this2.applyOperator(stream_query, operator, filter_value, id);
+                  default:
+                    throw new Error('Unknown attribute provided in the stream_ids() query: ' + attribute_name);
+                }
+              };
+            }
+            throw new Error('Unknown query provided: ' + grafanaQuery);
+          }
+        }, {
+          key: 'applyOperator',
+          value: function applyOperator(attribute, operator, filter_value, id) {
+            var match = void 0;
+            var not = false;
+            if (operator.charAt(0) == "!") {
+              operator = operator.substring(1);
+              not = true;
+            }
+            switch (operator) {
+              case "=":
+                match = attribute == filter_value;
+                break;
+              case "=~":
+                var regex = new RegExp(filter_value);
+                match = regex.test(attribute);
+                break;
+              default:
+                throw new Error('Unknown operator provided: ' + operator);
+            }
+            match ^= not;
+            return match ? [{ text: '' + attribute, value: id }] : [];
+          }
+        }, {
+          key: 'parseAttributesQuery',
+          value: function parseAttributesQuery(grafanaQuery) {
+            var matches = grafanaQuery.match(/^attributes\(([^)]+)\)$/);
+            if (matches && matches.length == 2) {
+              return function (name, stream_query, id) {
+                switch (matches[1]) {
+                  case "name":
+                    return [{ text: name }];
+                  case "stream_query":
+                    return [{ text: stream_query }];
+                  default:
+                    throw new Error('Unknown attribute provided in the attributes() query: ' + matches[1]);
+                }
+              };
+            }
+            throw new Error('Unknown query provided: ' + grafanaQuery);
           }
         }, {
           key: 'doRequest',
@@ -195,7 +294,16 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
             var oldest = options.range.from;
             var youngest = options.range.to;
 
-            var resolutionMs = Math.max(youngest.diff(oldest) / Math.min(maxDataPoints, maxDataPointsServer), minResolutionServer);
+            var resolutionMs = null;
+            if (target.resolution) {
+              var scopedVars = this.getScopedVars(options);
+              var interpolated = this.templateSrv.replace(target.resolution, scopedVars);
+              resolutionMs = kbn.interval_to_ms(interpolated);
+            }
+
+            if (!resolutionMs || resolutionMs < minResolutionServer) {
+              resolutionMs = Math.max(youngest.diff(oldest) / Math.min(maxDataPoints, maxDataPointsServer), minResolutionServer);
+            }
 
             return {
               "oldest-time": oldest.format(),
@@ -205,6 +313,16 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
               "include-ops-counts": target.showOpsCounts ? "1" : "0",
               "include-error-counts": target.showErrorCounts ? "1" : "0",
               "percentile": this.extractPercentiles(target.percentiles)
+            };
+          }
+        }, {
+          key: 'getScopedVars',
+          value: function getScopedVars(options) {
+            var msRange = options.range.to.diff(options.range.from);
+            var regularRange = kbn.secondsToHms(msRange / 1000);
+            return {
+              __interval: { text: options.interval, value: options.interval },
+              __range: { text: regularRange, value: regularRange }
             };
           }
         }, {
@@ -243,7 +361,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
         }, {
           key: 'parseExemplar',
           value: function parseExemplar(name, exemplars, maxDataPoints) {
-            var _this2 = this;
+            var _this3 = this;
 
             if (!exemplars) {
               return [];
@@ -260,7 +378,7 @@ System.register(['lodash', 'moment', 'app/core/app_events'], function (_export, 
                 return {
                   0: exemplar["duration_micros"] / 1000,
                   1: moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000),
-                  "link": _this2.traceLink(exemplar)
+                  2: _this3.traceLink(exemplar)
                 };
               })
             }];

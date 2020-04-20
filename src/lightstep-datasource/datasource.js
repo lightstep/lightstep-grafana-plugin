@@ -1,9 +1,11 @@
 import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
+import kbn from 'app/core/utils/kbn';
 
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
+const version = 'v0.2';
 
 // TODO - this is a work around given the existing graph API
 // Having a better mechanism for click capture would be ideal.
@@ -14,7 +16,7 @@ appEvents.on('graph-click', options => {
     _.get(options, ['item', 'seriesIndex']),
     'datapoints',
     _.get(options, ['item', 'dataIndex']),
-    'link',
+    2,
   ]);
   if (link) {
     window.open(link, '_blank');
@@ -50,39 +52,46 @@ export class LightStepDatasource {
       return this.q.when({data: []});
     }
 
-    const responses = targets.map(target => {
-      const savedSearchID = this.templateSrv.replace(target.target);
-      const savedSearchName = this.templateSrv.replaceWithText(target.target);
+    const targetResponses = targets.flatMap(target => {
+      const interpolatedIds = this.templateSrv.replace(target.target, null, 'pipe');
+      const interpolatedNames = this.templateSrv.replaceWithText(target.target);
 
-      if (!savedSearchID) {
+      if (!interpolatedIds) {
         return this.q.when(undefined);
       }
 
-      const query = this.buildQueryParameters(options, target, maxDataPoints);
-      const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
-      const response = this.doRequest({
-        url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches/${savedSearchID}/timeseries`,
-        method: 'GET',
-        params: query,
-      });
+      const streamIds = interpolatedIds.split('|');
+      const streamNames = interpolatedNames.split(' + ');
+      return _.zip(streamIds, streamNames).map(pair => {
+        const streamId = pair[0];
+        const streamName = pair[1];
+        const queryParams = this.buildQueryParameters(options, target, maxDataPoints);
+        const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
+        const response = this.doRequest({
+          url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
+          method: 'GET',
+          params: queryParams,
+        });
 
-      response.then(result => {
-        if (result && result["data"]["data"]) {
-          if (target.displayName) {
-            result["data"]["data"]["name"] = this.templateSrv.replaceWithText(target.displayName);
-          } else {
-            result["data"]["data"]["name"] = savedSearchName;
+        response.then(result => {
+          if (result && result["data"]["data"]) {
+            if (target.displayName) {
+              result["data"]["data"]["name"] = this.templateSrv.replaceWithText(target.displayName);
+            } else {
+              result["data"]["data"]["name"] = streamName;
+            }
           }
-        }
-      });
+        });
 
-      return response.then((res) => {
-        res.showErrorCountsAsRate = showErrorCountsAsRate;
-        return res;
+        return response.then((res) => {
+          res.showErrorCountsAsRate = showErrorCountsAsRate;
+          return res;
+        });
       });
+      
     });
 
-    return this.q.all(responses).then(results => {
+    return this.q.all(targetResponses).then(results => {
       const data = _.flatMap(results, result => {
         if (!result) {
           return [];
@@ -111,7 +120,7 @@ export class LightStepDatasource {
 
   testDatasource() {
     return this.doRequest({
-      url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}`,
+      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}`,
       method: 'GET',
     }).then(response => {
       if (response.status === 200) {
@@ -126,29 +135,111 @@ export class LightStepDatasource {
     return this.q.when({});
   }
 
-  metricFindQuery() {
+  metricFindQuery(grafanaQuery) {
+    const interpolated = this.templateSrv.replace(grafanaQuery, null, 'regex');
+
+    let queryMapper = this.defaultMapper();
+    if (interpolated) {
+      queryMapper = this.parseQuery(interpolated);
+    }
+
     return this.doRequest({
-      url: `${this.url}/public/v0.1/${this.organizationName}/projects/${this.projectName}/searches`,
+      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams`,
       method: 'GET',
     }).then(response => {
-      const searches = response.data.data;
-      return _.flatMap(searches, search => {
-        const attributes = search["attributes"];
+      const streams = response.data.data;  
+      return _.flatMap(streams, stream => {
+        const attributes = stream["attributes"];
         const name = attributes["name"];
-        const query = attributes["query"];
-        const savedSearchId = search["id"];
+        const stream_query = attributes["query"];
+        const streamId = stream["id"];
 
-        // Don't duplicate if the name and query are the same
-        if (name.trim() === query.trim()) {
-          return [ { text: name, value: savedSearchId } ];
-        }
-
-        return [
-          { text: query, value: savedSearchId },
-          { text: name, value: savedSearchId },
-        ];
+        return queryMapper(name, stream_query, streamId);
       });
     });
+  }
+
+  defaultMapper() {
+    return (name, stream_query, id) => {
+      // Don't duplicate if the name and stream_query are the same
+      if (name.trim() === stream_query.trim()) {
+        return [ { text: name, value: id } ];
+      }
+
+      return [
+        { text: stream_query, value: id },
+        { text: name, value: id },
+      ];
+    }
+  }
+
+  parseQuery(grafanaQuery) {
+    if (grafanaQuery.startsWith('stream_ids(')) {
+      return this.parseStreamIdsQuery(grafanaQuery);
+    } else if (grafanaQuery.startsWith('attributes(')) {
+      return this.parseAttributesQuery(grafanaQuery);
+    } else {
+      throw new Error(`Unknown query provided: ${grafanaQuery}`);
+    }
+  }
+
+  parseStreamIdsQuery(grafanaQuery) {
+    const matches = grafanaQuery.match(/stream_ids\(([^\!=~]+)(\!?=~?)"(.*)"\)$/)
+    if (matches && matches.length == 4) {
+      const attribute_name = matches[1],
+            operator = matches [2],
+            filter_value = matches[3];
+      return (name, stream_query, id) => {
+        switch (attribute_name) {
+          case "name":
+            return this.applyOperator(name, operator, filter_value, id)
+          case "stream_query":
+            return this.applyOperator(stream_query, operator, filter_value, id)
+          default:
+            throw new Error(`Unknown attribute provided in the stream_ids() query: ${attribute_name}`);
+        }
+      }
+    }
+    throw new Error(`Unknown query provided: ${grafanaQuery}`);
+  }
+
+  applyOperator(attribute, operator, filter_value, id) {
+    let match;
+    let not = false;
+    if (operator.charAt(0) == "!") {
+      operator = operator.substring(1);
+      not = true;
+    }
+    switch (operator) {
+      case "=":
+        match = attribute == filter_value
+        break;
+      case "=~":
+        const regex = new RegExp(filter_value)
+        match = regex.test(attribute)
+        break;
+      default:
+        throw new Error(`Unknown operator provided: ${operator}`);
+    }
+    match ^= not;
+    return match ? [{ text: `${attribute}`, value: id }] : []
+  }
+
+  parseAttributesQuery(grafanaQuery) {
+    const matches = grafanaQuery.match(/^attributes\(([^)]+)\)$/);
+    if (matches && matches.length == 2) {
+      return (name, stream_query, id) => {
+        switch (matches[1]) {
+          case "name":
+            return [{ text: name }]
+          case "stream_query":
+            return [{ text: stream_query }]
+          default:
+            throw new Error(`Unknown attribute provided in the attributes() query: ${matches[1]}`);
+        }
+      };
+    }
+    throw new Error(`Unknown query provided: ${grafanaQuery}`);
   }
 
   doRequest(options) {
@@ -160,14 +251,23 @@ export class LightStepDatasource {
     const oldest = options.range.from;
     const youngest = options.range.to;
 
-    const resolutionMs = Math.max(
-      youngest.diff(oldest) / Math.min(
-        maxDataPoints,
-        maxDataPointsServer
-      ),
-      minResolutionServer
-    );
-
+    let resolutionMs = null;
+    if (target.resolution) {
+      const scopedVars = this.getScopedVars(options);
+      const interpolated = this.templateSrv.replace(target.resolution, scopedVars)
+      resolutionMs = kbn.interval_to_ms(interpolated); 
+    }
+    
+    if (!resolutionMs || resolutionMs < minResolutionServer) {
+      resolutionMs = Math.max(
+        youngest.diff(oldest) / Math.min(
+          maxDataPoints,
+          maxDataPointsServer
+        ),
+        minResolutionServer
+      );
+    }
+    
     return {
       "oldest-time": oldest.format(),
       "youngest-time": youngest.format(),
@@ -176,6 +276,15 @@ export class LightStepDatasource {
       "include-ops-counts": target.showOpsCounts ? "1" : "0",
       "include-error-counts": target.showErrorCounts ? "1" : "0",
       "percentile": this.extractPercentiles(target.percentiles),
+    };
+  }
+
+  getScopedVars(options) {
+    const msRange = options.range.to.diff(options.range.from);
+    const regularRange = kbn.secondsToHms(msRange / 1000);
+    return {
+      __interval: { text: options.interval, value: options.interval },
+      __range: { text: regularRange, value: regularRange },
     };
   }
 
@@ -225,7 +334,7 @@ export class LightStepDatasource {
         return {
           0: exemplar["duration_micros"] / 1000,
           1: moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
-          "link": this.traceLink(exemplar),
+          2: this.traceLink(exemplar),
         };
       }),
     }];
