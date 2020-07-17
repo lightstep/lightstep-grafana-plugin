@@ -39,7 +39,6 @@ export class LightStepDatasource {
 
   headers() {
     return {
-      'Content-Type': 'application/json',
       'Authorization': "BEARER " + this.apiKey,
     };
   }
@@ -66,7 +65,7 @@ export class LightStepDatasource {
         const streamId = pair[0];
         const streamName = pair[1];
         const queryParams = this.buildQueryParameters(options, target, maxDataPoints);
-        const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
+        const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
         const response = this.doRequest({
           url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
           method: 'GET',
@@ -88,7 +87,7 @@ export class LightStepDatasource {
           return res;
         });
       });
-      
+
     });
 
     return this.q.all(targetResponses).then(results => {
@@ -147,7 +146,7 @@ export class LightStepDatasource {
       url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams`,
       method: 'GET',
     }).then(response => {
-      const streams = response.data.data;  
+      const streams = response.data.data;
       return _.flatMap(streams, stream => {
         const attributes = stream["attributes"];
         const name = attributes["name"];
@@ -255,9 +254,9 @@ export class LightStepDatasource {
     if (target.resolution) {
       const scopedVars = this.getScopedVars(options);
       const interpolated = this.templateSrv.replace(target.resolution, scopedVars)
-      resolutionMs = kbn.interval_to_ms(interpolated); 
+      resolutionMs = kbn.interval_to_ms(interpolated);
     }
-    
+
     if (!resolutionMs || resolutionMs < minResolutionServer) {
       resolutionMs = Math.max(
         youngest.diff(oldest) / Math.min(
@@ -267,7 +266,7 @@ export class LightStepDatasource {
         minResolutionServer
       );
     }
-    
+
     return {
       "oldest-time": oldest.format(),
       "youngest-time": youngest.format(),
@@ -369,7 +368,7 @@ export class LightStepDatasource {
     if (!errors[0] || !ops[0] || !errors[0].datapoints || !ops[0].datapoints || (errors[0].datapoints.length != ops[0].datapoints.length)) {
       return [];
     }
-  
+
     let timeMap = {};
     // make a map of moment ISO timestamps
     errors[0].datapoints.forEach((p) => {

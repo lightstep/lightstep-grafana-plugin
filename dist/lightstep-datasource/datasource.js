@@ -74,7 +74,6 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
           key: 'headers',
           value: function headers() {
             return {
-              'Content-Type': 'application/json',
               'Authorization': "BEARER " + this.apiKey
             };
           }
