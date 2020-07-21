@@ -107,6 +107,8 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
                 var streamName = pair[1];
                 var queryParams = _this.buildQueryParameters(options, target, maxDataPoints);
                 var showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
+                var showErrorCounts = Boolean(target.showErrorCounts);
+                var showOpsCounts = Boolean(target.showOpsCounts);
                 var response = _this.doRequest({
                   url: _this.url + '/public/' + version + '/' + _this.organizationName + '/projects/' + _this.projectName + '/streams/' + streamId + '/timeseries',
                   method: 'GET',
@@ -125,6 +127,8 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
 
                 return response.then(function (res) {
                   res.showErrorCountsAsRate = showErrorCountsAsRate;
+                  res.showOpsCounts = showOpsCounts;
+                  res.showErrorCounts = showErrorCounts;
                   return res;
                 });
               });
@@ -139,13 +143,27 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
                 var data = result["data"]["data"];
                 var attributes = data["attributes"];
                 var name = data["name"];
+
+                var series = [].concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints));
                 var ops = _this.parseCount(name + ' Ops counts', "ops-counts", attributes);
-                var errs = _this.parseCount(name + ' Error counts', "error-counts", attributes);
-                if (result.showErrorCountsAsRate) {
-                  errs = _this.parseRateFromCounts(name + ' Error rate', errs, ops);
+
+                if (result.showOpsCounts) {
+                  series = series.concat(ops);
                 }
 
-                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints), ops, errs);
+                if (result.showErrorCounts || result.showErrorCountsAsRate) {
+                  var errs = _this.parseCount(name + ' Error counts', "error-counts", attributes);
+
+                  if (result.showErrorCounts) {
+                    series = series.concat(errs);
+                  }
+
+                  if (result.showErrorCountsAsRate) {
+                    series = series.concat(_this.parseRateFromCounts(name + ' Error rate', errs, ops));
+                  }
+                }
+
+                return series;
               });
 
               return { data: data };
@@ -310,8 +328,8 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
               "youngest-time": youngest.format(),
               "resolution-ms": Math.floor(resolutionMs),
               "include-exemplars": target.showExemplars ? "1" : "0",
-              "include-ops-counts": target.showOpsCounts ? "1" : "0",
-              "include-error-counts": target.showErrorCounts ? "1" : "0",
+              "include-ops-counts": target.showOpsCounts || target.showErrorCountsAsRate ? "1" : "0",
+              "include-error-counts": target.showErrorCounts || target.showErrorCountsAsRate ? "1" : "0",
               "percentile": this.extractPercentiles(target.percentiles)
             };
           }
