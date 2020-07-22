@@ -3,7 +3,7 @@
 System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'], function (_export, _context) {
   "use strict";
 
-  var _, moment, appEvents, kbn, _createClass, maxDataPointsServer, minResolutionServer, version, LightStepDatasource;
+  var _, moment, appEvents, kbn, _createClass, maxDataPointsServer, minResolutionServer, version, secondMs, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -43,6 +43,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
       maxDataPointsServer = 1440;
       minResolutionServer = 60000;
       version = 'v0.2';
+      secondMs = 1000;
 
 
       // TODO - this is a work around given the existing graph API
@@ -106,7 +107,12 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
                 var streamId = pair[0];
                 var streamName = pair[1];
                 var queryParams = _this.buildQueryParameters(options, target, maxDataPoints);
+                var showErrorCounts = Boolean(target.showErrorCounts);
                 var showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
+                var showErrorsPerSec = Boolean(target.showErrorsPerSec);
+                var showOpsCounts = Boolean(target.showOpsCounts);
+                var showOpsPerSec = Boolean(target.showOpsPerSec);
+
                 var response = _this.doRequest({
                   url: _this.url + '/public/' + version + '/' + _this.organizationName + '/projects/' + _this.projectName + '/streams/' + streamId + '/timeseries',
                   method: 'GET',
@@ -125,6 +131,10 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
 
                 return response.then(function (res) {
                   res.showErrorCountsAsRate = showErrorCountsAsRate;
+                  res.showOpsCounts = showOpsCounts;
+                  res.showOpsPerSec = showOpsPerSec;
+                  res.showErrorCounts = showErrorCounts;
+                  res.showErrorsPerSec = showErrorsPerSec;
                   return res;
                 });
               });
@@ -138,14 +148,36 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
 
                 var data = result["data"]["data"];
                 var attributes = data["attributes"];
+                var resolution = attributes["resolution-ms"] / secondMs;
                 var name = data["name"];
+
+                var series = [].concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints));
+
                 var ops = _this.parseCount(name + ' Ops counts', "ops-counts", attributes);
-                var errs = _this.parseCount(name + ' Error counts', "error-counts", attributes);
-                if (result.showErrorCountsAsRate) {
-                  errs = _this.parseRateFromCounts(name + ' Error rate', errs, ops);
+
+                if (result.showOpsCounts) {
+                  series = series.concat(ops);
                 }
 
-                return _.concat(_this.parseLatencies(name, attributes), _this.parseExemplars(name, attributes, maxDataPoints), ops, errs);
+                if (result.showOpsPerSec && resolution) {
+                  series = series.concat(_this.parseCount(name + ' Ops per sec', "ops-counts", attributes, resolution));
+                }
+
+                if (result.showErrorCountsAsRate) {
+                  var errs = _this.parseCount(name + ' Error counts', "error-counts", attributes);
+
+                  if (result.showErrorCountsAsRate) {
+                    errs = _this.parseRateFromCounts(name + ' Error rate', errs, ops);
+                  }
+
+                  series = series.concat(errs);
+                }
+
+                if (result.showErrorsPerSec && resolution) {
+                  series = series.concat(_this.parseCount(name + ' Errors per sec', "error-counts", attributes, resolution));
+                }
+
+                return series;
               });
 
               return { data: data };
@@ -310,8 +342,8 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
               "youngest-time": youngest.format(),
               "resolution-ms": Math.floor(resolutionMs),
               "include-exemplars": target.showExemplars ? "1" : "0",
-              "include-ops-counts": target.showOpsCounts ? "1" : "0",
-              "include-error-counts": target.showErrorCounts ? "1" : "0",
+              "include-ops-counts": target.showOpsPerSec || target.showOpsCounts ? "1" : "0",
+              "include-error-counts": target.showErrorsPerSec || target.showErrorCounts ? "1" : "0",
               "percentile": this.extractPercentiles(target.percentiles)
             };
           }
@@ -394,7 +426,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
           }
         }, {
           key: 'parseCount',
-          value: function parseCount(name, key, attributes) {
+          value: function parseCount(name, key, attributes, resolution) {
             if (!attributes["time-windows"] || !attributes[key]) {
               return [];
             }
@@ -405,9 +437,18 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
               return moment((oldest + youngest) / 2);
             });
 
+            var points = attributes[key];
+
+            if (resolution) {
+              points = points.map(function (val) {
+                return val / resolution;
+              });
+            }
+
+            var datapoints = _.zip(points, timeWindows);
             return [{
               target: name,
-              datapoints: _.zip(attributes[key], timeWindows)
+              datapoints: datapoints
             }];
           }
         }, {

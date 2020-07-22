@@ -19,12 +19,20 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
       this.target.showOpsCounts = true;
     }
 
+    if (this.target.showOpsPerSec == null) {
+      this.target.showOpsPerSec = false;
+    }
+
     if (this.target.showErrorCounts == null) {
       this.target.showErrorCounts = true;
     }
 
     if (this.target.showErrorCountsAsRate == null) {
       this.target.showErrorCountsAsRate = false;
+    }
+
+    if (this.target.showErrorsPerSec == null) {
+      this.target.showErrorsPerSec = false;
     }
 
     this.scope = $scope;
@@ -52,4 +60,3 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
 }
 
 LightStepDatasourceQueryCtrl.templateUrl = 'lightstep-datasource/partials/query.editor.html';
-

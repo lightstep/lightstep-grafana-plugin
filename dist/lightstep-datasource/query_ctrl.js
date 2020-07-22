@@ -80,12 +80,20 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
             _this.target.showOpsCounts = true;
           }
 
+          if (_this.target.showOpsPerSec == null) {
+            _this.target.showOpsPerSec = false;
+          }
+
           if (_this.target.showErrorCounts == null) {
             _this.target.showErrorCounts = true;
           }
 
           if (_this.target.showErrorCountsAsRate == null) {
             _this.target.showErrorCountsAsRate = false;
+          }
+
+          if (_this.target.showErrorsPerSec == null) {
+            _this.target.showErrorsPerSec = false;
           }
 
           _this.scope = $scope;
