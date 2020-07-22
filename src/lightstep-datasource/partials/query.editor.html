@@ -66,9 +66,13 @@
       </gf-form-switch>
       <gf-form-switch class="gf-form" label="Ops Counts" checked="ctrl.target.showOpsCounts" on-change="ctrl.refresh()">
       </gf-form-switch>
+      <gf-form-switch class="gf-form" label="Ops per sec" checked="ctrl.target.showOpsPerSec" on-change="ctrl.refresh()">
+      </gf-form-switch>
       <gf-form-switch class="gf-form" label="Error Counts" checked="ctrl.target.showErrorCounts" on-change="ctrl.refresh()">
       </gf-form-switch>
       <gf-form-switch class="gf-form" label="Error Counts as Rate" checked="ctrl.target.showErrorCountsAsRate" on-change="ctrl.refresh()">
+      </gf-form-switch>
+      <gf-form-switch class="gf-form" label="Errors per sec" checked="ctrl.target.showErrorsPerSec" on-change="ctrl.refresh()">
       </gf-form-switch>
       <label class="gf-form-label">
         <a href="{{ctrl.linkToLightStep()}}" target="_blank" bs-tooltip="'Link to Graph in LightStep'">
