@@ -3,7 +3,7 @@
 System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
   "use strict";
 
-  var QueryCtrl, _createClass, defaultPercentiles, LightStepDatasourceQueryCtrl;
+  var QueryCtrl, _createClass, defaultPercentiles, defaultTarget, defaultType, LightStepDatasourceQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -59,6 +59,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
       }();
 
       defaultPercentiles = ["50", "99", "99.9", "99.99"];
+      defaultTarget = 'Select stream';
+      defaultType = 'timeserie';
 
       _export('LightStepDatasourceQueryCtrl', LightStepDatasourceQueryCtrl = function (_QueryCtrl) {
         _inherits(LightStepDatasourceQueryCtrl, _QueryCtrl);
@@ -89,7 +91,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           }
 
           _this.scope = $scope;
-          _this.target.type = 'timeserie';
+          _this.target.target = _this.target.target || defaultTarget;
+          _this.target.type = _this.target.type || defaultType;
           _this.savedSearches = _this.datasource.metricFindQuery();
           return _this;
         }

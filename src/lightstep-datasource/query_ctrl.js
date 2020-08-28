@@ -1,10 +1,12 @@
-import {QueryCtrl} from 'app/plugins/sdk';
+import { QueryCtrl } from 'app/plugins/sdk';
 import './css/query-editor.css!'
 
 const defaultPercentiles = ["50", "99", "99.9", "99.99"];
+const defaultTarget = 'Select stream'
+const defaultType = 'timeserie'
 
 export class LightStepDatasourceQueryCtrl extends QueryCtrl {
-  constructor($scope, $injector)  {
+  constructor($scope, $injector) {
     super($scope, $injector);
 
     if (this.target.percentiles == null) {
@@ -28,7 +30,8 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
     }
 
     this.scope = $scope;
-    this.target.type = 'timeserie';
+    this.target.target = this.target.target || defaultTarget;
+    this.target.type = this.target.type || defaultType;
     this.savedSearches = this.datasource.metricFindQuery();
   }
 
