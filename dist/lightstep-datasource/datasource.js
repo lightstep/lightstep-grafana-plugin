@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'], function (_export, _context) {
+System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn', './constants'], function (_export, _context) {
   "use strict";
 
-  var _, moment, appEvents, kbn, _createClass, maxDataPointsServer, minResolutionServer, version, LightStepDatasource;
+  var _, moment, appEvents, kbn, DEFAULT_TARGET_VALUE, _createClass, maxDataPointsServer, minResolutionServer, version, LightStepDatasource;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -20,6 +20,8 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
       appEvents = _appCoreApp_events.default;
     }, function (_appCoreUtilsKbn) {
       kbn = _appCoreUtilsKbn.default;
+    }, function (_constants) {
+      DEFAULT_TARGET_VALUE = _constants.DEFAULT_TARGET_VALUE;
     }],
     execute: function () {
       _createClass = function () {
@@ -83,16 +85,18 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
           value: function query(options) {
             var _this = this;
 
-            var targets = options.targets.filter(function (t) {
-              return !t.hide;
+            var visibleTargets = options.targets.filter(function (_ref) {
+              var hide = _ref.hide,
+                  target = _ref.target;
+              return !hide && target !== DEFAULT_TARGET_VALUE;
             });
             var maxDataPoints = options.maxDataPoints;
 
-            if (targets.length <= 0) {
+            if (visibleTargets.length <= 0) {
               return this.q.when({ data: [] });
             }
 
-            var targetResponses = targets.flatMap(function (target) {
+            var targetResponses = visibleTargets.flatMap(function (target) {
               var interpolatedIds = _this.templateSrv.replace(target.target, null, 'pipe');
               var interpolatedNames = _this.templateSrv.replaceWithText(target.target);
 

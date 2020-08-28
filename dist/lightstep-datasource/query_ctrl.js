@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
+System.register(['app/plugins/sdk', './css/query-editor.css!', './constants'], function (_export, _context) {
   "use strict";
 
-  var QueryCtrl, _createClass, defaultPercentiles, defaultTarget, defaultType, LightStepDatasourceQueryCtrl;
+  var QueryCtrl, DEFAULT_TARGET_VALUE, _createClass, defaultPercentiles, defaultType, LightStepDatasourceQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -38,7 +38,9 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
   return {
     setters: [function (_appPluginsSdk) {
       QueryCtrl = _appPluginsSdk.QueryCtrl;
-    }, function (_cssQueryEditorCss) {}],
+    }, function (_cssQueryEditorCss) {}, function (_constants) {
+      DEFAULT_TARGET_VALUE = _constants.DEFAULT_TARGET_VALUE;
+    }],
     execute: function () {
       _createClass = function () {
         function defineProperties(target, props) {
@@ -59,7 +61,6 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
       }();
 
       defaultPercentiles = ["50", "99", "99.9", "99.99"];
-      defaultTarget = 'Select stream';
       defaultType = 'timeserie';
 
       _export('LightStepDatasourceQueryCtrl', LightStepDatasourceQueryCtrl = function (_QueryCtrl) {
@@ -91,7 +92,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           }
 
           _this.scope = $scope;
-          _this.target.target = _this.target.target || defaultTarget;
+          _this.target.target = _this.target.target || DEFAULT_TARGET_VALUE;
           _this.target.type = _this.target.type || defaultType;
           _this.savedSearches = _this.datasource.metricFindQuery();
           return _this;

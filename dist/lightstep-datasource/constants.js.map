@@ -1,0 +1,1 @@
+{"version":3,"sources":["../../src/lightstep-datasource/constants.js"],"names":["DEFAULT_TARGET_VALUE"],"mappings":";;;;;;;;;sCAAaA,oB,GAAuB,e","file":"constants.js","sourcesContent":["export const DEFAULT_TARGET_VALUE = 'Select stream'"]}

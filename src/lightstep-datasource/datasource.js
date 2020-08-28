@@ -3,6 +3,8 @@ import moment from 'moment';
 import appEvents from 'app/core/app_events';
 import kbn from 'app/core/utils/kbn';
 
+import { DEFAULT_TARGET_VALUE } from './constants'
+
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
 const version = 'v0.2';
@@ -45,14 +47,14 @@ export class LightStepDatasource {
   }
 
   query(options) {
-    const targets = options.targets.filter(t => !t.hide);
+    const visibleTargets = options.targets.filter(({ hide, target }) => (!hide && target !== DEFAULT_TARGET_VALUE))
     const maxDataPoints = options.maxDataPoints;
 
-    if (targets.length <= 0) {
-      return this.q.when({data: []});
+    if (visibleTargets.length <= 0) {
+      return this.q.when({ data: [] });
     }
 
-    const targetResponses = targets.flatMap(target => {
+    const targetResponses = visibleTargets.flatMap(target => {
       const interpolatedIds = this.templateSrv.replace(target.target, null, 'pipe');
       const interpolatedNames = this.templateSrv.replaceWithText(target.target);
 
@@ -66,7 +68,7 @@ export class LightStepDatasource {
         const streamId = pair[0];
         const streamName = pair[1];
         const queryParams = this.buildQueryParameters(options, target, maxDataPoints);
-        const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate); 
+        const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
         const response = this.doRequest({
           url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
           method: 'GET',
@@ -88,7 +90,7 @@ export class LightStepDatasource {
           return res;
         });
       });
-      
+
     });
 
     return this.q.all(targetResponses).then(results => {
@@ -147,7 +149,7 @@ export class LightStepDatasource {
       url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams`,
       method: 'GET',
     }).then(response => {
-      const streams = response.data.data;  
+      const streams = response.data.data;
       return _.flatMap(streams, stream => {
         const attributes = stream["attributes"];
         const name = attributes["name"];
@@ -163,7 +165,7 @@ export class LightStepDatasource {
     return (name, stream_query, id) => {
       // Don't duplicate if the name and stream_query are the same
       if (name.trim() === stream_query.trim()) {
-        return [ { text: name, value: id } ];
+        return [{ text: name, value: id }];
       }
 
       return [
@@ -187,8 +189,8 @@ export class LightStepDatasource {
     const matches = grafanaQuery.match(/stream_ids\(([^\!=~]+)(\!?=~?)"(.*)"\)$/)
     if (matches && matches.length == 4) {
       const attribute_name = matches[1],
-            operator = matches [2],
-            filter_value = matches[3];
+        operator = matches[2],
+        filter_value = matches[3];
       return (name, stream_query, id) => {
         switch (attribute_name) {
           case "name":
@@ -255,9 +257,9 @@ export class LightStepDatasource {
     if (target.resolution) {
       const scopedVars = this.getScopedVars(options);
       const interpolated = this.templateSrv.replace(target.resolution, scopedVars)
-      resolutionMs = kbn.interval_to_ms(interpolated); 
+      resolutionMs = kbn.interval_to_ms(interpolated);
     }
-    
+
     if (!resolutionMs || resolutionMs < minResolutionServer) {
       resolutionMs = Math.max(
         youngest.diff(oldest) / Math.min(
@@ -267,7 +269,7 @@ export class LightStepDatasource {
         minResolutionServer
       );
     }
-    
+
     return {
       "oldest-time": oldest.format(),
       "youngest-time": youngest.format(),
@@ -369,7 +371,7 @@ export class LightStepDatasource {
     if (!errors[0] || !ops[0] || !errors[0].datapoints || !ops[0].datapoints || (errors[0].datapoints.length != ops[0].datapoints.length)) {
       return [];
     }
-  
+
     let timeMap = {};
     // make a map of moment ISO timestamps
     errors[0].datapoints.forEach((p) => {
@@ -391,7 +393,7 @@ export class LightStepDatasource {
       if (errCount == 0 || opsCount == 0) {
         timeMap[timestamp] = [0, curr[1]];
       } else {
-        let res = (errCount / opsCount)*100;
+        let res = (errCount / opsCount) * 100;
         timeMap[timestamp] = [res, curr[1]];
       }
     });
@@ -415,7 +417,7 @@ export class LightStepDatasource {
     return (percentiles)
       .toString()
       .split(",")
-      .map(percentile => percentile.replace(/(^\s+|\s+$)/g,''))
+      .map(percentile => percentile.replace(/(^\s+|\s+$)/g, ''))
       .filter(percentile => percentile);
   }
 }
