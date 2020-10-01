@@ -15,9 +15,7 @@
       "name": "Lightstep",
       "url": "https://lightstep.com"
     },
-    "keywords": [
-      "lightstep app"
-    ],
+    "keywords": ["lightstep app"],
     "logos": {
       "small": "lightstep-datasource/img/lightstep_logo.svg",
       "large": "lightstep-datasource/img/lightstep_logo.svg"
@@ -32,8 +30,8 @@
         "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"
       }
     ],
-    "version": "1.1.1",
-    "updated": "2020-09-30"
+    "version": "1.1.2",
+    "updated": "2020-10-01"
   },
   "includes": [
     {
