@@ -2,14 +2,11 @@
   "name": "LightStep",
   "id": "grafana-lightstep-datasource",
   "type": "datasource",
-
   "partials": {
     "config": "partials/config.html"
   },
-
   "metrics": true,
   "annotations": true,
-
   "info": {
     "description": "lightstep datasource",
     "author": {
@@ -21,15 +18,20 @@
       "large": "img/lightstep_logo.svg"
     },
     "links": [
-      {"name": "GitHub", "url": "https://github.com/lightstep/lightstep-grafana-plugin"},
-      {"name": "Apache License", "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"}
+      {
+        "name": "GitHub",
+        "url": "https://github.com/lightstep/lightstep-grafana-plugin"
+      },
+      {
+        "name": "Apache License",
+        "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"
+      }
     ],
-    "version": "1.4.0",
-    "updated": "2020-03-26"
+    "version": "1.4.1",
+    "updated": "2020-09-30"
   },
-
   "dependencies": {
     "grafanaVersion": "4.6.x",
-    "plugins": [ ]
+    "plugins": []
   }
 }
