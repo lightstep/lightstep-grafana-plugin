@@ -27,7 +27,7 @@ class GraphCtrl extends MetricsPanelCtrl {
     this.annotations = [];
     this.alertState = null;
 
-    this.annotationsPromise = null;
+    this.annotationsPromise = Promise.resolve({ annotations: [] });
     this.dataWarning = null;
     this.colors = [];
     this.subTabIndex = 0;
