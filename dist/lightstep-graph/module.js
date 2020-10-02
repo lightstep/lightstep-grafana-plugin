@@ -4600,7 +4600,9 @@ function (_MetricsPanelCtrl) {
     _this.dataList = [];
     _this.annotations = [];
     _this.alertState = null;
-    _this.annotationsPromise = null;
+    _this.annotationsPromise = Promise.resolve({
+      annotations: []
+    });
     _this.dataWarning = null;
     _this.colors = [];
     _this.subTabIndex = 0;
@@ -5097,7 +5099,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         tooltip.show(evt.pos);
       }, scope);
 
-      _core.appEvents.on('graph-hover-clear', function (event, info) {
+      _core.appEvents.on("graph-hover-clear", function (event, info) {
         if (plot) {
           tooltip.clear(plot);
         }
@@ -5120,9 +5122,21 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         }
       }
 
+      function getHeight() {
+        if (ctrl.height) {
+          return ctrl.height;
+        }
+
+        if (ctrl.scope.$parent.size.height) {
+          return ctrl.scope.$parent.size.height;
+        }
+
+        throw new Error('Unable to calculate height of graph');
+      }
+
       function setElementHeight() {
         try {
-          var height = ctrl.height - getLegendHeight(ctrl.height);
+          var height = getHeight() - getLegendHeight(ctrl.height);
           elem.css('height', height + 'px');
           return true;
         } catch (e) {
@@ -5298,7 +5312,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
             borderWidth: 0,
             hoverable: true,
             clickable: true,
-            color: '#c8c8c8',
+            color: "#c8c8c8",
             margin: {
               left: 0,
               right: 0
@@ -5307,10 +5321,10 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
           },
           selection: {
             mode: "x",
-            color: '#666'
+            color: "#666"
           },
           crosshair: {
-            mode: 'x'
+            mode: "x"
           }
         };
 
@@ -5325,10 +5339,10 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         }
 
         switch (panel.xaxis.mode) {
-          case 'series':
+          case "series":
             {
               options.series.bars.barWidth = 0.7;
-              options.series.bars.align = 'center';
+              options.series.bars.align = "center";
 
               for (var _i = 0; _i < data.length; _i++) {
                 var _series = data[_i];
@@ -5339,7 +5353,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
               break;
             }
 
-          case 'histogram':
+          case "histogram":
             {
               var bucketSize = 0;
               var values = (0, _histogram.getSeriesValues)(data);
@@ -5368,10 +5382,10 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
               break;
             }
 
-          case 'table':
+          case "table":
             {
               options.series.bars.barWidth = 0.7;
-              options.series.bars.align = 'center';
+              options.series.bars.align = "center";
               addXTableAxis(options);
               break;
             }
@@ -5578,7 +5592,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
       }
 
       function parseNumber(value) {
-        if (value === null || typeof value === 'undefined') {
+        if (value === null || typeof value === "undefined") {
           return null;
         }
 
