@@ -2,9 +2,7 @@
   "type": "panel",
   "name": "LightStep Graph",
   "id": "grafana-lightstep-graph",
-
   "annotations": true,
-
   "info": {
     "description": "LightStep Graph that implements exemplars",
     "author": {
@@ -25,10 +23,9 @@
         "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"
       }
     ],
-    "version": "1.0.1",
-    "updated": "2020-10-01"
+    "version": "1.0.2",
+    "updated": "2020-10-04"
   },
-
   "dependencies": {
     "grafanaVersion": "4.6.x",
     "plugins": []
