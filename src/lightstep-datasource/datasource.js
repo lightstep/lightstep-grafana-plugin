@@ -2,6 +2,7 @@ import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
 import kbn from 'app/core/utils/kbn';
+import { DEFAULT_TARGET_VALUE } from './constants';
 
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
@@ -45,7 +46,7 @@ export class LightStepDatasource {
   }
 
   query(options) {
-    const targets = options.targets.filter(t => !t.hide);
+    const targets = options.targets.filter(t => !t.hide && t.target !== DEFAULT_TARGET_VALUE);
     const maxDataPoints = options.maxDataPoints;
 
     if (targets.length <= 0) {
