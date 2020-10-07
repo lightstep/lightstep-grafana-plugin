@@ -1,6 +1,6 @@
 {
   "type": "app",
-  "name": "LightStep App",
+  "name": "Lightstep App",
   "id": "lightstep-app",
   "pages": [
     {
@@ -10,7 +10,7 @@
     }
   ],
   "info": {
-    "description": "LightStep app for Grafana",
+    "description": "Lightstep app for Grafana",
     "author": {
       "name": "Lightstep",
       "url": "https://lightstep.com"
@@ -32,17 +32,17 @@
         "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"
       }
     ],
-    "version": "1.1.5",
-    "updated": "2020-10-14"
+    "version": "1.1.6",
+    "updated": "2020-10-15"
   },
   "includes": [
     {
       "type": "panel",
-      "name": "LightStep Graph"
+      "name": "Lightstep Graph"
     },
     {
       "type": "datasource",
-      "name": "LightStep Datasource"
+      "name": "Lightstep Datasource"
     }
   ],
   "dependencies": {
