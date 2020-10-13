@@ -1,9 +1,9 @@
 'use strict';
 
-System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_export, _context) {
+System.register(['app/plugins/sdk', './constants', './css/query-editor.css!'], function (_export, _context) {
   "use strict";
 
-  var QueryCtrl, _createClass, defaultPercentiles, LightStepDatasourceQueryCtrl;
+  var QueryCtrl, DEFAULT_TARGET_VALUE, _createClass, defaultPercentiles, LightStepDatasourceQueryCtrl;
 
   function _classCallCheck(instance, Constructor) {
     if (!(instance instanceof Constructor)) {
@@ -38,6 +38,8 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
   return {
     setters: [function (_appPluginsSdk) {
       QueryCtrl = _appPluginsSdk.QueryCtrl;
+    }, function (_constants) {
+      DEFAULT_TARGET_VALUE = _constants.DEFAULT_TARGET_VALUE;
     }, function (_cssQueryEditorCss) {}],
     execute: function () {
       _createClass = function () {
@@ -89,6 +91,7 @@ System.register(['app/plugins/sdk', './css/query-editor.css!'], function (_expor
           }
 
           _this.scope = $scope;
+          _this.target.target = _this.target.target || DEFAULT_TARGET_VALUE;
           _this.target.type = 'timeserie';
           _this.savedSearches = _this.datasource.metricFindQuery();
           return _this;

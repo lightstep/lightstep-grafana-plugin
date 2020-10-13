@@ -1,4 +1,6 @@
-import {QueryCtrl} from 'app/plugins/sdk';
+import { QueryCtrl } from 'app/plugins/sdk';
+import { DEFAULT_TARGET_VALUE } from './constants';
+
 import './css/query-editor.css!'
 
 const defaultPercentiles = ["50", "99", "99.9", "99.99"];
@@ -28,6 +30,7 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
     }
 
     this.scope = $scope;
+    this.target.target = this.target.target || DEFAULT_TARGET_VALUE;
     this.target.type = 'timeserie';
     this.savedSearches = this.datasource.metricFindQuery();
   }
