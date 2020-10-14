@@ -109,15 +109,21 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         if (ctrl.height) {
           return ctrl.height;
         }
-        if (ctrl.scope.$parent.size.height) {
+        if (ctrl.scope.$parent && ctrl.scope.$parent.size) {
           return ctrl.scope.$parent.size.height;
+        }
+
+        // for backward compatibility (grafana 6.6.0 and earlier)
+        const panelContentElement = document.querySelector('.panel-content');
+        if (panelContentElement.clientHeight) {
+          return panelContentElement.clientHeight
         }
         throw new Error('Unable to calculate height of graph');
       }
 
       function setElementHeight() {
         try {
-          var height = getHeight() - getLegendHeight(ctrl.height);
+          var height = getHeight() - getLegendHeight(getHeight());
           elem.css('height', height + 'px');
 
           return true;

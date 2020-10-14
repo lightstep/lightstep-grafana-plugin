@@ -23,8 +23,8 @@
         "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"
       }
     ],
-    "version": "1.0.2",
-    "updated": "2020-10-04"
+    "version": "1.0.3",
+    "updated": "2020-10-13"
   },
   "dependencies": {
     "grafanaVersion": "4.6.x",
