@@ -1,18 +1,18 @@
-# LightStep Datasource
+# Lightstep Datasource
 
-Once you install the LightStep Datasource plugin, you should be able to add LightStep graphs into your Grafana dashboards.
+Once you install the Lightstep Datasource plugin, you should be able to add Lightstep graphs into your Grafana dashboards.
 
-We are currently alpha testing this plugin.
-
-After installing the plugin (see [Installing Plugins](http://docs.grafana.org/plugins/installation/)), you will need to reach out to your LightStep representative to enable your account for alpha access and generate the API key needed in the configuration screen.
+After installing the plugin (see [Installing Plugins](https://grafana.com/docs/grafana/latest/plugins/installation)), you will need a Lightstep API key (Account Settings > API Keys) with the Viewer role to configure it. 
 
 Follow the configuration screen instructions to configure the plugin.
+
+This plugin supports Grafana v7 and earlier.
 
 ## Templating
 See the [Templating](https://grafana.com/docs/grafana/latest/reference/templating/) documentation for an introduction to the templating feature and the different types of template variables.
 
 ### Query variable
-The LightStep datasource provides the following queries that you can specify in the `Query` field in the Variable edit view of Grafana.
+The Lightstep datasource provides the following queries that you can specify in the `Query` field in the Variable edit view of Grafana.
 
 | Name         | Description |
 | ------------ |-------------| 
