@@ -384,7 +384,7 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
               });
             }
 
-            var dp = exemplars.map(function (exemplar) {
+            var datapoints = exemplars.map(function (exemplar) {
               return {
                 0: exemplar["duration_micros"] / 1000,
                 1: moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000),
@@ -393,9 +393,9 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
             });
             return [{
               target: name,
-              datapoints: dp,
+              datapoints: datapoints,
               meta: {
-                traceLinks: dp.reduce(function (acc, curr, idx) {
+                traceLinks: datapoints.reduce(function (acc, curr, idx) {
                   acc[idx] = curr[2];
                   return acc;
                 }, {})

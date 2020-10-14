@@ -346,7 +346,7 @@ export class LightStepDatasource {
       exemplars = exemplars.filter((ignored, index) => index % skip === 0);
     }
 
-    const dp = exemplars.map(exemplar => {
+    const datapoints = exemplars.map(exemplar => {
       return {
         0: exemplar["duration_micros"] / 1000,
         1: moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
@@ -355,9 +355,9 @@ export class LightStepDatasource {
     });
     return [{
       target: name,
-      datapoints: dp,
+      datapoints,
       meta: {
-        traceLinks: dp.reduce((acc, curr, idx) => {
+        traceLinks: datapoints.reduce((acc, curr, idx) => {
           acc[idx] = curr[2];
           return acc;
         }, {})
