@@ -1,6 +1,6 @@
 # Lightstep Datasource
 
-Once you install the LightStep Datasource plugin, you should be able to add Lightstep graphs into your Grafana dashboards.
+Once you install the Lightstep Datasource plugin, you should be able to add Lightstep graphs into your Grafana dashboards.
 
 After installing the plugin (see [Installing Plugins](https://grafana.com/docs/grafana/latest/plugins/installation)), you will need a Lightstep API key (Account Settings > API Keys) with the Viewer role to configure it. 
 
