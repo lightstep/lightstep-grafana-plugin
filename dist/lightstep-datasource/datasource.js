@@ -50,7 +50,16 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
       // TODO - this is a work around given the existing graph API
       // Having a better mechanism for click capture would be ideal.
       appEvents.on('graph-click', function (options) {
-        var link = _.get(options, ['ctrl', 'dataList', _.get(options, ['item', 'seriesIndex']), 'datapoints', _.get(options, ['item', 'dataIndex']), 2]);
+        var seriesIndex = _.get(options, ['item', 'seriesIndex']);
+        var dataIndex = _.get(options, ['item', 'dataIndex']);
+        var link = _.get(options, ['ctrl', 'dataList', seriesIndex, 'datapoints', dataIndex, 2]);
+
+        // Grafana 6+ introduced a new data model that prohibits any data
+        // to be attached to the datapoints property.
+        if (!link) {
+          link = _.get(options, ['ctrl', 'dataList', seriesIndex, 'meta', 'traceLinks', dataIndex]);
+        }
+
         if (link) {
           window.open(link, '_blank');
         }
@@ -374,15 +383,23 @@ System.register(['lodash', 'moment', 'app/core/app_events', 'app/core/utils/kbn'
                 return index % skip === 0;
               });
             }
+
+            var dp = exemplars.map(function (exemplar) {
+              return {
+                0: exemplar["duration_micros"] / 1000,
+                1: moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000),
+                2: _this3.traceLink(exemplar)
+              };
+            });
             return [{
               target: name,
-              datapoints: exemplars.map(function (exemplar) {
-                return {
-                  0: exemplar["duration_micros"] / 1000,
-                  1: moment((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2 / 1000),
-                  2: _this3.traceLink(exemplar)
-                };
-              })
+              datapoints: dp,
+              meta: {
+                traceLinks: dp.reduce(function (acc, curr, idx) {
+                  acc[idx] = curr[2];
+                  return acc;
+                }, {})
+              }
             }];
           }
         }, {
