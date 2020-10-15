@@ -1,5 +1,5 @@
 {
-  "name": "LightStep",
+  "name": "Lightstep",
   "id": "grafana-lightstep-datasource",
   "type": "datasource",
   "partials": {
@@ -10,7 +10,7 @@
   "info": {
     "description": "lightstep datasource",
     "author": {
-      "name": "LightStep",
+      "name": "Lightstep",
       "url": "https://lightstep.com"
     },
     "logos": {
@@ -27,8 +27,8 @@
         "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"
       }
     ],
-    "version": "1.4.3",
-    "updated": "2020-10-13"
+    "version": "1.4.4",
+    "updated": "2020-10-15"
   },
   "dependencies": {
     "grafanaVersion": "4.6.x",
