@@ -2,13 +2,6 @@
   "type": "app",
   "name": "Lightstep App",
   "id": "lightstep-app",
-  "pages": [
-    {
-      "name": "Default",
-      "component": "LightStepAppCtrl",
-      "role": "Viewer"
-    }
-  ],
   "info": {
     "description": "Lightstep app for Grafana",
     "author": {
@@ -46,7 +39,7 @@
     }
   ],
   "dependencies": {
-    "grafanaVersion": "4.6.x",
+    "grafanaDependency": "4.6.x",
     "plugins": []
   }
 }
