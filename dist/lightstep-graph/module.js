@@ -4747,6 +4747,8 @@ function (_MetricsPanelCtrl) {
   }, {
     key: "issueQueries",
     value: function issueQueries(datasource) {
+      // Workaround for v8.x users, which ensures we have a value for `this.range`.
+      this.updateTimeRange(datasource);
       this.annotationsPromise = this.annotationsSrv.getAnnotations({
         dashboard: this.dashboard,
         panel: this.panel,
