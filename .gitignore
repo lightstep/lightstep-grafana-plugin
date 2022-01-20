@@ -34,4 +34,4 @@ grafana
 .notouch
 
 # Test artifacts
-/dist/test/
+/dist

@@ -1,8 +1,8 @@
 import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
-import kbn from 'app/core/utils/kbn';
 import { DEFAULT_TARGET_VALUE } from './constants';
+import {rangeUtil} from "@grafana/data";
 
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
@@ -71,7 +71,7 @@ export class LightStepDatasource {
 
     const targetResponses = targets.flatMap(target => {
       const interpolatedIds = this.templateSrv.replace(target.target, null, 'pipe');
-      const interpolatedNames = this.templateSrv.replaceWithText(target.target);
+      const interpolatedNames = this.templateSrv.replace(target.target, null, 'text');
 
       if (!interpolatedIds) {
         return this.q.when(undefined);
@@ -93,7 +93,7 @@ export class LightStepDatasource {
         response.then(result => {
           if (result && result["data"]["data"]) {
             if (target.displayName) {
-              result["data"]["data"]["name"] = this.templateSrv.replaceWithText(target.displayName);
+              result["data"]["data"]["name"] = this.templateSrv.replace(target.displayName, null, 'text');
             } else {
               result["data"]["data"]["name"] = streamName;
             }
@@ -272,7 +272,7 @@ export class LightStepDatasource {
     if (target.resolution) {
       const scopedVars = this.getScopedVars(options);
       const interpolated = this.templateSrv.replace(target.resolution, scopedVars)
-      resolutionMs = kbn.interval_to_ms(interpolated);
+      resolutionMs = rangeUtil.intervalToMs(interpolated);
     }
 
     if (!resolutionMs || resolutionMs < minResolutionServer) {
@@ -298,7 +298,7 @@ export class LightStepDatasource {
 
   getScopedVars(options) {
     const msRange = options.range.to.diff(options.range.from);
-    const regularRange = kbn.secondsToHms(msRange / 1000);
+    const regularRange = rangeUtil.secondsToHms(msRange / 1000);
     return {
       __interval: { text: options.interval, value: options.interval },
       __range: { text: regularRange, value: regularRange },

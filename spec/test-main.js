@@ -7,8 +7,8 @@ prunk.mock('./css/query-editor.css!', 'no css, dude.');
 prunk.mock('app/core/app_events', {
     on: function() {}
 });
-prunk.mock('app/core/utils/kbn', {
-    interval_to_ms: function(interval) {
+prunk.mock('_data', {
+    intervalToMs: function(interval) {
         if (interval === '1h') {
             return 60 * 60 * 1000;
         }

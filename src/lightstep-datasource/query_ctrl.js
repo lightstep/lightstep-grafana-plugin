@@ -55,4 +55,3 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
 }
 
 LightStepDatasourceQueryCtrl.templateUrl = 'lightstep-datasource/partials/query.editor.html';
-
