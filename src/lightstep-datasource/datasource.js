@@ -6,6 +6,8 @@ import {rangeUtil} from "@grafana/data";
 
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
+const opCountKey = "ops-counts";
+const errCountKey = "error-counts";
 
 // TODO - this is a work around given the existing graph API
 // Having a better mechanism for click capture would be ideal.
@@ -112,6 +114,12 @@ export class LightStepDatasource {
 
         return response.then((res) => {
           res.showErrorCountsAsRate = showErrorCountsAsRate;
+          res.showOpsCounts = target.showOpsCounts;
+          res.showRatePerSec = target.showRatePerSec;
+          res.showRatePerMin = target.showRatePerMin;
+          res.showErrorCounts = target.showErrorCounts;
+          res.showErrorsPerSec = target.showErrorsPerSec;
+          res.showErrorsPerMin = target.showErrorsPerMin;
           return res;
         });
       });
@@ -126,18 +134,23 @@ export class LightStepDatasource {
 
         const data = result["data"]["data"];
         const attributes = data["attributes"];
+        const secDivisor = attributes["resolution-ms"] / 1000;
+        const minDivisor = secDivisor / 60;
         const name = data["name"];
-        const ops = this.parseCount(`${name} Ops counts`, "ops-counts", attributes);
-        let errs = this.parseCount(`${name} Error counts`, "error-counts", attributes);
-        if (result.showErrorCountsAsRate) {
-          errs = this.parseRateFromCounts(`${name} Error rate`, errs, ops);
-        }
+
+        const ops = this.parseCount(`${name} Ops counts`, opCountKey, attributes);
+        const errs = this.parseCount(`${name} Error counts`, errCountKey, attributes);
 
         return _.concat(
           this.parseLatencies(name, attributes),
           this.parseExemplars(name, attributes, maxDataPoints, this.resolveProjectName(result.projectName)),
-          ops,
-          errs,
+          result.showOpsCounts ? ops : [],
+          result.showRatePerSec ? this.parseCount(`${name} Ops per sec`, opCountKey, attributes, secDivisor) : [],
+          result.showRatePerMin ? this.parseCount(`${name} Ops per min`, opCountKey, attributes, minDivisor) : [],
+          result.showErrorCounts ? errs : [],
+          result.showErrorCountsAsRate ? this.parseRateFromCounts(`${name} Error ratio`, errs, ops) : [],
+          result.showErrorsPerSec ? this.parseCount(`${name} Errors per sec`, errCountKey, attributes, secDivisor) : [],
+          result.showErrorsPerMin ? this.parseCount(`${name} Errors per min`, errCountKey, attributes, minDivisor) : [],
         );
       });
 
@@ -304,8 +317,8 @@ export class LightStepDatasource {
       "youngest-time": youngest.format(),
       "resolution-ms": Math.floor(resolutionMs),
       "include-exemplars": target.showExemplars ? "1" : "0",
-      "include-ops-counts": target.showOpsCounts ? "1" : "0",
-      "include-error-counts": target.showErrorCounts ? "1" : "0",
+      "include-ops-counts": (target.showRatePerSec || target.showRatePerMin || target.showOpsCounts || target.showErrorCountsAsRate) ? "1" : "0",
+      "include-error-counts": (target.showErrorsPerSec || target.showErrorsPerMin || target.showErrorCounts || target.showErrorCountsAsRate) ? "1" : "0",
       "percentile": this.extractPercentiles(target.percentiles),
     };
   }
@@ -387,7 +400,7 @@ export class LightStepDatasource {
     return `${this.dashboardURL}/${this.resolveProjectName(projectName)}/trace?span_guid=${spanGuid}`
   }
 
-  parseCount(name, key, attributes) {
+  parseCount(name, key, attributes, resolution) {
     if (!attributes["time-windows"] || !attributes[key]) {
       return [];
     }
@@ -398,9 +411,11 @@ export class LightStepDatasource {
       return moment((oldest + youngest) / 2);
     });
 
+    const points = attributes[key];
+
     return [{
       target: name,
-      datapoints: _.zip(attributes[key], timeWindows),
+      datapoints: _.zip(resolution ? points.map((val) => val / resolution) : points, timeWindows),
     }]
   }
 

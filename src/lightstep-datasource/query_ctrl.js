@@ -27,12 +27,28 @@ export class LightStepDatasourceQueryCtrl extends QueryCtrl {
       this.target.showOpsCounts = true;
     }
 
+    if (this.target.showRatePerSec == null) {
+      this.target.showRatePerSec = false;
+    }
+
+    if (this.target.showRatePerMin == null) {
+      this.target.showRatePerMin = false;
+    }
+
     if (this.target.showErrorCounts == null) {
       this.target.showErrorCounts = true;
     }
 
     if (this.target.showErrorCountsAsRate == null) {
       this.target.showErrorCountsAsRate = false;
+    }
+
+    if (this.target.showErrorsPerSec == null) {
+      this.target.showErrorsPerSec = false;
+    }
+
+    if (this.target.showErrorsPerMin == null) {
+      this.target.showErrorsPerMin = false;
     }
 
     this.scope = $scope;
