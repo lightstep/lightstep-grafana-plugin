@@ -85,7 +85,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_2__;
 /* 3 */
 /***/ (function(module, exports) {
 
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
 /* Javascript plotting library for jQuery, version 0.8.3.
 
@@ -3298,7 +3298,7 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_6__;
 /* 7 */
 /***/ (function(module, exports, __webpack_require__) {
 
-var __WEBPACK_AMD_DEFINE_RESULT__;// TinyColor v1.4.1
+var __WEBPACK_AMD_DEFINE_RESULT__;// TinyColor v1.4.2
 // https://github.com/bgrins/TinyColor
 // Brian Grinstead, MIT License
 
@@ -4532,58 +4532,75 @@ module.exports = function(module) {
 
 /***/ }),
 /* 10 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+Object.defineProperty(__webpack_exports__, "__esModule", { value: true });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "GraphCtrl", function() { return GraphCtrl; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "PanelCtrl", function() { return GraphCtrl; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__graph__ = __webpack_require__(11);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__legend__ = __webpack_require__(28);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__legend___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__legend__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__series_overrides_ctrl__ = __webpack_require__(29);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__series_overrides_ctrl___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__series_overrides_ctrl__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__thresholds_form__ = __webpack_require__(30);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__template__ = __webpack_require__(32);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_grafana_app_core_config__ = __webpack_require__(33);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6_grafana_app_core_config___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6_grafana_app_core_config__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_grafana_app_plugins_sdk__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7_grafana_app_plugins_sdk___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7_grafana_app_plugins_sdk__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__data_processor__ = __webpack_require__(34);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9__axes_editor__ = __webpack_require__(36);
+function _typeof(obj) { "@babel/helpers - typeof"; return _typeof = "function" == typeof Symbol && "symbol" == typeof Symbol.iterator ? function (obj) { return typeof obj; } : function (obj) { return obj && "function" == typeof Symbol && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }, _typeof(obj); }
 
+function _createForOfIteratorHelper(o, allowArrayLike) { var it = typeof Symbol !== "undefined" && o[Symbol.iterator] || o["@@iterator"]; if (!it) { if (Array.isArray(o) || (it = _unsupportedIterableToArray(o)) || allowArrayLike && o && typeof o.length === "number") { if (it) o = it; var i = 0; var F = function F() {}; return { s: F, n: function n() { if (i >= o.length) return { done: true }; return { done: false, value: o[i++] }; }, e: function e(_e) { throw _e; }, f: F }; } throw new TypeError("Invalid attempt to iterate non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); } var normalCompletion = true, didErr = false, err; return { s: function s() { it = it.call(o); }, n: function n() { var step = it.next(); normalCompletion = step.done; return step; }, e: function e(_e2) { didErr = true; err = _e2; }, f: function f() { try { if (!normalCompletion && it["return"] != null) it["return"](); } finally { if (didErr) throw err; } } }; }
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.PanelCtrl = exports.GraphCtrl = void 0;
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
 
-__webpack_require__(11);
-
-__webpack_require__(28);
-
-__webpack_require__(29);
-
-__webpack_require__(30);
-
-var _template = _interopRequireDefault(__webpack_require__(32));
-
-var _lodash = _interopRequireDefault(__webpack_require__(0));
-
-var _config = _interopRequireDefault(__webpack_require__(33));
-
-var _sdk = __webpack_require__(8);
-
-var _data_processor = __webpack_require__(34);
-
-var _axes_editor = __webpack_require__(36);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _typeof(obj) { if (typeof Symbol === "function" && typeof Symbol.iterator === "symbol") { _typeof = function _typeof(obj) { return typeof obj; }; } else { _typeof = function _typeof(obj) { return obj && typeof Symbol === "function" && obj.constructor === Symbol && obj !== Symbol.prototype ? "symbol" : typeof obj; }; } return _typeof(obj); }
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
+function _get() { if (typeof Reflect !== "undefined" && Reflect.get) { _get = Reflect.get; } else { _get = function _get(target, property, receiver) { var base = _superPropBase(target, property); if (!base) return; var desc = Object.getOwnPropertyDescriptor(base, property); if (desc.get) { return desc.get.call(arguments.length < 3 ? target : receiver); } return desc.value; }; } return _get.apply(this, arguments); }
 
-function _get(object, property, receiver) { if (object === null) object = Function.prototype; var desc = Object.getOwnPropertyDescriptor(object, property); if (desc === undefined) { var parent = Object.getPrototypeOf(object); if (parent === null) { return undefined; } else { return _get(parent, property, receiver); } } else if ("value" in desc) { return desc.value; } else { var getter = desc.get; if (getter === undefined) { return undefined; } return getter.call(receiver); } }
+function _superPropBase(object, property) { while (!Object.prototype.hasOwnProperty.call(object, property)) { object = _getPrototypeOf(object); if (object === null) break; } return object; }
 
-function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, enumerable: false, writable: true, configurable: true } }); if (superClass) Object.setPrototypeOf ? Object.setPrototypeOf(subClass, superClass) : subClass.__proto__ = superClass; }
+function _inherits(subClass, superClass) { if (typeof superClass !== "function" && superClass !== null) { throw new TypeError("Super expression must either be null or a function"); } subClass.prototype = Object.create(superClass && superClass.prototype, { constructor: { value: subClass, writable: true, configurable: true } }); Object.defineProperty(subClass, "prototype", { writable: false }); if (superClass) _setPrototypeOf(subClass, superClass); }
+
+function _setPrototypeOf(o, p) { _setPrototypeOf = Object.setPrototypeOf || function _setPrototypeOf(o, p) { o.__proto__ = p; return o; }; return _setPrototypeOf(o, p); }
+
+function _createSuper(Derived) { var hasNativeReflectConstruct = _isNativeReflectConstruct(); return function _createSuperInternal() { var Super = _getPrototypeOf(Derived), result; if (hasNativeReflectConstruct) { var NewTarget = _getPrototypeOf(this).constructor; result = Reflect.construct(Super, arguments, NewTarget); } else { result = Super.apply(this, arguments); } return _possibleConstructorReturn(this, result); }; }
+
+function _possibleConstructorReturn(self, call) { if (call && (_typeof(call) === "object" || typeof call === "function")) { return call; } else if (call !== void 0) { throw new TypeError("Derived constructors may only return object or undefined"); } return _assertThisInitialized(self); }
 
 function _assertThisInitialized(self) { if (self === void 0) { throw new ReferenceError("this hasn't been initialised - super() hasn't been called"); } return self; }
 
-var GraphCtrl =
-/*#__PURE__*/
-function (_MetricsPanelCtrl) {
+function _isNativeReflectConstruct() { if (typeof Reflect === "undefined" || !Reflect.construct) return false; if (Reflect.construct.sham) return false; if (typeof Proxy === "function") return true; try { Boolean.prototype.valueOf.call(Reflect.construct(Boolean, [], function () {})); return true; } catch (e) { return false; } }
+
+function _getPrototypeOf(o) { _getPrototypeOf = Object.setPrototypeOf ? Object.getPrototypeOf : function _getPrototypeOf(o) { return o.__proto__ || Object.getPrototypeOf(o); }; return _getPrototypeOf(o); }
+
+///<reference path="../../../headers/common.d.ts" />
+
+
+
+
+
+
+
+
+
+
+
+var GraphCtrl = /*#__PURE__*/function (_MetricsPanelCtrl) {
   _inherits(GraphCtrl, _MetricsPanelCtrl);
+
+  var _super = _createSuper(GraphCtrl);
 
   /** @ngInject */
   function GraphCtrl($scope, $injector, annotationsSrv) {
@@ -4591,7 +4608,7 @@ function (_MetricsPanelCtrl) {
 
     _classCallCheck(this, GraphCtrl);
 
-    _this = _possibleConstructorReturn(this, (GraphCtrl.__proto__ || Object.getPrototypeOf(GraphCtrl)).call(this, $scope, $injector));
+    _this = _super.call(this, $scope, $injector);
     _this.$scope = $scope;
     _this.$injector = $injector;
     _this.annotationsSrv = annotationsSrv;
@@ -4694,15 +4711,15 @@ function (_MetricsPanelCtrl) {
       thresholds: []
     };
 
-    _lodash.default.defaults(_this.panel, _this.panelDefaults);
+    __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.defaults(_this.panel, _this.panelDefaults);
 
-    _lodash.default.defaults(_this.panel.tooltip, _this.panelDefaults.tooltip);
+    __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.defaults(_this.panel.tooltip, _this.panelDefaults.tooltip);
 
-    _lodash.default.defaults(_this.panel.legend, _this.panelDefaults.legend);
+    __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.defaults(_this.panel.legend, _this.panelDefaults.legend);
 
-    _lodash.default.defaults(_this.panel.xaxis, _this.panelDefaults.xaxis);
+    __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.defaults(_this.panel.xaxis, _this.panelDefaults.xaxis);
 
-    _this.processor = new _data_processor.DataProcessor(_this.panel);
+    _this.processor = new __WEBPACK_IMPORTED_MODULE_8__data_processor__["a" /* DataProcessor */](_this.panel);
 
     _this.events.on('render', _this.onRender.bind(_assertThisInitialized(_this)));
 
@@ -4722,12 +4739,12 @@ function (_MetricsPanelCtrl) {
   _createClass(GraphCtrl, [{
     key: "onInitEditMode",
     value: function onInitEditMode() {
-      this.addEditorTab('Axes', _axes_editor.axesEditorComponent, 2);
+      this.addEditorTab('Axes', __WEBPACK_IMPORTED_MODULE_9__axes_editor__["a" /* axesEditorComponent */], 2);
       this.addEditorTab('Legend', 'public/app/plugins/panel/graph/tab_legend.html', 3);
       this.addEditorTab('Display', 'public/app/plugins/panel/graph/tab_display.html', 4);
 
-      if (_config.default.alertingEnabled) {
-        this.addEditorTab('Alert', _sdk.alertTab, 5);
+      if (__WEBPACK_IMPORTED_MODULE_6_grafana_app_core_config___default.a.alertingEnabled) {
+        this.addEditorTab('Alert', __WEBPACK_IMPORTED_MODULE_7_grafana_app_plugins_sdk__["alertTab"], 5);
       }
 
       this.subTabIndex = 0;
@@ -4752,7 +4769,7 @@ function (_MetricsPanelCtrl) {
         panel: this.panel,
         range: this.range
       });
-      return _get(GraphCtrl.prototype.__proto__ || Object.getPrototypeOf(GraphCtrl.prototype), "issueQueries", this).call(this, datasource);
+      return _get(_getPrototypeOf(GraphCtrl.prototype), "issueQueries", this).call(this, datasource);
     }
   }, {
     key: "zoomOut",
@@ -4797,15 +4814,14 @@ function (_MetricsPanelCtrl) {
           tip: 'No datapoints returned from data query'
         };
       } else {
-        var _iteratorNormalCompletion = true;
-        var _didIteratorError = false;
-        var _iteratorError = undefined;
+        var _iterator = _createForOfIteratorHelper(this.seriesList),
+            _step;
 
         try {
-          for (var _iterator = this.seriesList[Symbol.iterator](), _step; !(_iteratorNormalCompletion = (_step = _iterator.next()).done); _iteratorNormalCompletion = true) {
-            var _series = _step.value;
+          for (_iterator.s(); !(_step = _iterator.n()).done;) {
+            var series = _step.value;
 
-            if (_series.isOutsideRange) {
+            if (series.isOutsideRange) {
               this.dataWarning = {
                 title: 'Data points outside time range',
                 tip: 'Can be caused by timezone mismatch or missing time filter in query'
@@ -4814,18 +4830,9 @@ function (_MetricsPanelCtrl) {
             }
           }
         } catch (err) {
-          _didIteratorError = true;
-          _iteratorError = err;
+          _iterator.e(err);
         } finally {
-          try {
-            if (!_iteratorNormalCompletion && _iterator.return != null) {
-              _iterator.return();
-            }
-          } finally {
-            if (_didIteratorError) {
-              throw _iteratorError;
-            }
-          }
+          _iterator.f();
         }
       }
 
@@ -4848,33 +4855,22 @@ function (_MetricsPanelCtrl) {
         return;
       }
 
-      var _iteratorNormalCompletion2 = true;
-      var _didIteratorError2 = false;
-      var _iteratorError2 = undefined;
+      var _iterator2 = _createForOfIteratorHelper(this.seriesList),
+          _step2;
 
       try {
-        for (var _iterator2 = this.seriesList[Symbol.iterator](), _step2; !(_iteratorNormalCompletion2 = (_step2 = _iterator2.next()).done); _iteratorNormalCompletion2 = true) {
-          var _series2 = _step2.value;
+        for (_iterator2.s(); !(_step2 = _iterator2.n()).done;) {
+          var series = _step2.value;
+          series.applySeriesOverrides(this.panel.seriesOverrides);
 
-          _series2.applySeriesOverrides(this.panel.seriesOverrides);
-
-          if (_series2.unit) {
-            this.panel.yaxes[_series2.yaxis - 1].format = _series2.unit;
+          if (series.unit) {
+            this.panel.yaxes[series.yaxis - 1].format = series.unit;
           }
         }
       } catch (err) {
-        _didIteratorError2 = true;
-        _iteratorError2 = err;
+        _iterator2.e(err);
       } finally {
-        try {
-          if (!_iteratorNormalCompletion2 && _iterator2.return != null) {
-            _iterator2.return();
-          }
-        } finally {
-          if (_didIteratorError2) {
-            throw _iteratorError2;
-          }
-        }
+        _iterator2.f();
       }
     }
   }, {
@@ -4911,7 +4907,7 @@ function (_MetricsPanelCtrl) {
       } // check if every other series is hidden
 
 
-      var alreadyExclusive = _lodash.default.every(this.seriesList, function (value) {
+      var alreadyExclusive = __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.every(this.seriesList, function (value) {
         if (value.alias === serie.alias) {
           return true;
         }
@@ -4921,12 +4917,12 @@ function (_MetricsPanelCtrl) {
 
       if (alreadyExclusive) {
         // remove all hidden series
-        _lodash.default.each(this.seriesList, function (value) {
+        __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.each(this.seriesList, function (value) {
           delete _this3.hiddenSeries[value.alias];
         });
       } else {
         // hide all but this serie
-        _lodash.default.each(this.seriesList, function (value) {
+        __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.each(this.seriesList, function (value) {
           if (value.alias === serie.alias) {
             return;
           }
@@ -4938,7 +4934,7 @@ function (_MetricsPanelCtrl) {
   }, {
     key: "toggleAxis",
     value: function toggleAxis(info) {
-      var override = _lodash.default.find(this.panel.seriesOverrides, {
+      var override = __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.find(this.panel.seriesOverrides, {
         alias: info.alias
       });
 
@@ -4960,7 +4956,7 @@ function (_MetricsPanelCtrl) {
   }, {
     key: "removeSeriesOverride",
     value: function removeSeriesOverride(override) {
-      this.panel.seriesOverrides = _lodash.default.without(this.panel.seriesOverrides, override);
+      this.panel.seriesOverrides = __WEBPACK_IMPORTED_MODULE_5_lodash___default.a.without(this.panel.seriesOverrides, override);
       this.render();
     }
   }, {
@@ -4990,61 +4986,73 @@ function (_MetricsPanelCtrl) {
   }]);
 
   return GraphCtrl;
-}(_sdk.MetricsPanelCtrl);
+}(__WEBPACK_IMPORTED_MODULE_7_grafana_app_plugins_sdk__["MetricsPanelCtrl"]);
 
-exports.PanelCtrl = exports.GraphCtrl = GraphCtrl;
-GraphCtrl.template = _template.default;
+GraphCtrl.template = __WEBPACK_IMPORTED_MODULE_4__template__["a" /* default */];
+
 
 /***/ }),
 /* 11 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-__webpack_require__(3);
-
-__webpack_require__(12);
-
-__webpack_require__(13);
-
-__webpack_require__(14);
-
-__webpack_require__(15);
-
-__webpack_require__(16);
-
-__webpack_require__(17);
-
-__webpack_require__(18);
-
-__webpack_require__(19);
-
-var _jquery2 = _interopRequireDefault(__webpack_require__(1));
-
-var _lodash = _interopRequireDefault(__webpack_require__(0));
-
-var _moment = _interopRequireDefault(__webpack_require__(4));
-
-var _kbn = _interopRequireDefault(__webpack_require__(5));
-
-var _ticks = __webpack_require__(22);
-
-var _core = __webpack_require__(6);
-
-var _graph_tooltip = _interopRequireDefault(__webpack_require__(23));
-
-var _threshold_manager = __webpack_require__(24);
-
-var _event_manager = __webpack_require__(25);
-
-var _histogram = __webpack_require__(27);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_flot_jquery_flot__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_flot_jquery_flot___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vendor_flot_jquery_flot__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_flot_jquery_flot_selection__ = __webpack_require__(12);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1__vendor_flot_jquery_flot_selection___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1__vendor_flot_jquery_flot_selection__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_flot_jquery_flot_time__ = __webpack_require__(13);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2__vendor_flot_jquery_flot_time___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2__vendor_flot_jquery_flot_time__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_flot_jquery_flot_stack__ = __webpack_require__(14);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3__vendor_flot_jquery_flot_stack___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3__vendor_flot_jquery_flot_stack__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__vendor_flot_jquery_flot_stackpercent__ = __webpack_require__(15);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__vendor_flot_jquery_flot_stackpercent___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_4__vendor_flot_jquery_flot_stackpercent__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__vendor_flot_jquery_flot_fillbelow__ = __webpack_require__(16);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_5__vendor_flot_jquery_flot_fillbelow___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_5__vendor_flot_jquery_flot_fillbelow__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__vendor_flot_jquery_flot_crosshair__ = __webpack_require__(17);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_6__vendor_flot_jquery_flot_crosshair___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_6__vendor_flot_jquery_flot_crosshair__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__vendor_flot_jquery_flot_dashes__ = __webpack_require__(18);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_7__vendor_flot_jquery_flot_dashes___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_7__vendor_flot_jquery_flot_dashes__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__jquery_flot_events__ = __webpack_require__(19);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_8__jquery_flot_events___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_8__jquery_flot_events__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_jquery__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_9_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_9_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_10_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_10_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_moment__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_11_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_11_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_grafana_app_core_utils_kbn__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_12_grafana_app_core_utils_kbn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_12_grafana_app_core_utils_kbn__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_grafana_app_core_utils_ticks__ = __webpack_require__(22);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_13_grafana_app_core_utils_ticks___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_13_grafana_app_core_utils_ticks__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_grafana_app_core_core__ = __webpack_require__(6);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_14_grafana_app_core_core___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_14_grafana_app_core_core__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__graph_tooltip__ = __webpack_require__(23);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_15__graph_tooltip___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_15__graph_tooltip__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_16__threshold_manager__ = __webpack_require__(24);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_17__event_manager__ = __webpack_require__(25);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_18__histogram__ = __webpack_require__(27);
 ///<reference path="../../../headers/common.d.ts" />
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 /** @ngInject **/
+
 function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
   return {
     restrict: 'A',
@@ -5060,9 +5068,9 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
       var legendSideLastValue = null;
       var rootScope = scope.$root;
       var panelWidth = 0;
-      var eventManager = new _event_manager.EventManager(ctrl);
-      var thresholdManager = new _threshold_manager.ThresholdManager(ctrl);
-      var tooltip = new _graph_tooltip.default(elem, dashboard, scope, function () {
+      var eventManager = new __WEBPACK_IMPORTED_MODULE_17__event_manager__["a" /* EventManager */](ctrl);
+      var thresholdManager = new __WEBPACK_IMPORTED_MODULE_16__threshold_manager__["a" /* ThresholdManager */](ctrl);
+      var tooltip = new __WEBPACK_IMPORTED_MODULE_15__graph_tooltip___default.a(elem, dashboard, scope, function () {
         return sortedSeries;
       }); // panel events
 
@@ -5085,7 +5093,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         render_panel();
       }); // global events
 
-      _core.appEvents.on('graph-hover', function (evt) {
+      __WEBPACK_IMPORTED_MODULE_14_grafana_app_core_core__["appEvents"].on('graph-hover', function (evt) {
         // ignore other graph hover events if shared tooltip is disabled
         if (!dashboard.sharedTooltipModeEnabled()) {
           return;
@@ -5098,8 +5106,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
 
         tooltip.show(evt.pos);
       }, scope);
-
-      _core.appEvents.on("graph-hover-clear", function (event, info) {
+      __WEBPACK_IMPORTED_MODULE_14_grafana_app_core_core__["appEvents"].on("graph-hover-clear", function (event, info) {
         if (plot) {
           tooltip.clear(plot);
         }
@@ -5111,7 +5118,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         }
 
         if (panel.legend.alignAsTable) {
-          var legendSeries = _lodash.default.filter(data, function (series) {
+          var legendSeries = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.filter(data, function (series) {
             return series.hideFromLegend(panel.legend) === false;
           });
 
@@ -5176,9 +5183,9 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         for (var i = 0; i < data.length; i++) {
           var series = data[i];
           var axis = yaxis[series.yaxis - 1];
-          var formater = _kbn.default.valueFormats[panel.yaxes[series.yaxis - 1].format]; // decimal override
+          var formater = __WEBPACK_IMPORTED_MODULE_12_grafana_app_core_utils_kbn___default.a.valueFormats[panel.yaxes[series.yaxis - 1].format]; // decimal override
 
-          if (_lodash.default.isNumber(panel.decimals)) {
+          if (__WEBPACK_IMPORTED_MODULE_10_lodash___default.a.isNumber(panel.decimals)) {
             series.updateLegendValues(formater, panel.decimals, null);
           } else {
             // auto decimals
@@ -5195,12 +5202,12 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
 
 
         if (panel.yaxes[0].label && panel.yaxes[0].show) {
-          (0, _jquery2.default)("<div class='axisLabel left-yaxis-label flot-temp-elem'></div>").text(panel.yaxes[0].label).appendTo(elem);
+          __WEBPACK_IMPORTED_MODULE_9_jquery___default()("<div class='axisLabel left-yaxis-label flot-temp-elem'></div>").text(panel.yaxes[0].label).appendTo(elem);
         } // add right axis labels
 
 
         if (panel.yaxes[1].label && panel.yaxes[1].show) {
-          (0, _jquery2.default)("<div class='axisLabel right-yaxis-label flot-temp-elem'></div>").text(panel.yaxes[1].label).appendTo(elem);
+          __WEBPACK_IMPORTED_MODULE_9_jquery___default()("<div class='axisLabel right-yaxis-label flot-temp-elem'></div>").text(panel.yaxes[1].label).appendTo(elem);
         }
 
         thresholdManager.draw(plot);
@@ -5363,20 +5370,20 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
           case "histogram":
             {
               var bucketSize = 0;
-              var values = (0, _histogram.getSeriesValues)(data);
+              var values = Object(__WEBPACK_IMPORTED_MODULE_18__histogram__["b" /* getSeriesValues */])(data);
 
               if (data.length && values.length) {
-                var histMin = _lodash.default.min(_lodash.default.map(data, function (s) {
+                var histMin = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.min(__WEBPACK_IMPORTED_MODULE_10_lodash___default.a.map(data, function (s) {
                   return s.stats.min;
                 }));
 
-                var histMax = _lodash.default.max(_lodash.default.map(data, function (s) {
+                var histMax = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.max(__WEBPACK_IMPORTED_MODULE_10_lodash___default.a.map(data, function (s) {
                   return s.stats.max;
                 }));
 
                 var ticks = panel.xaxis.buckets || panelWidth / 50;
-                bucketSize = (0, _ticks.tickStep)(histMin, histMax, ticks);
-                var histogram = (0, _histogram.convertValuesToHistogram)(values, bucketSize);
+                bucketSize = Object(__WEBPACK_IMPORTED_MODULE_13_grafana_app_core_utils_ticks__["tickStep"])(histMin, histMax, ticks);
+                var histogram = Object(__WEBPACK_IMPORTED_MODULE_18__histogram__["a" /* convertValuesToHistogram */])(values, bucketSize);
                 data[0].data = histogram;
                 data[0].alias = data[0].label = data[0].id = "count";
                 data = [data[0]];
@@ -5408,13 +5415,13 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         thresholdManager.addFlotOptions(options, panel);
         eventManager.addFlotEvents(annotations, options);
         configureAxisOptions(data, options);
-        sortedSeries = _lodash.default.sortBy(data, function (series) {
+        sortedSeries = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.sortBy(data, function (series) {
           return series.zindex;
         });
 
         function callPlot(incrementRenderCounter) {
           try {
-            plot = _jquery2.default.plot(elem, sortedSeries, options);
+            plot = __WEBPACK_IMPORTED_MODULE_9_jquery___default.a.plot(elem, sortedSeries, options);
 
             if (ctrl.renderError) {
               delete ctrl.error;
@@ -5468,8 +5475,8 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
 
       function addTimeAxis(options) {
         var ticks = panelWidth / 100;
-        var min = _lodash.default.isUndefined(ctrl.range.from) ? null : ctrl.range.from.valueOf();
-        var max = _lodash.default.isUndefined(ctrl.range.to) ? null : ctrl.range.to.valueOf();
+        var min = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.isUndefined(ctrl.range.from) ? null : ctrl.range.from.valueOf();
+        var max = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.isUndefined(ctrl.range.to) ? null : ctrl.range.to.valueOf();
         options.xaxis = {
           timezone: dashboard.getTimezone(),
           show: panel.xaxis.show,
@@ -5483,7 +5490,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
       }
 
       function addXSeriesAxis(options) {
-        var ticks = _lodash.default.map(data, function (series, index) {
+        var ticks = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.map(data, function (series, index) {
           return [index + 1, series.alias];
         });
 
@@ -5503,11 +5510,11 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         var defaultTicks = panelWidth / 50;
 
         if (data.length && bucketSize) {
-          ticks = _lodash.default.map(data[0].data, function (point) {
+          ticks = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.map(data[0].data, function (point) {
             return point[0];
           });
-          min = _lodash.default.min(ticks);
-          max = _lodash.default.max(ticks); // Adjust tick step
+          min = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.min(ticks);
+          max = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.max(ticks); // Adjust tick step
 
           var _tickStep = bucketSize;
           var ticks_num = Math.floor((max - min) / _tickStep);
@@ -5546,14 +5553,14 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
       }
 
       function addXTableAxis(options) {
-        var ticks = _lodash.default.map(data, function (series, seriesIndex) {
-          return _lodash.default.map(series.datapoints, function (point, pointIndex) {
+        var ticks = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.map(data, function (series, seriesIndex) {
+          return __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.map(series.datapoints, function (point, pointIndex) {
             var tickIndex = seriesIndex * series.datapoints.length + pointIndex;
             return [tickIndex + 1, point[1]];
           });
         });
 
-        ticks = _lodash.default.flatten(ticks, true);
+        ticks = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.flatten(ticks, true);
         options.xaxis = {
           timezone: dashboard.getTimezone(),
           show: panel.xaxis.show,
@@ -5577,10 +5584,10 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         };
         options.yaxes.push(defaults);
 
-        if (_lodash.default.find(data, {
+        if (__WEBPACK_IMPORTED_MODULE_10_lodash___default.a.find(data, {
           yaxis: 2
         })) {
-          var secondY = _lodash.default.clone(defaults);
+          var secondY = __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.clone(defaults);
 
           secondY.index = 2;
           secondY.show = panel.yaxes[1].show;
@@ -5603,7 +5610,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
           return null;
         }
 
-        return _lodash.default.toNumber(value);
+        return __WEBPACK_IMPORTED_MODULE_10_lodash___default.a.toNumber(value);
       }
 
       function applyLogScale(axis, data) {
@@ -5719,7 +5726,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
 
       function configureAxisMode(axis, format) {
         axis.tickFormatter = function (val, axis) {
-          return _kbn.default.valueFormats[format](val, axis.tickDecimals, axis.scaledDecimals);
+          return __WEBPACK_IMPORTED_MODULE_12_grafana_app_core_utils_kbn___default.a.valueFormats[format](val, axis.tickDecimals, axis.scaledDecimals);
         };
       }
 
@@ -5760,8 +5767,8 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
         } else {
           scope.$apply(function () {
             timeSrv.setTime({
-              from: _moment.default.utc(ranges.xaxis.from),
-              to: _moment.default.utc(ranges.xaxis.to)
+              from: __WEBPACK_IMPORTED_MODULE_11_moment___default.a.utc(ranges.xaxis.from),
+              to: __WEBPACK_IMPORTED_MODULE_11_moment___default.a.utc(ranges.xaxis.to)
             });
           });
         }
@@ -5790,7 +5797,7 @@ function graphDirective($rootScope, timeSrv, popoverSrv, contextSrv) {
   };
 }
 
-_core.coreModule.directive('lightstepGraph', graphDirective);
+__WEBPACK_IMPORTED_MODULE_14_grafana_app_core_core__["coreModule"].directive('lightstepGraph', graphDirective);
 
 /***/ }),
 /* 12 */
@@ -6638,9 +6645,9 @@ charts or filled areas).
 (function ($) {
   var options = {
     series: {
-      stack: null // or number/string
+      stack: null
+    } // or number/string
 
-    }
   };
 
   function init(plot) {
@@ -6800,9 +6807,9 @@ charts or filled areas).
 (function ($) {
   var options = {
     series: {
-      stackpercent: null // or number/string
+      stackpercent: null
+    } // or number/string
 
-    }
   };
 
   function init(plot) {
@@ -7033,28 +7040,28 @@ charts or filled areas).
             start = true;
           } // Take note of equal points
           else if (points[i * ps + 1] === otherpoints[i * otherps + 1]) {
-              equal = true;
-              start = false;
-            } else if (points[i * ps + 1] > otherpoints[i * otherps + 1]) {
-              // If we begin above the desired point
-              if (start) {
-                openPolygon(points[i * ps], points[i * ps + 1]);
-              } // If an equal point preceeds this, start the polygon at that equal point
-              else if (equal) {
-                  openPolygon(points[(i - 1) * ps], points[(i - 1) * ps + 1]);
-                } // Otherwise, find the intersection point, and start it there
-                else {
-                    intersect = intersectionPoint(i);
-                    openPolygon(intersect[0], intersect[1]);
-                  }
-
-              topTraversal(i, end_i);
-              return;
-            } // If we go below equal, equal at any preceeding point is irrelevant
+            equal = true;
+            start = false;
+          } else if (points[i * ps + 1] > otherpoints[i * otherps + 1]) {
+            // If we begin above the desired point
+            if (start) {
+              openPolygon(points[i * ps], points[i * ps + 1]);
+            } // If an equal point preceeds this, start the polygon at that equal point
+            else if (equal) {
+              openPolygon(points[(i - 1) * ps], points[(i - 1) * ps + 1]);
+            } // Otherwise, find the intersection point, and start it there
             else {
-                start = false;
-                equal = false;
-              }
+              intersect = intersectionPoint(i);
+              openPolygon(intersect[0], intersect[1]);
+            }
+
+            topTraversal(i, end_i);
+            return;
+          } // If we go below equal, equal at any preceeding point is irrelevant
+          else {
+            start = false;
+            equal = false;
+          }
         }
       }
 
@@ -10637,8 +10644,8 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
       for (var j = initial; j < len; j += ps) {
         // Special case of a non stepped line, highlight the very last point just before a null point
-        if (!series.lines.steps && series.datapoints.points[initial] != null && series.datapoints.points[j] == null || //normal case
-        series.datapoints.points[j] > posX) {
+        if (!series.lines.steps && series.datapoints.points[initial] != null && series.datapoints.points[j] == null //normal case
+        || series.datapoints.points[j] > posX) {
           return Math.max(j - ps, 0) / ps;
         }
       }
@@ -10891,24 +10898,24 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
         self.renderAndShow(absoluteTime, seriesHtml, pos, xMode);
       } // single series tooltip
       else if (item) {
-          series = seriesList[item.seriesIndex];
-          group = '<div class="graph-tooltip-list-item"><div class="graph-tooltip-series-name">';
-          group += '<i class="fa fa-minus" style="color:' + item.series.color + ';"></i> ' + series.label + ':</div>';
+        series = seriesList[item.seriesIndex];
+        group = '<div class="graph-tooltip-list-item"><div class="graph-tooltip-series-name">';
+        group += '<i class="fa fa-minus" style="color:' + item.series.color + ';"></i> ' + series.label + ':</div>';
 
-          if (panel.stack && panel.tooltip.value_type === 'individual') {
-            value = item.datapoint[1] - item.datapoint[2];
-          } else {
-            value = item.datapoint[1];
-          }
+        if (panel.stack && panel.tooltip.value_type === 'individual') {
+          value = item.datapoint[1] - item.datapoint[2];
+        } else {
+          value = item.datapoint[1];
+        }
 
-          value = series.formatValue(value);
-          absoluteTime = dashboard.formatDate(item.datapoint[0], tooltipFormat);
-          group += '<div class="graph-tooltip-value">' + value + '</div>';
-          self.renderAndShow(absoluteTime, group, pos, xMode);
-        } // no hit
-        else {
-            $tooltip.detach();
-          }
+        value = series.formatValue(value);
+        absoluteTime = dashboard.formatDate(item.datapoint[0], tooltipFormat);
+        group += '<div class="graph-tooltip-value">' + value + '</div>';
+        self.renderAndShow(absoluteTime, group, pos, xMode);
+      } // no hit
+      else {
+        $tooltip.detach();
+      }
     };
   }
 
@@ -10918,33 +10925,26 @@ var __WEBPACK_AMD_DEFINE_ARRAY__, __WEBPACK_AMD_DEFINE_RESULT__;!(__WEBPACK_AMD_
 
 /***/ }),
 /* 24 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ThresholdManager = void 0;
-
-__webpack_require__(3);
-
-var _jquery2 = _interopRequireDefault(__webpack_require__(1));
-
-var _lodash = _interopRequireDefault(__webpack_require__(0));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ThresholdManager; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_flot_jquery_flot__ = __webpack_require__(3);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0__vendor_flot_jquery_flot___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0__vendor_flot_jquery_flot__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery__ = __webpack_require__(1);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_jquery___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_jquery__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_lodash__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var ThresholdManager =
-/*#__PURE__*/
-function () {
+
+
+
+var ThresholdManager = /*#__PURE__*/function () {
   function ThresholdManager(panelCtrl) {
     _classCallCheck(this, ThresholdManager);
 
@@ -10971,8 +10971,8 @@ function () {
   }, {
     key: "initDragging",
     value: function initDragging(evt) {
-      var handleElem = (0, _jquery2.default)(evt.currentTarget).parents(".alert-handle-wrapper");
-      var handleIndex = (0, _jquery2.default)(evt.currentTarget).data("handleIndex");
+      var handleElem = __WEBPACK_IMPORTED_MODULE_1_jquery___default()(evt.currentTarget).parents(".alert-handle-wrapper");
+      var handleIndex = __WEBPACK_IMPORTED_MODULE_1_jquery___default()(evt.currentTarget).data("handleIndex");
       var isMoving = false;
       var lastY = null;
       var posTop;
@@ -11036,7 +11036,7 @@ function () {
       var valueStr = value;
       var handleTopPos = 0; // handle no value
 
-      if (!_lodash.default.isNumber(value)) {
+      if (!__WEBPACK_IMPORTED_MODULE_2_lodash___default.a.isNumber(value)) {
         valueStr = '';
         handleTopPos = defaultHandleTopPos;
       } else {
@@ -11047,7 +11047,7 @@ function () {
         handleTopPos = Math.round(Math.min(Math.max(valueCanvasPos.top, 0), this.height) - 6);
       }
 
-      var handleElem = (0, _jquery2.default)(this.getHandleHtml(handleIndex, model, valueStr));
+      var handleElem = __WEBPACK_IMPORTED_MODULE_1_jquery___default()(this.getHandleHtml(handleIndex, model, valueStr));
       this.placeholder.append(handleElem);
       handleElem.toggleClass('alert-handle-wrapper--no-value', valueStr === '');
       handleElem.css({
@@ -11121,7 +11121,7 @@ function () {
       for (i = 0; i < panel.thresholds.length; i++) {
         threshold = panel.thresholds[i];
 
-        if (!_lodash.default.isNumber(threshold.value)) {
+        if (!__WEBPACK_IMPORTED_MODULE_2_lodash___default.a.isNumber(threshold.value)) {
           continue;
         }
 
@@ -11220,40 +11220,34 @@ function () {
   return ThresholdManager;
 }();
 
-exports.ThresholdManager = ThresholdManager;
-
 /***/ }),
 /* 25 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.EventManager = void 0;
-
-var _lodash = _interopRequireDefault(__webpack_require__(0));
-
-var _moment = _interopRequireDefault(__webpack_require__(4));
-
-var _tinycolor = _interopRequireDefault(__webpack_require__(7));
-
-var _sdk = __webpack_require__(8);
-
-var _colors = __webpack_require__(26);
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return EventManager; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment__ = __webpack_require__(4);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_moment___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_moment__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_tinycolor2__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_2_tinycolor2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_2_tinycolor2__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_grafana_app_plugins_sdk__ = __webpack_require__(8);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_3_grafana_app_plugins_sdk___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_3_grafana_app_plugins_sdk__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_4__colors__ = __webpack_require__(26);
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
-// From app/features/annotation/event.ts
-var AnnotationEvent = function AnnotationEvent() {
+
+
+
+
+ // From app/features/annotation/event.ts
+
+var AnnotationEvent = /*#__PURE__*/_createClass(function AnnotationEvent() {
   _classCallCheck(this, AnnotationEvent);
 
   this.dashboardId = 0;
@@ -11265,11 +11259,9 @@ var AnnotationEvent = function AnnotationEvent() {
   this.text = null;
   this.type = null;
   this.tags = null;
-};
+});
 
-var EventManager =
-/*#__PURE__*/
-function () {
+var EventManager = /*#__PURE__*/function () {
   function EventManager(panelCtrl) {
     _classCallCheck(this, EventManager);
 
@@ -11300,11 +11292,11 @@ function () {
       } // update time
 
 
-      this.event.time = (0, _moment.default)(range.from);
+      this.event.time = __WEBPACK_IMPORTED_MODULE_1_moment___default()(range.from);
       this.event.isRegion = false;
 
       if (range.to) {
-        this.event.timeEnd = (0, _moment.default)(range.to);
+        this.event.timeEnd = __WEBPACK_IMPORTED_MODULE_1_moment___default()(range.to);
         this.event.isRegion = true;
       }
 
@@ -11325,22 +11317,22 @@ function () {
 
       var types = {
         $__alerting: {
-          color: _colors.ALERTING_COLOR,
+          color: __WEBPACK_IMPORTED_MODULE_4__colors__["a" /* ALERTING_COLOR */],
           position: 'BOTTOM',
           markerSize: 5
         },
         $__ok: {
-          color: _colors.OK_COLOR,
+          color: __WEBPACK_IMPORTED_MODULE_4__colors__["d" /* OK_COLOR */],
           position: 'BOTTOM',
           markerSize: 5
         },
         $__no_data: {
-          color: _colors.NO_DATA_COLOR,
+          color: __WEBPACK_IMPORTED_MODULE_4__colors__["c" /* NO_DATA_COLOR */],
           position: 'BOTTOM',
           markerSize: 5
         },
         $__editing: {
-          color: _colors.DEFAULT_ANNOTATION_COLOR,
+          color: __WEBPACK_IMPORTED_MODULE_4__colors__["b" /* DEFAULT_ANNOTATION_COLOR */],
           position: 'BOTTOM',
           markerSize: 5
         }
@@ -11395,7 +11387,7 @@ function () {
       flotOptions.grid.eventSectionHeight = eventSectionMargin;
       flotOptions.xaxis.eventSectionHeight = eventSectionHeight;
       flotOptions.events = {
-        levels: _lodash.default.keys(types).length + 1,
+        levels: __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.keys(types).length + 1,
         data: annotations,
         types: types,
         manager: this
@@ -11406,25 +11398,23 @@ function () {
   return EventManager;
 }();
 
-exports.EventManager = EventManager;
-
 function getRegions(events) {
-  return _lodash.default.filter(events, 'isRegion');
+  return __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.filter(events, 'isRegion');
 }
 
 function addRegionMarking(regions, flotOptions) {
   var markings = flotOptions.grid.markings;
-  var defaultColor = _colors.DEFAULT_ANNOTATION_COLOR;
+  var defaultColor = __WEBPACK_IMPORTED_MODULE_4__colors__["b" /* DEFAULT_ANNOTATION_COLOR */];
   var fillColor;
 
-  _lodash.default.each(regions, function (region) {
+  __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.each(regions, function (region) {
     if (region.source) {
       fillColor = region.source.iconColor || defaultColor;
     } else {
       fillColor = defaultColor;
     }
 
-    fillColor = addAlphaToRGB(fillColor, _colors.REGION_FILL_ALPHA);
+    fillColor = addAlphaToRGB(fillColor, __WEBPACK_IMPORTED_MODULE_4__colors__["e" /* REGION_FILL_ALPHA */]);
     markings.push({
       xaxis: {
         from: region.min,
@@ -11436,7 +11426,7 @@ function addRegionMarking(regions, flotOptions) {
 }
 
 function addAlphaToRGB(colorString, alpha) {
-  var color = (0, _tinycolor.default)(colorString);
+  var color = __WEBPACK_IMPORTED_MODULE_2_tinycolor2___default()(colorString);
 
   if (color.isValid()) {
     color.setAlpha(alpha);
@@ -11448,90 +11438,82 @@ function addAlphaToRGB(colorString, alpha) {
 
 /***/ }),
 /* 26 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
+/* unused harmony export PALETTE_ROWS */
+/* unused harmony export PALETTE_COLUMNS */
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "b", function() { return DEFAULT_ANNOTATION_COLOR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "d", function() { return OK_COLOR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return ALERTING_COLOR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "c", function() { return NO_DATA_COLOR; });
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "e", function() { return REGION_FILL_ALPHA; });
+/* unused harmony export sortColorsByHue */
+/* unused harmony export hexToHsl */
+/* unused harmony export hslToHex */
+/* unused harmony export sortedColors */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_tinycolor2__ = __webpack_require__(7);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_tinycolor2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_tinycolor2__);
+function _toConsumableArray(arr) { return _arrayWithoutHoles(arr) || _iterableToArray(arr) || _unsupportedIterableToArray(arr) || _nonIterableSpread(); }
+
+function _nonIterableSpread() { throw new TypeError("Invalid attempt to spread non-iterable instance.\nIn order to be iterable, non-array objects must have a [Symbol.iterator]() method."); }
+
+function _unsupportedIterableToArray(o, minLen) { if (!o) return; if (typeof o === "string") return _arrayLikeToArray(o, minLen); var n = Object.prototype.toString.call(o).slice(8, -1); if (n === "Object" && o.constructor) n = o.constructor.name; if (n === "Map" || n === "Set") return Array.from(o); if (n === "Arguments" || /^(?:Ui|I)nt(?:8|16|32)(?:Clamped)?Array$/.test(n)) return _arrayLikeToArray(o, minLen); }
+
+function _iterableToArray(iter) { if (typeof Symbol !== "undefined" && iter[Symbol.iterator] != null || iter["@@iterator"] != null) return Array.from(iter); }
+
+function _arrayWithoutHoles(arr) { if (Array.isArray(arr)) return _arrayLikeToArray(arr); }
+
+function _arrayLikeToArray(arr, len) { if (len == null || len > arr.length) len = arr.length; for (var i = 0, arr2 = new Array(len); i < len; i++) { arr2[i] = arr[i]; } return arr2; }
 
 
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.sortColorsByHue = sortColorsByHue;
-exports.hexToHsl = hexToHsl;
-exports.hslToHex = hslToHex;
-exports.sortedColors = exports.default = exports.REGION_FILL_ALPHA = exports.NO_DATA_COLOR = exports.ALERTING_COLOR = exports.OK_COLOR = exports.DEFAULT_ANNOTATION_COLOR = exports.PALETTE_COLUMNS = exports.PALETTE_ROWS = void 0;
-
-var _lodash = _interopRequireDefault(__webpack_require__(0));
-
-var _tinycolor = _interopRequireDefault(__webpack_require__(7));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
-function _toConsumableArray(arr) { if (Array.isArray(arr)) { for (var i = 0, arr2 = new Array(arr.length); i < arr.length; i++) { arr2[i] = arr[i]; } return arr2; } else { return Array.from(arr); } }
 
 var PALETTE_ROWS = 4;
-exports.PALETTE_ROWS = PALETTE_ROWS;
 var PALETTE_COLUMNS = 14;
-exports.PALETTE_COLUMNS = PALETTE_COLUMNS;
 var DEFAULT_ANNOTATION_COLOR = 'rgba(0, 211, 255, 1)';
-exports.DEFAULT_ANNOTATION_COLOR = DEFAULT_ANNOTATION_COLOR;
 var OK_COLOR = "rgba(11, 237, 50, 1)";
-exports.OK_COLOR = OK_COLOR;
 var ALERTING_COLOR = "rgba(237, 46, 24, 1)";
-exports.ALERTING_COLOR = ALERTING_COLOR;
 var NO_DATA_COLOR = "rgba(150, 150, 150, 1)";
-exports.NO_DATA_COLOR = NO_DATA_COLOR;
 var REGION_FILL_ALPHA = 0.09;
-exports.REGION_FILL_ALPHA = REGION_FILL_ALPHA;
 var colors = ["#7EB26D", "#EAB839", "#6ED0E0", "#EF843C", "#E24D42", "#1F78C1", "#BA43A9", "#705DA0", "#508642", "#CCA300", "#447EBC", "#C15C17", "#890F02", "#0A437C", "#6D1F62", "#584477", "#B7DBAB", "#F4D598", "#70DBED", "#F9BA8F", "#F29191", "#82B5D8", "#E5A8E2", "#AEA2E0", "#629E51", "#E5AC0E", "#64B0C8", "#E0752D", "#BF1B00", "#0A50A1", "#962D82", "#614D93", "#9AC48A", "#F2C96D", "#65C5DB", "#F9934E", "#EA6460", "#5195CE", "#D683CE", "#806EB7", "#3F6833", "#967302", "#2F575E", "#99440A", "#58140C", "#052B51", "#511749", "#3F2B5B", "#E0F9D7", "#FCEACA", "#CFFAFF", "#F9E2D2", "#FCE2DE", "#BADFF4", "#F9D9F9", "#DEDAF7"];
-var _default = colors;
-exports.default = _default;
-
+/* unused harmony default export */ var _unused_webpack_default_export = (colors);
 function sortColorsByHue(hexColors) {
-  var hslColors = _lodash.default.map(hexColors, hexToHsl);
+  var hslColors = __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.map(hexColors, hexToHsl);
 
-  var sortedHSLColors = _lodash.default.sortBy(hslColors, ['h']);
+  var sortedHSLColors = __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.sortBy(hslColors, ['h']);
 
-  sortedHSLColors = _lodash.default.chunk(sortedHSLColors, PALETTE_ROWS);
-  sortedHSLColors = _lodash.default.map(sortedHSLColors, function (chunk) {
-    return _lodash.default.sortBy(chunk, 'l');
+  sortedHSLColors = __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.chunk(sortedHSLColors, PALETTE_ROWS);
+  sortedHSLColors = __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.map(sortedHSLColors, function (chunk) {
+    return __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.sortBy(chunk, 'l');
   });
-  sortedHSLColors = _lodash.default.flattenDeep(_lodash.default.zip.apply(_lodash.default, _toConsumableArray(sortedHSLColors)));
-  return _lodash.default.map(sortedHSLColors, hslToHex);
+  sortedHSLColors = __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.flattenDeep(__WEBPACK_IMPORTED_MODULE_0_lodash___default.a.zip.apply(__WEBPACK_IMPORTED_MODULE_0_lodash___default.a, _toConsumableArray(sortedHSLColors)));
+  return __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.map(sortedHSLColors, hslToHex);
 }
-
 function hexToHsl(color) {
-  return (0, _tinycolor.default)(color).toHsl();
+  return __WEBPACK_IMPORTED_MODULE_1_tinycolor2___default()(color).toHsl();
 }
-
 function hslToHex(color) {
-  return (0, _tinycolor.default)(color).toHexString();
+  return __WEBPACK_IMPORTED_MODULE_1_tinycolor2___default()(color).toHexString();
 }
-
 var sortedColors = sortColorsByHue(colors);
-exports.sortedColors = sortedColors;
 
 /***/ }),
 /* 27 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.getSeriesValues = getSeriesValues;
-exports.convertValuesToHistogram = convertValuesToHistogram;
-
-var _lodash = _interopRequireDefault(__webpack_require__(0));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
+/* harmony export (immutable) */ __webpack_exports__["b"] = getSeriesValues;
+/* harmony export (immutable) */ __webpack_exports__["a"] = convertValuesToHistogram;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
 
 /**
  * Convert series into array of series values.
  * @param data Array of series
  */
+
 function getSeriesValues(data) {
   var values = []; // Count histogam stats
 
@@ -11554,7 +11536,6 @@ function getSeriesValues(data) {
  * @param bucketSize
  */
 
-
 function convertValuesToHistogram(values, bucketSize) {
   var histogram = {};
 
@@ -11568,12 +11549,12 @@ function convertValuesToHistogram(values, bucketSize) {
     }
   }
 
-  var histogam_series = _lodash.default.map(histogram, function (count, bound) {
+  var histogam_series = __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.map(histogram, function (count, bound) {
     return [Number(bound), count];
   }); // Sort by Y axis values
 
 
-  return _lodash.default.sortBy(histogam_series, function (point) {
+  return __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.sortBy(histogam_series, function (point) {
     return point[0];
   });
 }
@@ -11949,29 +11930,21 @@ function getBucketBound(value, bucketSize) {
 
 /***/ }),
 /* 30 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.ThresholdFormCtrl = void 0;
-
-var _core_module = _interopRequireDefault(__webpack_require__(31));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+/* unused harmony export ThresholdFormCtrl */
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_grafana_app_core_core_module__ = __webpack_require__(31);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_grafana_app_core_core_module___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_grafana_app_core_core_module__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var ThresholdFormCtrl =
-/*#__PURE__*/
-function () {
+///<reference path="../../../headers/common.d.ts" />
+
+var ThresholdFormCtrl = /*#__PURE__*/function () {
   /** @ngInject */
   function ThresholdFormCtrl($scope) {
     var _this = this;
@@ -12044,11 +12017,8 @@ function () {
 
   return ThresholdFormCtrl;
 }();
-
-exports.ThresholdFormCtrl = ThresholdFormCtrl;
 var template = "\n<div class=\"gf-form-group\">\n  <h5>Thresholds</h5>\n  <p class=\"muted\" ng-show=\"ctrl.disabled\">\n    Visual thresholds options <strong>disabled.</strong>\n    Visit the Alert tab update your thresholds. <br>\n    To re-enable thresholds, the alert rule must be deleted from this panel.\n  </p>\n  <div ng-class=\"{'thresholds-form-disabled': ctrl.disabled}\">\n    <div class=\"gf-form-inline\" ng-repeat=\"threshold in ctrl.panel.thresholds\">\n      <div class=\"gf-form\">\n        <label class=\"gf-form-label\">T{{$index+1}}</label>\n      </div>\n\n      <div class=\"gf-form\">\n        <div class=\"gf-form-select-wrapper\">\n          <select class=\"gf-form-input\" ng-model=\"threshold.op\"\n                  ng-options=\"f for f in ['gt', 'lt']\" ng-change=\"ctrl.render()\" ng-disabled=\"ctrl.disabled\"></select>\n        </div>\n        <input type=\"number\" ng-model=\"threshold.value\" class=\"gf-form-input width-8\"\n               ng-change=\"ctrl.render()\" placeholder=\"value\" ng-disabled=\"ctrl.disabled\">\n      </div>\n\n      <div class=\"gf-form\">\n        <label class=\"gf-form-label\">Color</label>\n        <div class=\"gf-form-select-wrapper\">\n          <select class=\"gf-form-input\" ng-model=\"threshold.colorMode\"\n                  ng-options=\"f for f in ['custom', 'critical', 'warning', 'ok']\" ng-change=\"ctrl.render()\" ng-disabled=\"ctrl.disabled\">\n          </select>\n        </div>\n      </div>\n\n      <gf-form-switch class=\"gf-form\" label=\"Fill\" checked=\"threshold.fill\"\n                      on-change=\"ctrl.render()\" ng-disabled=\"ctrl.disabled\"></gf-form-switch>\n\n      <div class=\"gf-form\" ng-if=\"threshold.fill && threshold.colorMode === 'custom'\">\n        <label class=\"gf-form-label\">Fill color</label>\n        <span class=\"gf-form-label\">\n          <color-picker color=\"threshold.fillColor\" onChange=\"ctrl.onFillColorChange($index)\"></color-picker>\n        </span>\n      </div>\n\n      <gf-form-switch class=\"gf-form\" label=\"Line\" checked=\"threshold.line\"\n                      on-change=\"ctrl.render()\" ng-disabled=\"ctrl.disabled\"></gf-form-switch>\n\n      <div class=\"gf-form\" ng-if=\"threshold.line && threshold.colorMode === 'custom'\">\n        <label class=\"gf-form-label\">Line color</label>\n        <span class=\"gf-form-label\">\n          <color-picker color=\"threshold.lineColor\" onChange=\"ctrl.onLineColorChange($index)\"></color-picker>\n        </span>\n      </div>\n\n      <div class=\"gf-form\">\n        <label class=\"gf-form-label\">\n          <a class=\"pointer\" ng-click=\"ctrl.removeThreshold($index)\" ng-disabled=\"ctrl.disabled\">\n            <i class=\"fa fa-trash\"></i>\n          </a>\n        </label>\n      </div>\n    </div>\n\n    <div class=\"gf-form-button-row\">\n      <button class=\"btn btn-inverse\" ng-click=\"ctrl.addThreshold()\" ng-disabled=\"ctrl.disabled\">\n        <i class=\"fa fa-plus\"></i>&nbsp;Add Threshold\n      </button>\n    </div>\n  </div>\n</div>\n";
-
-_core_module.default.directive('lightstepGraphThresholdForm', function () {
+__WEBPACK_IMPORTED_MODULE_0_grafana_app_core_core_module___default.a.directive('lightstepGraphThresholdForm', function () {
   return {
     restrict: 'E',
     template: template,
@@ -12069,18 +12039,11 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_31__;
 
 /***/ }),
 /* 32 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.default = void 0;
 var template = "\n<div class=\"graph-wrapper\" ng-class=\"{'graph-legend-rightside': ctrl.panel.legend.rightSide}\">\n  <div class=\"graph-canvas-wrapper\">\n\n    <div class=\"datapoints-warning\" ng-if=\"ctrl.dataWarning\">\n      <span class=\"small\" bs-tooltip=\"ctrl.dataWarning.tip\">{{ctrl.dataWarning.title}}</span>\n    </div>\n\n    <div lightstep-graph class=\"histogram-chart\" ng-dblclick=\"ctrl.zoomOut()\">\n    </div>\n\n  </div>\n\n  <div class=\"graph-legend-wrapper\" lightstep-graph-legend></div>\n  </div>\n\n<div class=\"clearfix\"></div>\n";
-var _default = template;
-exports.default = _default;
+/* harmony default export */ __webpack_exports__["a"] = (template);
 
 /***/ }),
 /* 33 */
@@ -12090,33 +12053,24 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_33__;
 
 /***/ }),
 /* 34 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.DataProcessor = void 0;
-
-var _lodash = _interopRequireDefault(__webpack_require__(0));
-
-var _time_series = _interopRequireDefault(__webpack_require__(35));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+/* harmony export (binding) */ __webpack_require__.d(__webpack_exports__, "a", function() { return DataProcessor; });
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash__ = __webpack_require__(0);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_lodash___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_lodash__);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_grafana_app_core_time_series2__ = __webpack_require__(35);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_1_grafana_app_core_time_series2___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_1_grafana_app_core_time_series2__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
+
+
 
 var colors = ["#7EB26D", "#EAB839", "#6ED0E0", "#EF843C", "#E24D42", "#1F78C1", "#BA43A9", "#705DA0", "#508642", "#CCA300", "#447EBC", "#C15C17", "#890F02", "#0A437C", "#6D1F62", "#584477", "#B7DBAB", "#F4D598", "#70DBED", "#F9BA8F", "#F29191", "#82B5D8", "#E5A8E2", "#AEA2E0", "#629E51", "#E5AC0E", "#64B0C8", "#E0752D", "#BF1B00", "#0A50A1", "#962D82", "#614D93", "#9AC48A", "#F2C96D", "#65C5DB", "#F9934E", "#EA6460", "#5195CE", "#D683CE", "#806EB7", "#3F6833", "#967302", "#2F575E", "#99440A", "#58140C", "#052B51", "#511749", "#3F2B5B", "#E0F9D7", "#FCEACA", "#CFFAFF", "#F9E2D2", "#FCE2DE", "#BADFF4", "#F9D9F9", "#DEDAF7"];
-
-var DataProcessor =
-/*#__PURE__*/
-function () {
+var DataProcessor = /*#__PURE__*/function () {
   function DataProcessor(panel) {
     _classCallCheck(this, DataProcessor);
 
@@ -12231,7 +12185,7 @@ function () {
       var alias = seriesData.target;
       var colorIndex = index % colors.length;
       var color = this.panel.aliasColors[alias] || colors[colorIndex];
-      var series = new _time_series.default({
+      var series = new __WEBPACK_IMPORTED_MODULE_1_grafana_app_core_time_series2___default.a({
         datapoints: datapoints,
         alias: alias,
         color: color,
@@ -12275,7 +12229,7 @@ function () {
 
             var validOptions = this.getXAxisValueOptions({});
 
-            var found = _lodash.default.find(validOptions, {
+            var found = __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.find(validOptions, {
               value: this.panel.xaxis.values[0]
             });
 
@@ -12299,12 +12253,12 @@ function () {
       var fieldParts = [];
 
       function getPropertiesRecursive(obj) {
-        _lodash.default.forEach(obj, function (value, key) {
-          if (_lodash.default.isObject(value)) {
+        __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.forEach(obj, function (value, key) {
+          if (__WEBPACK_IMPORTED_MODULE_0_lodash___default.a.isObject(value)) {
             fieldParts.push(key);
             getPropertiesRecursive(value);
           } else {
-            if (!onlyNumbers || _lodash.default.isNumber(value)) {
+            if (!onlyNumbers || __WEBPACK_IMPORTED_MODULE_0_lodash___default.a.isNumber(value)) {
               var field = fieldParts.concat(key).join('.');
               fields.push(field);
             }
@@ -12372,8 +12326,6 @@ function () {
   return DataProcessor;
 }();
 
-exports.DataProcessor = DataProcessor;
-
 /***/ }),
 /* 35 */
 /***/ (function(module, exports) {
@@ -12382,30 +12334,21 @@ module.exports = __WEBPACK_EXTERNAL_MODULE_35__;
 
 /***/ }),
 /* 36 */
-/***/ (function(module, exports, __webpack_require__) {
+/***/ (function(module, __webpack_exports__, __webpack_require__) {
 
 "use strict";
-
-
-Object.defineProperty(exports, "__esModule", {
-  value: true
-});
-exports.axesEditorComponent = axesEditorComponent;
-exports.AxesEditorCtrl = void 0;
-
-var _kbn = _interopRequireDefault(__webpack_require__(5));
-
-function _interopRequireDefault(obj) { return obj && obj.__esModule ? obj : { default: obj }; }
-
+/* unused harmony export AxesEditorCtrl */
+/* harmony export (immutable) */ __webpack_exports__["a"] = axesEditorComponent;
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_grafana_app_core_utils_kbn__ = __webpack_require__(5);
+/* harmony import */ var __WEBPACK_IMPORTED_MODULE_0_grafana_app_core_utils_kbn___default = __webpack_require__.n(__WEBPACK_IMPORTED_MODULE_0_grafana_app_core_utils_kbn__);
 function _classCallCheck(instance, Constructor) { if (!(instance instanceof Constructor)) { throw new TypeError("Cannot call a class as a function"); } }
 
 function _defineProperties(target, props) { for (var i = 0; i < props.length; i++) { var descriptor = props[i]; descriptor.enumerable = descriptor.enumerable || false; descriptor.configurable = true; if ("value" in descriptor) descriptor.writable = true; Object.defineProperty(target, descriptor.key, descriptor); } }
 
-function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); return Constructor; }
+function _createClass(Constructor, protoProps, staticProps) { if (protoProps) _defineProperties(Constructor.prototype, protoProps); if (staticProps) _defineProperties(Constructor, staticProps); Object.defineProperty(Constructor, "prototype", { writable: false }); return Constructor; }
 
-var AxesEditorCtrl =
-/*#__PURE__*/
-function () {
+
+var AxesEditorCtrl = /*#__PURE__*/function () {
   /** @ngInject **/
   function AxesEditorCtrl($scope, $q) {
     _classCallCheck(this, AxesEditorCtrl);
@@ -12415,7 +12358,7 @@ function () {
     this.panelCtrl = $scope.ctrl;
     this.panel = this.panelCtrl.panel;
     this.$scope.ctrl = this;
-    this.unitFormats = _kbn.default.getUnitFormats();
+    this.unitFormats = __WEBPACK_IMPORTED_MODULE_0_grafana_app_core_utils_kbn___default.a.getUnitFormats();
     this.logScales = {
       'linear': 1,
       'log (base 2)': 2,
@@ -12495,9 +12438,6 @@ function () {
   return AxesEditorCtrl;
 }();
 /** @ngInject **/
-
-
-exports.AxesEditorCtrl = AxesEditorCtrl;
 
 function axesEditorComponent() {
   'use strict';
