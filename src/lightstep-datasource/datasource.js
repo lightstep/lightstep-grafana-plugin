@@ -1,7 +1,7 @@
 import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
-import { DEFAULT_TARGET_VALUE } from './constants';
+import {DEFAULT_TARGET_VALUE} from './constants';
 import {rangeUtil} from "@grafana/data";
 
 const maxDataPointsServer = 1440;
@@ -54,6 +54,18 @@ export class LightStepDatasource {
     this.apiKey = instanceSettings.jsonData.apiKey;
   }
 
+  projectNames() {
+    return this.projectName.split(",");
+  }
+
+  defaultProjectName() {
+    return this.projectNames()[0];
+  }
+
+  resolveProjectName(projectName) {
+    return projectName && String(projectName) !== "undefined" ? projectName : this.defaultProjectName();
+  }
+
   headers() {
     return {
       'Content-Type': 'application/json',
@@ -85,7 +97,7 @@ export class LightStepDatasource {
         const queryParams = this.buildQueryParameters(options, target, maxDataPoints);
         const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
         const response = this.doRequest({
-          url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
+          url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.resolveProjectName(target.projectName)}/streams/${streamId}/timeseries`,
           method: 'GET',
           params: queryParams,
         });
@@ -125,7 +137,7 @@ export class LightStepDatasource {
 
         return _.concat(
           this.parseLatencies(name, attributes),
-          this.parseExemplars(name, attributes, maxDataPoints),
+          this.parseExemplars(name, attributes, maxDataPoints, this.resolveProjectName(result.projectName)),
           ops,
           errs,
         );
@@ -137,7 +149,7 @@ export class LightStepDatasource {
 
   testDatasource() {
     return this.doRequest({
-      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}`,
+      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.defaultProjectName()}`,
       method: 'GET',
     }).then(response => {
       if (response.status === 200) {
@@ -152,7 +164,7 @@ export class LightStepDatasource {
     return this.q.when({});
   }
 
-  metricFindQuery(grafanaQuery) {
+  metricFindQuery(grafanaQuery, options) {
     const interpolated = this.templateSrv.replace(grafanaQuery, null, 'regex');
 
     let queryMapper = this.defaultMapper();
@@ -161,7 +173,7 @@ export class LightStepDatasource {
     }
 
     return this.doRequest({
-      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams`,
+      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.resolveProjectName(options.projectName)}/streams`,
       method: 'GET',
     }).then(response => {
       const streams = response.data.data;
@@ -324,7 +336,7 @@ export class LightStepDatasource {
     })
   }
 
-  parseExemplars(name, attributes, maxDataPoints) {
+  parseExemplars(name, attributes, maxDataPoints, projectName) {
     const exemplars = attributes["exemplars"];
     if (!exemplars) {
       return [];
@@ -332,12 +344,12 @@ export class LightStepDatasource {
     const exemplarMap = _.groupBy(exemplars, exemplar => exemplar["has_error"]);
 
     return _.concat(
-      this.parseExemplar(`${name} traces`, exemplarMap[false], maxDataPoints),
-      this.parseExemplar(`${name} error traces`, exemplarMap[true], maxDataPoints),
+      this.parseExemplar(`${name} traces`, exemplarMap[false], maxDataPoints, projectName),
+      this.parseExemplar(`${name} error traces`, exemplarMap[true], maxDataPoints, projectName),
     )
   }
 
-  parseExemplar(name, exemplars, maxDataPoints) {
+  parseExemplar(name, exemplars, maxDataPoints, projectName) {
     if (!exemplars) {
       return []
     }
@@ -350,7 +362,7 @@ export class LightStepDatasource {
       return {
         0: exemplar["duration_micros"] / 1000,
         1: moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
-        2: this.traceLink(exemplar),
+        2: this.traceLink(exemplar, projectName),
       };
     });
     return [{
@@ -365,12 +377,12 @@ export class LightStepDatasource {
     }];
   }
 
-  traceLink(exemplar) {
+  traceLink(exemplar, projectName) {
     const spanGuid = exemplar["span_guid"];
     if (!spanGuid) {
       return
     }
-    return `${this.dashboardURL}/${this.projectName}/trace?span_guid=${spanGuid}`
+    return `${this.dashboardURL}/${this.resolveProjectName(projectName)}/trace?span_guid=${spanGuid}`
   }
 
   parseCount(name, key, attributes) {
