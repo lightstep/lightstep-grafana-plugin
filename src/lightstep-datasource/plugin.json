@@ -33,5 +33,21 @@
   "dependencies": {
     "grafanaVersion": "4.6.x",
     "plugins": []
-  }
+  },
+  "routes": [
+    {
+      "path": "projects",
+      "url": "https://api.lightstep.com/public/v0.2/{{ .JsonData.organizationName }}/projects",
+      "headers": [
+        {
+          "name": "Authorization",
+          "content": "Bearer {{ .SecureJsonData.apiKey }}"
+        },
+        {
+          "name": "Content-Type",
+          "content": "application/json"
+        }
+      ]
+    }
+  ]
 }

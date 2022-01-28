@@ -6,7 +6,6 @@ import {rangeUtil} from "@grafana/data";
 
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
-const version = 'v0.2';
 
 // TODO - this is a work around given the existing graph API
 // Having a better mechanism for click capture would be ideal.
@@ -69,7 +68,6 @@ export class LightStepDatasource {
   headers() {
     return {
       'Content-Type': 'application/json',
-      'Authorization': "BEARER " + this.apiKey,
     };
   }
 
@@ -97,7 +95,7 @@ export class LightStepDatasource {
         const queryParams = this.buildQueryParameters(options, target, maxDataPoints);
         const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
         const response = this.doRequest({
-          url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.resolveProjectName(target.projectName)}/streams/${streamId}/timeseries`,
+          url: this.projectUrl(target.projectName, `/streams/${streamId}/timeseries`),
           method: 'GET',
           params: queryParams,
         });
@@ -149,7 +147,7 @@ export class LightStepDatasource {
 
   testDatasource() {
     return this.doRequest({
-      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.defaultProjectName()}`,
+      url: this.projectUrl(null, ""),
       method: 'GET',
     }).then(response => {
       if (response.status === 200) {
@@ -164,6 +162,10 @@ export class LightStepDatasource {
     return this.q.when({});
   }
 
+  projectUrl(projectName, suffix) {
+    return `${this.url}/projects/${this.resolveProjectName(projectName)}${suffix}`;
+  }
+
   metricFindQuery(grafanaQuery, options) {
     const interpolated = this.templateSrv.replace(grafanaQuery, null, 'regex');
 
@@ -173,7 +175,7 @@ export class LightStepDatasource {
     }
 
     return this.doRequest({
-      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.resolveProjectName(options.projectName)}/streams`,
+      url: this.projectUrl(options.projectName, "/streams"),
       method: 'GET',
     }).then(response => {
       const streams = response.data.data;
