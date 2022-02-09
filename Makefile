@@ -10,6 +10,7 @@ install:
 build: install
 	$(GRUNT)
 	$(WEBPACK)
+	./grafana8-workaround.sh
 
 .PHONY: test
 test: install

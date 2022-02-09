@@ -1,5 +1,10 @@
 <query-editor-row query-ctrl="ctrl" class="generic-datasource-query-row" has-text-edit-mode="true">
   <div class="gf-form-inline">
+    <div class="gf-form" ng-if="ctrl.showProjects">
+      <gf-form-dropdown model="ctrl.target.projectName" allow-custom="false" lookup-text="true"
+        get-options="ctrl.projects" on-change="ctrl.onProjectChanged(ctrl.target.projectName)"> </gf-form-dropdown>
+    </div>
+
     <div class="gf-form gf-form--grow" ng-if="ctrl.target.rawQuery">
       <textarea class="gf-form-input" rows="1" ng-model="ctrl.target.target" spellcheck="false"
         ng-blur="ctrl.onChangeInternal()"></textarea>
@@ -8,7 +13,7 @@
     <div ng-if="!ctrl.target.rawQuery">
       <div class="gf-form gf-form--grow">
         <gf-form-dropdown model="ctrl.target.target" allow-custom="true" lookup-text="true"
-          get-options="ctrl.getOptions($query)" on-change="ctrl.onChangeInternal()"> </gf-form-dropdown>
+          get-options="ctrl.getOptions(ctrl.target.projectName)" on-change="ctrl.onChangeInternal()"> </gf-form-dropdown>
       </div>
     </div>
   </div>
@@ -51,11 +56,18 @@
       </gf-form-switch>
       <gf-form-switch class="gf-form" label="Ops Counts" checked="ctrl.target.showOpsCounts" on-change="ctrl.refresh()">
       </gf-form-switch>
-      <gf-form-switch class="gf-form" label="Error Counts" checked="ctrl.target.showErrorCounts"
+      <gf-form-switch class="gf-form" label="Error Counts" checked="ctrl.target.showErrorCounts" on-change="ctrl.refresh()">
+      </gf-form-switch>
+      <gf-form-switch class="gf-form" label="Error ratio" checked="ctrl.target.showErrorCountsAsRate"
         on-change="ctrl.refresh()">
       </gf-form-switch>
-      <gf-form-switch class="gf-form" label="Error Counts as Rate" checked="ctrl.target.showErrorCountsAsRate"
-        on-change="ctrl.refresh()">
+      <gf-form-switch class="gf-form" label="Ops per sec" checked="ctrl.target.showRatePerSec" on-change="ctrl.refresh()">
+      </gf-form-switch>
+      <gf-form-switch class="gf-form" label="Errors per sec" checked="ctrl.target.showErrorsPerSec" on-change="ctrl.refresh()">
+      </gf-form-switch>
+      <gf-form-switch class="gf-form" label="Ops per min" checked="ctrl.target.showRatePerMin" on-change="ctrl.refresh()">
+      </gf-form-switch>
+      <gf-form-switch class="gf-form" label="Errors per min" checked="ctrl.target.showErrorsPerMin" on-change="ctrl.refresh()">
       </gf-form-switch>
       <label class="gf-form-label">
         <a href="{{ctrl.linkToLightStep()}}" target="_blank" bs-tooltip="'Link to Graph in Lightstep'">

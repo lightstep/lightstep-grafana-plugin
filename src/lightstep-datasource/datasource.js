@@ -1,12 +1,13 @@
 import _ from 'lodash';
 import moment from 'moment';
 import appEvents from 'app/core/app_events';
-import kbn from 'app/core/utils/kbn';
-import { DEFAULT_TARGET_VALUE } from './constants';
+import {DEFAULT_TARGET_VALUE} from './constants';
+import {rangeUtil} from "@grafana/data";
 
 const maxDataPointsServer = 1440;
 const minResolutionServer = 60000;
-const version = 'v0.2';
+const opCountKey = "ops-counts";
+const errCountKey = "error-counts";
 
 // TODO - this is a work around given the existing graph API
 // Having a better mechanism for click capture would be ideal.
@@ -54,10 +55,21 @@ export class LightStepDatasource {
     this.apiKey = instanceSettings.jsonData.apiKey;
   }
 
+  projectNames() {
+    return this.projectName.split(",");
+  }
+
+  defaultProjectName() {
+    return this.projectNames()[0];
+  }
+
+  resolveProjectName(projectName) {
+    return projectName && String(projectName) !== "undefined" ? projectName : this.defaultProjectName();
+  }
+
   headers() {
     return {
       'Content-Type': 'application/json',
-      'Authorization': "BEARER " + this.apiKey,
     };
   }
 
@@ -71,7 +83,7 @@ export class LightStepDatasource {
 
     const targetResponses = targets.flatMap(target => {
       const interpolatedIds = this.templateSrv.replace(target.target, null, 'pipe');
-      const interpolatedNames = this.templateSrv.replaceWithText(target.target);
+      const interpolatedNames = this.templateSrv.replace(target.target, null, 'text');
 
       if (!interpolatedIds) {
         return this.q.when(undefined);
@@ -85,7 +97,7 @@ export class LightStepDatasource {
         const queryParams = this.buildQueryParameters(options, target, maxDataPoints);
         const showErrorCountsAsRate = Boolean(target.showErrorCountsAsRate);
         const response = this.doRequest({
-          url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams/${streamId}/timeseries`,
+          url: this.projectUrl(target.projectName, `/streams/${streamId}/timeseries`),
           method: 'GET',
           params: queryParams,
         });
@@ -93,7 +105,7 @@ export class LightStepDatasource {
         response.then(result => {
           if (result && result["data"]["data"]) {
             if (target.displayName) {
-              result["data"]["data"]["name"] = this.templateSrv.replaceWithText(target.displayName);
+              result["data"]["data"]["name"] = this.templateSrv.replace(target.displayName, null, 'text');
             } else {
               result["data"]["data"]["name"] = streamName;
             }
@@ -102,6 +114,12 @@ export class LightStepDatasource {
 
         return response.then((res) => {
           res.showErrorCountsAsRate = showErrorCountsAsRate;
+          res.showOpsCounts = target.showOpsCounts;
+          res.showRatePerSec = target.showRatePerSec;
+          res.showRatePerMin = target.showRatePerMin;
+          res.showErrorCounts = target.showErrorCounts;
+          res.showErrorsPerSec = target.showErrorsPerSec;
+          res.showErrorsPerMin = target.showErrorsPerMin;
           return res;
         });
       });
@@ -116,18 +134,23 @@ export class LightStepDatasource {
 
         const data = result["data"]["data"];
         const attributes = data["attributes"];
+        const secDivisor = attributes["resolution-ms"] / 1000;
+        const minDivisor = secDivisor / 60;
         const name = data["name"];
-        const ops = this.parseCount(`${name} Ops counts`, "ops-counts", attributes);
-        let errs = this.parseCount(`${name} Error counts`, "error-counts", attributes);
-        if (result.showErrorCountsAsRate) {
-          errs = this.parseRateFromCounts(`${name} Error rate`, errs, ops);
-        }
+
+        const ops = this.parseCount(`${name} Ops counts`, opCountKey, attributes);
+        const errs = this.parseCount(`${name} Error counts`, errCountKey, attributes);
 
         return _.concat(
           this.parseLatencies(name, attributes),
-          this.parseExemplars(name, attributes, maxDataPoints),
-          ops,
-          errs,
+          this.parseExemplars(name, attributes, maxDataPoints, this.resolveProjectName(result.projectName)),
+          result.showOpsCounts ? ops : [],
+          result.showRatePerSec ? this.parseCount(`${name} Ops per sec`, opCountKey, attributes, secDivisor) : [],
+          result.showRatePerMin ? this.parseCount(`${name} Ops per min`, opCountKey, attributes, minDivisor) : [],
+          result.showErrorCounts ? errs : [],
+          result.showErrorCountsAsRate ? this.parseRateFromCounts(`${name} Error ratio`, errs, ops) : [],
+          result.showErrorsPerSec ? this.parseCount(`${name} Errors per sec`, errCountKey, attributes, secDivisor) : [],
+          result.showErrorsPerMin ? this.parseCount(`${name} Errors per min`, errCountKey, attributes, minDivisor) : [],
         );
       });
 
@@ -137,7 +160,7 @@ export class LightStepDatasource {
 
   testDatasource() {
     return this.doRequest({
-      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}`,
+      url: this.projectUrl(null, ""),
       method: 'GET',
     }).then(response => {
       if (response.status === 200) {
@@ -152,7 +175,11 @@ export class LightStepDatasource {
     return this.q.when({});
   }
 
-  metricFindQuery(grafanaQuery) {
+  projectUrl(projectName, suffix) {
+    return `${this.url}/projects/${this.resolveProjectName(projectName)}${suffix}`;
+  }
+
+  metricFindQuery(grafanaQuery, options) {
     const interpolated = this.templateSrv.replace(grafanaQuery, null, 'regex');
 
     let queryMapper = this.defaultMapper();
@@ -161,7 +188,7 @@ export class LightStepDatasource {
     }
 
     return this.doRequest({
-      url: `${this.url}/public/${version}/${this.organizationName}/projects/${this.projectName}/streams`,
+      url: this.projectUrl(options.projectName, "/streams"),
       method: 'GET',
     }).then(response => {
       const streams = response.data.data;
@@ -272,7 +299,7 @@ export class LightStepDatasource {
     if (target.resolution) {
       const scopedVars = this.getScopedVars(options);
       const interpolated = this.templateSrv.replace(target.resolution, scopedVars)
-      resolutionMs = kbn.interval_to_ms(interpolated);
+      resolutionMs = rangeUtil.intervalToMs(interpolated);
     }
 
     if (!resolutionMs || resolutionMs < minResolutionServer) {
@@ -290,15 +317,15 @@ export class LightStepDatasource {
       "youngest-time": youngest.format(),
       "resolution-ms": Math.floor(resolutionMs),
       "include-exemplars": target.showExemplars ? "1" : "0",
-      "include-ops-counts": target.showOpsCounts ? "1" : "0",
-      "include-error-counts": target.showErrorCounts ? "1" : "0",
+      "include-ops-counts": (target.showRatePerSec || target.showRatePerMin || target.showOpsCounts || target.showErrorCountsAsRate) ? "1" : "0",
+      "include-error-counts": (target.showErrorsPerSec || target.showErrorsPerMin || target.showErrorCounts || target.showErrorCountsAsRate) ? "1" : "0",
       "percentile": this.extractPercentiles(target.percentiles),
     };
   }
 
   getScopedVars(options) {
     const msRange = options.range.to.diff(options.range.from);
-    const regularRange = kbn.secondsToHms(msRange / 1000);
+    const regularRange = rangeUtil.secondsToHms(msRange / 1000);
     return {
       __interval: { text: options.interval, value: options.interval },
       __range: { text: regularRange, value: regularRange },
@@ -324,7 +351,7 @@ export class LightStepDatasource {
     })
   }
 
-  parseExemplars(name, attributes, maxDataPoints) {
+  parseExemplars(name, attributes, maxDataPoints, projectName) {
     const exemplars = attributes["exemplars"];
     if (!exemplars) {
       return [];
@@ -332,12 +359,12 @@ export class LightStepDatasource {
     const exemplarMap = _.groupBy(exemplars, exemplar => exemplar["has_error"]);
 
     return _.concat(
-      this.parseExemplar(`${name} traces`, exemplarMap[false], maxDataPoints),
-      this.parseExemplar(`${name} error traces`, exemplarMap[true], maxDataPoints),
+      this.parseExemplar(`${name} traces`, exemplarMap[false], maxDataPoints, projectName),
+      this.parseExemplar(`${name} error traces`, exemplarMap[true], maxDataPoints, projectName),
     )
   }
 
-  parseExemplar(name, exemplars, maxDataPoints) {
+  parseExemplar(name, exemplars, maxDataPoints, projectName) {
     if (!exemplars) {
       return []
     }
@@ -350,7 +377,7 @@ export class LightStepDatasource {
       return {
         0: exemplar["duration_micros"] / 1000,
         1: moment(((exemplar["oldest_micros"] + exemplar["youngest_micros"]) / 2) / 1000),
-        2: this.traceLink(exemplar),
+        2: this.traceLink(exemplar, projectName),
       };
     });
     return [{
@@ -365,15 +392,15 @@ export class LightStepDatasource {
     }];
   }
 
-  traceLink(exemplar) {
+  traceLink(exemplar, projectName) {
     const spanGuid = exemplar["span_guid"];
     if (!spanGuid) {
       return
     }
-    return `${this.dashboardURL}/${this.projectName}/trace?span_guid=${spanGuid}`
+    return `${this.dashboardURL}/${this.resolveProjectName(projectName)}/trace?span_guid=${spanGuid}`
   }
 
-  parseCount(name, key, attributes) {
+  parseCount(name, key, attributes, resolution) {
     if (!attributes["time-windows"] || !attributes[key]) {
       return [];
     }
@@ -384,9 +411,11 @@ export class LightStepDatasource {
       return moment((oldest + youngest) / 2);
     });
 
+    const points = attributes[key];
+
     return [{
       target: name,
-      datapoints: _.zip(attributes[key], timeWindows),
+      datapoints: _.zip(resolution ? points.map((val) => val / resolution) : points, timeWindows),
     }]
   }
 
