@@ -18,10 +18,8 @@ jobs:
           cache: 'yarn'
       - run: yarn install
       - run: make build
-      - uses: papeloto/action-zip@v1
-        with:
-          files: dist/ README.md package.json LICENSE.md
-          dest: lightstep-grafana-plugin-${{github.ref_name}}.zip
+      - name: Create zip archive
+        run: zip -r lightstep-grafana-plugin-${{github.ref_name}}.zip dist/ README.md package.json LICENSE.md
       - name: Release
         uses: softprops/action-gh-release@v1
         with:
