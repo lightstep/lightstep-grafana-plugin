@@ -1,12 +1,15 @@
-# Lightstep Datasource
+# Lightstep Datasource for Streams
 
-Once you install the Lightstep Datasource plugin, you should be able to add Lightstep graphs into your Grafana dashboards.
+Lightstep datasource for [streams]((https://docs.lightstep.com/docs/monitor-a-service-level-indicator-with-streams)) in Grafana. Looking for Lightstep metrics? Check out the [Lightstep Metrics Datasource](https://grafana.com/grafana/plugins/lightstep-metrics-datasource/).
 
-After installing the plugin (see [Installing Plugins](https://grafana.com/docs/grafana/latest/plugins/installation)), you will need a Lightstep API key (Account Settings > API Keys) with the Viewer role to configure it. 
+You can download the latest zip archive from the [Releases page](https://github.com/lightstep/lightstep-grafana-plugin/releases). Instructions for installing Grafana plugins from a packed zip archive can be found [here](https://grafana.com/docs/grafana/latest/plugins/installation). An example for provisioning the plugin with a sample datasource can be found in the `provisioning` directory of this repository.
 
-Follow the configuration screen instructions to configure the plugin.
+## Requirements
 
-This plugin supports Grafana v7 and earlier.
+* Grafana 7 or 8
+* Unsigned plugin permissions for: lightstep-app,grafana-lightstep-datasource,grafana-lightstep-graph
+* [Lightstep streams](https://docs.lightstep.com/docs/monitor-a-service-level-indicator-with-streams)
+* Lightstep API Key with viewer role
 
 ## Templating
 See the [Templating](https://grafana.com/docs/grafana/latest/reference/templating/) documentation for an introduction to the templating feature and the different types of template variables.
@@ -25,7 +28,7 @@ It's possible to use some [global built-in variables](https://grafana.com/docs/g
 Currently, only `$__range` and `$__interval` are supported.
 ## Testing
 ### Running on docker for development and testing
-It's possible to use the `docker-compose.yml` file in this repo to quickly install this plugin in a new instance of Grafana for development in testing:
+It's possible to use the `docker-compose.yml` file in this repo to quickly install this plugin in a new instance of Grafana for development in testing. The `docker-compose.yml` configuration automatically provisions the plugin and creates a default datasource using the files in the `provisioning` directory.
 
 ```
   # build assets from source
