@@ -1,0 +1,21 @@
+name: Node.js CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v2.4.0
+    - name: Use Node.js 14.x
+      uses: actions/setup-node@v2.5.1
+      with:
+        node-version: 14.x
+        cache: 'yarn'
+    - run: yarn install
+    - run: make test
