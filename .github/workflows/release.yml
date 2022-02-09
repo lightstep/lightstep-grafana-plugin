@@ -1,0 +1,29 @@
+name: Release
+
+on:
+  push:
+    tags:
+      - "v*"
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2.4.0
+      - name: Use Node.js 14.x
+        uses: actions/setup-node@v2.5.1
+        with:
+          node-version: 14.x
+          cache: 'yarn'
+      - run: yarn install
+      - run: make build
+      - uses: papeloto/action-zip@v1
+        with:
+          files: dist/ README.md package.json LICENSE.md
+          dest: lightstep-grafana-plugin-${{github.ref_name}}.zip
+      - name: Release
+        uses: softprops/action-gh-release@v1
+        with:
+          files: lightstep-grafana-plugin-${{github.ref_name}}.zip
+          draft: true
