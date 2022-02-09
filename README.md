@@ -25,12 +25,18 @@ It's possible to use some [global built-in variables](https://grafana.com/docs/g
 Currently, only `$__range` and `$__interval` are supported.
 ## Testing
 ### Running on docker for development and testing
-It's possible to use the `docker-compose.yml` file in this repo to quickly install this plugin in a new instance of Grafana for development in testing.
-
-First, create a named volume so settings and dashboards will persist across container launches:
+It's possible to use the `docker-compose.yml` file in this repo to quickly install this plugin in a new instance of Grafana for development in testing:
 
 ```
+  # build assets from source
+  $ make build
+
+  # create volume so you don't lose your config across container start/stops
   $ docker volume create grafana-data-lgp 
-```
 
-Next, run docker compose: `docker compose up` -- the plugin now will be able to be installed on the Grafana instance that runs on `localhost:3000`
+  # bring up docker connected to your API key
+  $ export LIGHTSTEP_API_KEY=your_api_key
+  $ docker-compose up
+
+  # grafana is now running on localhost:3000
+```

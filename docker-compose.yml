@@ -1,17 +1,19 @@
 version: "3"
 services:
   grafana:
-    image: grafana/grafana-enterprise:7.5.13
+    image: grafana/grafana-oss:8.2.6
     container_name: grafana
     ports:
       - 3000:3000
     environment:
-      - GF_ALLOW_LOADING_UNSIGNED_PLUGINS=grafana-lightstep-datasource,grafana-lightstep-graph,lightstep-app
+      - GF_ALLOW_LOADING_UNSIGNED_PLUGINS=lightstep-app,grafana-lightstep-datasource,grafana-lightstep-graph
       - GF_LOG_LEVEL=debug
       - GF_DEFAULT_APP_MODE=development
+      - LIGHTSTEP_API_KEY=${LIGHTSTEP_API_KEY}
     volumes:
       - grafana-data-lgp:/var/lib/grafana
-      - ./dist:/var/lib/grafana/plugins/lightstep-app
+      - ./:/var/lib/grafana/plugins/grafana-lightstep-app
+      - ./provisioning:/etc/grafana/provisioning
 
 volumes:
   grafana-data-lgp:

@@ -1,0 +1,24 @@
+# config file version
+apiVersion: 1
+
+# list of datasources to insert/update depending
+# what's available in the database
+datasources:
+  # <string, required> name of the datasource. Required
+  - name: Lightstep
+    # <string, required> datasource type. Required
+    type: grafana-lightstep-datasource
+    # <string, required> access mode. proxy or direct (Server or Browser in the UI). Required
+    access: proxy
+    # <int> org id. will default to orgId 1 if not specified
+
+    jsonData:
+      dashboardURL: https://app.lightstep.com
+      organizationName: LightStep
+      projectName: terraform-provider-tests,demo
+    # <string> json object of data that will be encrypted.
+    secureJsonData:
+      apiKey: $LIGHTSTEP_API_KEY
+    version: 1
+    # <bool> allow users to edit datasources from the UI.
+    editable: true
