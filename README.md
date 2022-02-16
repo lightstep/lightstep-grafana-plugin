@@ -6,14 +6,14 @@ Looking for [Lightstep metrics](https://lightstep.com/metrics/) in Grafana? Chec
 
 ## Requirements
 
-* Grafana 7 or 8
+* Grafana 7 (v1.1.9 or earlier) or Grafana 8 (v1.2.0 or later)
 * Unsigned plugin permissions for: lightstep-app,grafana-lightstep-datasource,grafana-lightstep-graph
 * [Lightstep streams](https://docs.lightstep.com/docs/monitor-a-service-level-indicator-with-streams)
 * Lightstep API Key with viewer role
 
 ## Installing
 
-1. Download the latest zip archive from the [Releases page](https://github.com/lightstep/lightstep-grafana-plugin/releases). 
+1. Download the latest zip archive from the [Releases page](https://github.com/lightstep/lightstep-grafana-plugin/releases). Note that v1.2.0 and later are only compatible with Grafana 8.
 
 2. Install the plugin from the zip archive, [see Grafana documentation here](https://grafana.com/docs/grafana/latest/plugins/installation). 
 
