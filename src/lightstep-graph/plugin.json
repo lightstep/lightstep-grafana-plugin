@@ -23,11 +23,11 @@
         "url": "https://github.com/lightstep/lightstep-grafana-plugin/blob/master/LICENSE.md"
       }
     ],
-    "version": "1.0.4",
-    "updated": "2020-10-15"
+    "version": "1.2.1",
+    "updated": "2022-02-17"
   },
   "dependencies": {
-    "grafanaVersion": "4.6.x",
+    "grafanaVersion": "7.4.x",
     "plugins": []
   }
 }

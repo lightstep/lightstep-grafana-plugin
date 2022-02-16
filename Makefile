@@ -12,6 +12,10 @@ build: install
 	$(WEBPACK)
 	./grafana8-workaround.sh
 
+.PHONY: release
+release: build
+	zip -r lightstep-grafana-plugin-release.zip dist/ README.md package.json LICENSE.md
+
 .PHONY: test
 test: install
 	$(GRUNT) mochaTest
