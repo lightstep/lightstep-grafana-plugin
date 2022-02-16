@@ -26,7 +26,7 @@ allow_loading_unsigned_plugins = lightstep-app,grafana-lightstep-datasource,graf
 
 5. [Provision the data source](https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources) with your API key using `secureJsonData`. An example file for provisioning the plugin with a sample datasource can be found in the [`provisioning`](./provisioning/datasources) directory of this repository. This is a breaking change as of v1.2.0, and the Lightstep API key can no longer be set in the settings page.
 
-6. Restart Grafana, and login. You should see the data source you provisioned in step 5 and can use it to start creating dashboards.
+6. Restart Grafana, login, and view data sources. You should see the data source you provisioned in step 5 and click "Save and Test" to confirm you can receive data from Lightstep.
 
 ## Templating
 See the [Templating](https://grafana.com/docs/grafana/latest/reference/templating/) documentation for an introduction to the templating feature and the different types of template variables.
@@ -55,6 +55,8 @@ It's possible to use the `docker-compose.yml` file in this repo to quickly insta
 
   # create volume so you don't lose your config across container start/stops
   $ docker volume create grafana-data-lgp 
+
+  $ edit `provisioning/datasources/lightstep.yaml` to point to your project/org
 
   # bring up docker connected to your API key
   $ export LIGHTSTEP_API_KEY=your_api_key
