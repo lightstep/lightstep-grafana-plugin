@@ -27,7 +27,7 @@
     "updated": "2022-02-17"
   },
   "dependencies": {
-    "grafanaVersion": "7.4.x",
+    "grafanaVersion": "8.x",
     "plugins": []
   }
 }

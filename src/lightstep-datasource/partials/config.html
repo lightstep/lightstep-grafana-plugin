@@ -17,12 +17,14 @@
   <div class="gf-form-inline">
     <div class="gf-form max-width-30">
       <span class="gf-form-label">API Key</span>
-      <!-- TODO(dolan) investigate "secure data json" further and whether that's the right thing to use here. -->
-      <input type="text" class="gf-form-input" ng-model="ctrl.current.jsonData.apiKey" spellcheck='false' placeholder="" required></input>
+      <input type="text" class="gf-form-input" ng-model="ctrl.current.secureJsonData.apiKey" spellcheck='false' required></input>
       <info-popover mode="right-absolute">
-        Reach out to Lightstep to generate a new Access Token.
+        Manage API Keys in Lightstep under the "Account Settings" page.
       </info-popover>
     </div>
+  </div>
+  <div class="gf-form-inline">
+    <small>API key will not be displayed if it has been set.</small>
   </div>
 </div>
 
