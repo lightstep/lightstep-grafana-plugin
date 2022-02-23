@@ -17,16 +17,16 @@ Looking for [Lightstep metrics](https://lightstep.com/metrics/) in Grafana? Chec
 
 2. Install the plugin from the zip archive, [see Grafana documentation here](https://grafana.com/docs/grafana/latest/plugins/installation). 
 
-3. Modify the `allow_loading_unsigned_plugins` property in `grafana.ini` to the following value:
+3. Modify the `allow_loading_unsigned_plugins` property in `grafana.ini` to the following value (or set using the env var `GF_ALLOW_LOADING_UNSIGNED_PLUGINS`):
 
 ```
 [plugins]
 allow_loading_unsigned_plugins = lightstep-app,grafana-lightstep-datasource,grafana-lightstep-graph
 ```
 
-5. [Provision the data source](https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources) with your API key using `secureJsonData`. An example file for provisioning the plugin with a sample datasource can be found in the [`provisioning`](./provisioning/datasources) directory of this repository. This is a breaking change as of v1.2.0, and the Lightstep API key can no longer be set in the settings page.
+1. [Provision the data source](https://grafana.com/docs/grafana/latest/administration/provisioning/#data-sources) using a file or the Grafana UI. An example file for provisioning the plugin with a sample datasource can be found in the [`provisioning`](./provisioning/datasources) directory of this repository. Note that the API key, once set, is no longer visible in the UI.
 
-6. Restart Grafana, login, and view data sources. You should see the data source you provisioned in step 5 and click "Save and Test" to confirm you can receive data from Lightstep.
+2. Click "Save and Test" in the data source configuration page to confirm you can receive data from Lightstep.
 
 ## Templating
 See the [Templating](https://grafana.com/docs/grafana/latest/reference/templating/) documentation for an introduction to the templating feature and the different types of template variables.
