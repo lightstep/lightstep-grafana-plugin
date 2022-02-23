@@ -31,7 +31,7 @@
     "updated": "2022-02-16"
   },
   "dependencies": {
-    "grafanaVersion": "7.4.x",
+    "grafanaVersion": "8.x",
     "plugins": []
   },
   "routes": [

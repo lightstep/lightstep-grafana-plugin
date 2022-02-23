@@ -52,7 +52,6 @@ export class LightStepDatasource {
     this.templateSrv = templateSrv;
     this.organizationName = instanceSettings.jsonData.organizationName;
     this.projectName = instanceSettings.jsonData.projectName;
-    this.apiKey = instanceSettings.jsonData.apiKey;
   }
 
   projectNames() {
@@ -165,9 +164,9 @@ export class LightStepDatasource {
     }).then(response => {
       if (response.status === 200) {
         return { status: "success", message: "Data source is working", title: "Success" };
+      } else {
+        return { status: "failure", message: "HTTP error: " + response.status, title: "Error " }
       }
-    }).catch(error => {
-      return { status: "error", message: error, title: "Error " };
     });
   }
 
