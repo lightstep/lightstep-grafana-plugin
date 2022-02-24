@@ -16,6 +16,11 @@ class GraphCtrl extends MetricsPanelCtrl {
 
   /** @ngInject */
   constructor($scope, $injector, annotationsSrv) {
+    // hack for Grafana 8+
+    if ($scope.ctrl.events === undefined) {
+      $scope.ctrl.events = { emit: function() {} };
+    }
+
     super($scope, $injector);
     this.$scope = $scope
     this.$injector = $injector;
