@@ -6,7 +6,7 @@ services:
     ports:
       - 3000:3000
     environment:
-      - GF_ALLOW_LOADING_UNSIGNED_PLUGINS=lightstep-app,grafana-lightstep-datasource,grafana-lightstep-graph
+      - GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS=lightstep-app,grafana-lightstep-datasource,grafana-lightstep-graph
       - GF_LOG_LEVEL=debug
       - GF_DEFAULT_APP_MODE=development
       - LIGHTSTEP_API_KEY=${LIGHTSTEP_API_KEY}

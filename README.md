@@ -17,7 +17,7 @@ Looking for [Lightstep metrics](https://lightstep.com/metrics/) in Grafana? Chec
 
 2. Install the plugin from the zip archive, [see Grafana documentation here](https://grafana.com/docs/grafana/latest/plugins/installation). 
 
-3. Modify the `allow_loading_unsigned_plugins` property in `grafana.ini` to the following value (or set using the env var `GF_ALLOW_LOADING_UNSIGNED_PLUGINS`):
+3. Modify the `allow_loading_unsigned_plugins` property in `grafana.ini` to the following value (or set using the env var `GF_PLUGINS_ALLOW_LOADING_UNSIGNED_PLUGINS`):
 
 ```
 [plugins]
