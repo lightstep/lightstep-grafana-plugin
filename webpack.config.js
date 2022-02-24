@@ -7,6 +7,7 @@ module.exports = {
     target: 'node',
     context: __dirname + "/src/lightstep-graph",
     entry: './module.js',
+    mode: 'development',
     // watch: true,  // uncomment if you want "dev mode watching"
     devtool: 'source-map',
     output: {
