@@ -33,7 +33,7 @@
     "babel-preset-env": "^1.7.0",
     "chai": "~4.3.4",
     "copy-webpack-plugin": "^10.2.1",
-    "grunt": "^1.4.1",
+    "grunt": "^1.5.3",
     "grunt-babel": "~8.0.0",
     "grunt-cli": "^1.4.3",
     "grunt-contrib-clean": "^2.0.0",
