@@ -2,7 +2,7 @@
 
 Lightstep datasource for [streams]((https://docs.lightstep.com/docs/monitor-a-service-level-indicator-with-streams)) in Grafana. 
 
-Looking for [Lightstep metrics](https://lightstep.com/metrics/) in Grafana? Check out the [Lightstep Metrics Datasource](https://grafana.com/grafana/plugins/lightstep-metrics-datasource/).
+Looking for [Lightstep metrics](https://lightstep.com/metrics/) in Grafana? Check out the [Lightstep Observability Datasource](https://github.com/lightstep/lightstep-observability-datasource).
 
 ## Requirements
 
