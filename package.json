@@ -56,7 +56,7 @@
     "lodash": "^4.17.21",
     "mocha": "^9.2.2",
     "tether-drop": "^1.4.2",
-    "tinycolor2": "^1.4.2"
+    "tinycolor2": "^1.5.1"
   },
   "homepage": "https://github.com/lightstep/lightstep-grafana-plugin#readme"
 }
