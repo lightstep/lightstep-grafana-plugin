@@ -7,7 +7,7 @@ install:
 	$(YARN)
 
 .PHONY: build
-build: install
+build:
 	$(GRUNT)
 	$(WEBPACK)
 	./grafana8-workaround.sh

@@ -51,6 +51,9 @@ Currently, only `$__range` and `$__interval` are supported.
 It's possible to use the `docker-compose.yml` file in this repo to quickly install this plugin in a new instance of Grafana for development in testing. The `docker-compose.yml` configuration automatically provisions the plugin and creates a default datasource using the files in the `provisioning` directory.
 
 ```
+  # install dependencies
+  $ make install
+
   # build assets from source
   $ make build
 
