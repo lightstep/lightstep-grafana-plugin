@@ -1,5 +1,10 @@
 # Lightstep Datasource for Streams
 
+In August 2023, [Lightstep became ServiceNow
+Cloud Observability](https://docs.lightstep.com/docs/banner-faq). To ease the
+transition, all code artifacts will continue to use the Lightstep name. You
+don't need to do anything to keep using this plugin.
+
 Lightstep datasource for [streams]((https://docs.lightstep.com/docs/monitor-a-service-level-indicator-with-streams)) in Grafana. 
 
 Looking for [Lightstep metrics](https://lightstep.com/metrics/) in Grafana? Check out the [Lightstep Observability Datasource](https://github.com/lightstep/lightstep-observability-datasource).
