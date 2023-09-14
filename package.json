@@ -47,7 +47,7 @@
     "webpack-cli": "^5.0.1"
   },
   "dependencies": {
-    "@grafana/data": "^9.3.6",
+    "@grafana/data": "^9.4.1",
     "lodash": "^4.17.21",
     "moment": "2.29.4",
     "tether-drop": "^1.4.2",
